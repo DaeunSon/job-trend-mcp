@@ -36,6 +36,27 @@ _CLOSE_MATCH_SUGGEST_CUTOFF = 0.60
 _STOP_TOKENS = frozenset({"and", "or", "the", "a", "an", "of", "for", "/", "-"})
 _KNOWN_SOURCE_NAMES = tuple(s.source_name for s in ALL_SOURCES)
 
+# 모델이 사이트 이름을 한글 · 띄어쓰기 변형으로 넣는 경우 (2026-09-02 실사용 로그: "사람인")
+_SOURCE_ALIASES: dict[str, str] = {
+    "사람인": "saramin",
+    "잡코리아": "jobkorea",
+    "원티드": "wanted",
+    "점핏": "jumpit",
+    "랠릿": "rallit",
+    "고용24": "work24",
+    "워크넷": "work24",
+    "리모티브": "remotive",
+    "더뮤즈": "themuse",
+    "뮤즈": "themuse",
+    "아르바이트나우": "arbeitnow",
+    "애드주나": "adzuna",
+}
+
+
+def _source_key(text: str) -> str:
+    """'The Muse', 'USA Jobs', 'work-24' 같은 표기 차이를 없앤 비교용 키."""
+    return re.sub(r"[\s._\-]+", "", text).lower()
+
 
 def _recrawl_sort_key(doc: dict[str, Any]) -> str:
     return str(
@@ -228,14 +249,24 @@ class JobPostingStore:
         if name is None or not str(name).strip():
             return None, None
         raw = str(name).strip()
-        lower_map = {s.lower(): s for s in self.known_sources}
-        hit = lower_map.get(raw.lower())
+        key = _source_key(raw)
+        by_key = {_source_key(s): s for s in self.known_sources}
+        by_key.update({_source_key(k): v for k, v in _SOURCE_ALIASES.items()})
+        hit = by_key.get(key)
         if hit:
             return hit, None
         available = ", ".join(self.known_sources)
+        # 실사용 로그에서 모델이 source_name 에 직무 · 직군명을 넣는 경우가 반복됐다
+        # (예: "디자이너", "AI 개발자", "Healthcare"). 어느 파라미터로 옮겨야 하는지 알려 준다.
+        if raw.lower() in {c.lower() for c in self.known_categories}:
+            hint = f" {raw!r} looks like a job category — use job_category instead."
+        elif self.resolve_job_function(raw)[0]:
+            hint = f" {raw!r} looks like a job function — use job_function instead."
+        else:
+            hint = ""
         return None, (
-            f"Unknown source_name {raw!r}. "
-            f"Available: {available}"
+            f"Unknown source_name {raw!r}. source_name is the job board the posting "
+            f"was collected from, not a role. Available: {available}.{hint}"
         )
 
     def resolve_job_function(self, name: str | None) -> tuple[str | None, str | None]:

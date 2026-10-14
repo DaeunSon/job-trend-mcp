@@ -59,7 +59,7 @@ def search_job_postings(
 ) -> dict[str, Any]:
     """조건에 맞는 채용공고를 검색한다. 조건을 안 주면 최근 공고를 반환한다.
 
-    source_name 으로 수집 사이트(사람인 saramin, 잡코리아 jobkorea 등)만 고를 수 있다.
+    source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
     """
     return search_mod.search_job_postings(
         job_function=job_function,
@@ -85,7 +85,10 @@ def get_skill_trend(
     active_only: bool = True,
     source_name: str | None = None,
 ) -> dict[str, Any]:
-    """특정 직무에서 가장 많이 요구되는 기술스택 상위 N개를 빈도순으로 반환한다."""
+    """특정 직무에서 가장 많이 요구되는 기술스택 상위 N개를 빈도순으로 반환한다.
+
+    source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
+    """
     return skill_trend_mod.get_skill_trend(
         job_function=job_function,
         top_n=top_n,
@@ -104,7 +107,10 @@ def get_posting_count_by_category(
     active_only: bool = True,
     source_name: str | None = None,
 ) -> dict[str, Any]:
-    """직군(job_category)별 채용공고 수를 집계해 반환한다."""
+    """직군(job_category)별 채용공고 수를 집계해 반환한다.
+
+    source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
+    """
     return category_stats_mod.get_posting_count_by_category(
         active_only=active_only,
         source_name=source_name,
@@ -127,6 +133,8 @@ def get_salary_summary(
     전체 급여 표본 수는 salary_data_count 이다.
     summaries[*].group_sample_count 는 통화·pay_period 그룹별 건수이므로
     전체 건수와 혼동하지 말 것.
+
+    source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
     """
     return salary_summary_mod.get_salary_summary(
         job_function=job_function,
@@ -146,7 +154,10 @@ def get_company_hiring_activity(
     limit: int = 20,
     source_name: str | None = None,
 ) -> dict[str, Any]:
-    """특정 회사의 채용 현황(진행 중인 공고 목록과 직무 분포)을 반환한다."""
+    """특정 회사의 채용 현황(진행 중인 공고 목록과 직무 분포)을 반환한다.
+
+    source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
+    """
     return company_activity_mod.get_company_hiring_activity(
         company_name=company_name,
         limit=limit,

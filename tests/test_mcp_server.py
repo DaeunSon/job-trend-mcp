@@ -304,6 +304,37 @@ class TestSearch:
         assert "available_source_names" in out
         assert "jobkorea" in out["available_source_names"]
 
+    @pytest.mark.parametrize(
+        "raw, expected",
+        [("점핏", "jumpit"), ("원티드", "wanted"), ("사람인", "saramin"), ("The Muse", "themuse"),
+         ("work-24", "work24"), (" JUMPIT ", "jumpit")],
+    )
+    def test_source_name_korean_and_spacing_aliases(
+        self, sample_store: JobPostingStore, raw: str, expected: str
+    ):
+        assert sample_store.resolve_source_name(raw) == (expected, None)
+
+    def test_korean_source_name_filters_like_canonical(self, sample_store: JobPostingStore):
+        assert (
+            search_job_postings(source_name="점핏", store=sample_store)["total_matched"]
+            == search_job_postings(source_name="jumpit", store=sample_store)["total_matched"]
+        )
+
+    # 2026-09-02 실사용 로그에서 unknown_param 으로 끝난 호출 5건 (logs/mcp_tool_calls_20260902.jsonl)
+    @pytest.mark.parametrize("raw", ["디자이너", "AI 개발자", "data", "Healthcare"])
+    def test_role_in_source_name_explains_which_param(self, sample_store: JobPostingStore, raw: str):
+        out = get_posting_count_by_category(source_name=raw, store=sample_store)
+        assert out["status"] == "unknown_param"
+        assert "not a role" in out["message"]
+
+    def test_category_in_source_name_points_to_job_category(self, sample_store: JobPostingStore):
+        out = get_posting_count_by_category(source_name="Healthcare", store=sample_store)
+        assert "use job_category" in out["message"]
+
+    def test_salary_with_korean_source_name_resolves(self, sample_store: JobPostingStore):
+        out = get_salary_summary(job_function="Data Analyst", source_name="사람인", store=sample_store)
+        assert out["status"] != "unknown_param"
+
     def test_source_name_omitted_keeps_all_sources(
         self, sample_store: JobPostingStore
     ):
