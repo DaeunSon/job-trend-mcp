@@ -1,0 +1,770 @@
+{
+  "meta": {
+    "experiment_version": 3,
+    "source_questions": "experiments/mcp_comparison/questions.json",
+    "data_dir": "/Users/sn15d/Documents/python/job-trend-mcp/data",
+    "total_postings": 1155,
+    "active_postings": 1155,
+    "n_questions": 18,
+    "min_sample_size": 20,
+    "scoring_rule": "객관적 시장 정답이 아니라 MCP tool이 이 스냅샷에서 계산한 수치와 일치하는지가 정답이다.",
+    "computation_rule": "정답은 MCP tool 함수 호출 결과. pandas는 동일 규칙 교차검증. Full-time은 _norm_enum_token 동등 비교. 스킬은 skills[].canonical_name, 공고당 1회.",
+    "smallest_sample": 20,
+    "smallest_question_ids": [
+      "q16"
+    ]
+  },
+  "items": [
+    {
+      "question_id": "q01",
+      "category": "simple_search",
+      "question": "Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 '백엔드의 대부분이 정규직' 같은 비율이나 잡보드 백엔드 전수로 답하기 쉽다. 우리 Full-time 판정과 Backend 189건의 교집합 73건은 검색으로 알 수 없다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 73,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 73",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 73
+    },
+    {
+      "question_id": "q02",
+      "category": "simple_search",
+      "question": "Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "'서울 백엔드 채용 몇 건'은 잡보드 실시간 검색과 혼동된다. 우리 102건은 수집 범위·직무 정규화·location blob 규칙의 교집합이다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 102,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 102",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 102
+    },
+    {
+      "question_id": "q03",
+      "category": "simple_search",
+      "question": "Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 LinkedIn/Indeed의 Software Engineer 전 세계·정규직 필터 건수를 낸다. 우리 스냅샷 81건과 모집단이 다르다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 81,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 81",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 81
+    },
+    {
+      "question_id": "q04",
+      "category": "simple_search",
+      "question": "Software Engineer이면서 근무지가 Berlin인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "Berlin",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "Berlin SWE 채용은 LinkedIn·EU 잡보드 수치로 답하게 된다. 우리 location blob에 Berlin이 들어간 35건은 그 숫자와 무관하다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 35,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 35",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 35
+    },
+    {
+      "question_id": "q05",
+      "category": "simple_search",
+      "question": "엔지니어링 직군이면서 원격 근무인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_category": "Engineering & Technology",
+        "work_arrangement": "REMOTE",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "엔지니어링 원격 비율 리포트는 %로 나온다. 우리 taxonomy 직군명과 work_arrangement=REMOTE의 교집합 45건은 웹에 없다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 45,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 45",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 45
+    },
+    {
+      "question_id": "q06",
+      "category": "aggregation",
+      "question": "Backend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 '백엔드는 Java, Spring, AWS가 인기' 같은 일반론을 낸다. 우리 canonical_name 빈도(예: 공고당 1회 집계)는 이 데이터셋에만 있다.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "Backend Engineer",
+        "posting_count": 189,
+        "skills": [
+          {
+            "skill": "Java",
+            "count": 89
+          },
+          {
+            "skill": "AWS",
+            "count": 66
+          },
+          {
+            "skill": "MySQL",
+            "count": 44
+          },
+          {
+            "skill": "Python",
+            "count": 40
+          },
+          {
+            "skill": "Docker",
+            "count": 38
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 189
+    },
+    {
+      "question_id": "q07",
+      "category": "aggregation",
+      "question": "Software Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "SWE 스킬 리포트는 시장 평균(Python/JS 등)을 말한다. 우리 209건 기준 정확한 count는 웹에 없다.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "Software Engineer",
+        "posting_count": 209,
+        "skills": [
+          {
+            "skill": "Python",
+            "count": 102
+          },
+          {
+            "skill": "AWS",
+            "count": 53
+          },
+          {
+            "skill": "Kubernetes",
+            "count": 47
+          },
+          {
+            "skill": "Docker",
+            "count": 45
+          },
+          {
+            "skill": "Go",
+            "count": 32
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 209
+    },
+    {
+      "question_id": "q08",
+      "category": "aggregation",
+      "question": "Frontend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Frontend Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 프론트=React/TypeScript가 정답처럼 답한다. 이 스냅샷은 특정 회사 편중으로 PHP와 React가 동률일 수 있어 일반론과 어긋나기 쉽다.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "Frontend Engineer",
+        "posting_count": 26,
+        "skills": [
+          {
+            "skill": "React",
+            "count": 24
+          },
+          {
+            "skill": "PHP",
+            "count": 24
+          },
+          {
+            "skill": "AWS",
+            "count": 22
+          },
+          {
+            "skill": "UI/UX",
+            "count": 22
+          },
+          {
+            "skill": "Jira",
+            "count": 22
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 26
+    },
+    {
+      "question_id": "q09",
+      "category": "aggregation",
+      "question": "DevOps / Platform Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "DevOps / Platform Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 Kubernetes·AWS·Terraform 일반론을 반복한다. 우리 34건의 canonical 빈도 숫자는 검색으로 재현할 수 없다.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "DevOps / Platform Engineer",
+        "posting_count": 34,
+        "skills": [
+          {
+            "skill": "Kubernetes",
+            "count": 18
+          },
+          {
+            "skill": "Python",
+            "count": 11
+          },
+          {
+            "skill": "Go",
+            "count": 10
+          },
+          {
+            "skill": "AWS",
+            "count": 10
+          },
+          {
+            "skill": "Docker",
+            "count": 8
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 34
+    },
+    {
+      "question_id": "q10",
+      "category": "aggregation",
+      "question": "Data Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Data Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 Spark/SQL/Python 같은 교과서적 스택을 말한다. Data Scientist와 섞이기도 쉽다. 우리 Data Engineer 33건의 Airflow 등 count는 스냅샷 고유.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "Data Engineer",
+        "posting_count": 33,
+        "skills": [
+          {
+            "skill": "Python",
+            "count": 25
+          },
+          {
+            "skill": "Airflow",
+            "count": 20
+          },
+          {
+            "skill": "Kafka",
+            "count": 14
+          },
+          {
+            "skill": "GCP",
+            "count": 12
+          },
+          {
+            "skill": "AWS",
+            "count": 9
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 33
+    },
+    {
+      "question_id": "q11",
+      "category": "aggregation",
+      "question": "Mobile Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Mobile Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 모바일=Swift/Kotlin/React Native 일반론을 낸다. 우리 35건 canonical 빈도는 스냅샷 고유.",
+      "computation": "src.mcp_server.tools 의 get_skill_trend() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "job_function": "Mobile Engineer",
+        "posting_count": 35,
+        "skills": [
+          {
+            "skill": "Git",
+            "count": 12
+          },
+          {
+            "skill": "Java",
+            "count": 11
+          },
+          {
+            "skill": "JavaScript",
+            "count": 9
+          },
+          {
+            "skill": "Swift",
+            "count": 9
+          },
+          {
+            "skill": "React",
+            "count": 8
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "ranked_skills",
+        "correct_if": "우리 데이터셋 top 5 스킬 이름과 count가 정답과 동일 (순서 포함)",
+        "tie_note": "동점은 Counter.most_common (tool) 순서."
+      },
+      "sample_size": 35
+    },
+    {
+      "question_id": "q12",
+      "category": "aggregation",
+      "question": "Software Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "tools": [
+        "get_salary_summary"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer"
+      },
+      "why_web_search_differs": "연봉 조사 사이트는 USD 연봉 하나를 평균으로 말한다. 우리 tool은 통화·pay_period를 섞지 않고 그룹을 나눈다. 웹은 이 그룹 정의를 모른다.",
+      "computation": "src.mcp_server.tools 의 get_salary_summary() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "matched_postings": 209,
+        "salary_data_count": 77,
+        "job_function": "Software Engineer",
+        "summaries": [
+          {
+            "currency_code": "USD",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 34,
+            "min": 20000,
+            "max": 500000,
+            "avg": 167882.7205882353
+          },
+          {
+            "currency_code": "USD",
+            "pay_period": "UNKNOWN",
+            "group_sample_count": 17,
+            "min": 3,
+            "max": 175000,
+            "avg": 17909
+          },
+          {
+            "currency_code": "GBP",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 11,
+            "min": 30870,
+            "max": 163000,
+            "avg": 78618.18181818182
+          },
+          {
+            "currency_code": "EUR",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 6,
+            "min": 46,
+            "max": 250000,
+            "avg": 83365.33333333333
+          },
+          {
+            "currency_code": "USD",
+            "pay_period": "HOURLY",
+            "group_sample_count": 4,
+            "min": 90,
+            "max": 170,
+            "avg": 132.5
+          },
+          {
+            "currency_code": "EUR",
+            "pay_period": "UNKNOWN",
+            "group_sample_count": 2,
+            "min": 16,
+            "max": 18,
+            "avg": 17
+          },
+          {
+            "currency_code": "USD",
+            "pay_period": "MONTHLY",
+            "group_sample_count": 2,
+            "min": 270,
+            "max": 270,
+            "avg": 270
+          },
+          {
+            "currency_code": "GBP",
+            "pay_period": "DAILY",
+            "group_sample_count": 1,
+            "min": 300,
+            "max": 350,
+            "avg": 325
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "salary_grouped",
+        "correct_if": "salary_data_count·matched_postings와 통화/pay_period 그룹별 min/max/avg가 데이터셋과 일치",
+        "common_error": "웹 연봉 조사 평균이나 가장 큰 그룹의 group_sample_count를 전체로 답하는 경우"
+      },
+      "sample_size": 209
+    },
+    {
+      "question_id": "q13",
+      "category": "aggregation",
+      "question": "Backend Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "tools": [
+        "get_salary_summary"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer"
+      },
+      "why_web_search_differs": "한국 백엔드 연봉 기사는 대략 구간(예: 4~6천만)을 인용한다. 우리 결과는 KRW/USD 등이 분리되어 있고, 웹의 '시장 평균'과 숫자가 맞지 않는다.",
+      "computation": "src.mcp_server.tools 의 get_salary_summary() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "matched_postings": 189,
+        "salary_data_count": 49,
+        "job_function": "Backend Engineer",
+        "summaries": [
+          {
+            "currency_code": "USD",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 16,
+            "min": 80000,
+            "max": 85000000,
+            "avg": 5473787.5
+          },
+          {
+            "currency_code": "KRW",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 14,
+            "min": 30000000,
+            "max": 80010000,
+            "avg": 48431428.571428575
+          },
+          {
+            "currency_code": "USD",
+            "pay_period": "UNKNOWN",
+            "group_sample_count": 9,
+            "min": 1,
+            "max": 5000,
+            "avg": 642.5
+          },
+          {
+            "currency_code": "EUR",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 2,
+            "min": 2000,
+            "max": 2000,
+            "avg": 2000
+          },
+          {
+            "currency_code": "KRW",
+            "pay_period": "MONTHLY",
+            "group_sample_count": 2,
+            "min": 4000000,
+            "max": 4000000,
+            "avg": 4000000
+          },
+          {
+            "currency_code": "KRW",
+            "pay_period": "UNKNOWN",
+            "group_sample_count": 2,
+            "min": 6000,
+            "max": 6000,
+            "avg": 6000
+          },
+          {
+            "currency_code": "USD",
+            "pay_period": "MONTHLY",
+            "group_sample_count": 2,
+            "min": 270,
+            "max": 270,
+            "avg": 270
+          },
+          {
+            "currency_code": "GBP",
+            "pay_period": "ANNUAL",
+            "group_sample_count": 1,
+            "min": 66663,
+            "max": 66663,
+            "avg": 66663
+          },
+          {
+            "currency_code": "GBP",
+            "pay_period": "DAILY",
+            "group_sample_count": 1,
+            "min": 500,
+            "max": 525,
+            "avg": 512.5
+          }
+        ],
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "salary_grouped",
+        "correct_if": "salary_data_count·matched_postings와 통화/pay_period 그룹별 min/max/avg가 데이터셋과 일치",
+        "common_error": "웹 연봉 조사 평균이나 가장 큰 그룹의 group_sample_count를 전체로 답하는 경우"
+      },
+      "sample_size": 189
+    },
+    {
+      "question_id": "q14",
+      "category": "combo_filter",
+      "question": "Backend Engineer이고 서울 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "3중 필터 교집합은 어떤 공개 리포트에도 없다. 웹 검색은 조건을 풀거나 일반론으로 우회하기 쉽다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 42,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 42",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 42
+    },
+    {
+      "question_id": "q15",
+      "category": "combo_filter",
+      "question": "Software Engineer이고 London 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "London",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "런던 SWE 정규직은 잡보드 필터 결과(수백~수천)로 답하게 된다. 우리 22건은 스냅샷·정규화 교집합이다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 22,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 22",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 22
+    },
+    {
+      "question_id": "q16",
+      "category": "combo_filter",
+      "question": "Software Engineer이고 Germany 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "Germany",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "독일 SWE 정규직 시장 규모와 우리 location blob에 Germany가 들어간 Full-time 20건은 모집단이 다르다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 20,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 20",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 20
+    },
+    {
+      "question_id": "q17",
+      "category": "combo_filter",
+      "question": "엔지니어링 직군이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_category": "Engineering & Technology",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "사람인 서울 엔지니어링 전수와 우리 taxonomy 직군×서울 111건은 모집단이 다르다.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 111,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 111",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답."
+      },
+      "sample_size": 111
+    },
+    {
+      "question_id": "q18",
+      "category": "broad_control",
+      "question": "정규직(Full-time) 채용공고는 지금 몇 건인가요? 직무를 가리지 말고, 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "why_web_search_differs": "웹은 잡보드 정규직 전수(만 단위)를 말한다. MCP가 있어도 우리 스냅샷 Full-time 440건과 모집단이 달라, 도구가 있어도 웹 검색만큼(또는 그 이상으로) '다른 숫자'가 나온다. 대조군.",
+      "computation": "src.mcp_server.tools 의 search_job_postings() 호출 결과를 정답으로 저장하고, 동일 규칙의 pandas 집계로 교차검증함. 채점은 시장 일반론이 아니라 이 expected와 일치하는지로 한다.",
+      "expected": {
+        "total_matched": 440,
+        "status": "ok"
+      },
+      "scoring": {
+        "type": "exact_count",
+        "field": "total_matched",
+        "correct_if": "우리 데이터셋 건수 == 440",
+        "common_error": "search_job_postings의 count는 limit로 잘린 목록 길이. 전체 건수는 total_matched. 웹의 시장 추정치는 오답.",
+        "control_note": "직무 무관 대조군. 스냅샷 일치(440)가 채점 정답이지만, 웹 잡보드 전수와 모집단이 달라 MCP가 있어도 시장 숫자와는 맞춰지지 않는다."
+      },
+      "sample_size": 440
+    }
+  ]
+}

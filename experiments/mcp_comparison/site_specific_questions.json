@@ -1,0 +1,147 @@
+{
+  "meta": {
+    "purpose": "사이트 하나를 지정해 물었을 때 Before(웹 근사치·캐시 스니펫) vs After(MCP) 비교. 기존 18문항(통합형)과 별도.",
+    "experiment_version": 3,
+    "designed_on": "2026-08-29",
+    "n_questions": 6,
+    "min_sample_size": 20,
+    "parent_set": "experiments/mcp_comparison/questions.json (건드리지 않음)",
+    "mcp_source_filter": true,
+    "mcp_source_filter_note": "search_job_postings 등 MCP tool에 source_name 파라미터가 있다. After가 source_name 을 쓰면 source_filtered 건수, 안 쓰면 직무×조건 통합 건수(mcp_unfiltered). 재수집 스냅샷은 id 기준 1건만 남긴다.",
+    "comparison_point": "Before는 지정 사이트 웹 근사치(답은 있으나 부정확할 수 있음). After는 source_name 사용 여부에 따라 사이트 수집분 또는 통합 스냅샷.",
+    "wanted_unavailable": "source_name=wanted 공고는 이 스냅샷에 0건. 국내 대체: 사람인(saramin), 잡코리아(jobkorea), 랠릿(rallit).",
+    "after_prompt_policy": "연결된 도구와 웹 검색을 모두 쓰라고 지시 + 응답시간 + 질문(사이트명 포함)."
+  },
+  "questions": [
+    {
+      "question_id": "s01",
+      "category": "site_specific",
+      "site_display_name": "점핏",
+      "source_name": "jumpit",
+      "question": "점핏에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 9,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "사람인 대체. 사람인은 JS 검색+web_fetch 오인(전산직 캐시)과 employment_type=정규직 0건 때문에 제외. 점핏 Backend×서울 9 vs MCP 전체 66. 정규직 조건은 넣지 않음."
+    },
+    {
+      "question_id": "s02",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "question": "잡코리아에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 11,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "잡코리아 11 vs MCP 전체 66. 재수집 전 파일 22건·고유 URL 11건."
+    },
+    {
+      "question_id": "s03",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "question": "잡코리아에서 Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 17,
+      "sample_size_mcp_unfiltered": 54,
+      "notes": "잡코리아 17 vs MCP 전체 54."
+    },
+    {
+      "question_id": "s04",
+      "category": "site_specific",
+      "site_display_name": "랠릿",
+      "source_name": "rallit",
+      "question": "랠릿에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 17,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "원티드는 스냅샷 0건이라 랠릿으로 대체. 랠릿 17 vs MCP 전체 66."
+    },
+    {
+      "question_id": "s05",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "question": "Arbeitnow에서 Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 28,
+      "sample_size_mcp_unfiltered": 48,
+      "notes": "해외 보드. Arbeitnow 28 vs MCP 전체 48. Berlin/Germany는 이 스냅샷에서 Arbeitnow가 전수라 대비가 없어 제외."
+    },
+    {
+      "question_id": "s06",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "question": "Arbeitnow에서 Software Engineer이면서 근무지가 London인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": ["search_job_postings"],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "London",
+        "limit": 100,
+        "active_only": true
+      },
+      "sample_size_source_filtered": 12,
+      "sample_size_mcp_unfiltered": 20,
+      "notes": "해외 지역 조합. Arbeitnow 12 vs MCP 전체 20."
+    }
+  ],
+  "excluded_for_small_n_or_no_contrast": [
+    {
+      "candidate": "원티드(wanted) 지정 질문",
+      "n": 0,
+      "reason": "스냅샷에 source_name=wanted 없음"
+    },
+    {
+      "candidate": "Indeed × Backend × Full-time / 서울",
+      "n_be": 23,
+      "n_ft": 2,
+      "n_seoul": 0,
+      "reason": "직무만 23건. 추가 조건은 20 미만"
+    },
+    {
+      "candidate": "사람인(saramin) Backend × 서울 × 정규직",
+      "n": 26,
+      "reason": "검색 페이지 JS 동적 렌더링. web_fetch가 다른 키워드 캐시(전산직 등)를 반환. After가 employment_type=정규직으로 넣으면 MCP 0건."
+    },
+    {
+      "candidate": "Arbeitnow × SE × Berlin / Germany",
+      "reason": "이 스냅샷에서 해당 지역 SWE가 전부 Arbeitnow라 MCP 전체와 건수가 같음"
+    },
+    {
+      "candidate": "Remotive × Frontend × REMOTE",
+      "n": 26,
+      "reason": "FE REMOTE 전수가 Remotive라 MCP와 동일"
+    }
+  ]
+}

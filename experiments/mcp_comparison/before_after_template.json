@@ -1,0 +1,353 @@
+{
+  "meta": {
+    "experiment_version": 3,
+    "condition_before": "web_search_on, mcp_off",
+    "condition_after": "web_search_on, mcp_on, instruct_use_both",
+    "instructions": "Before: prompt_to_paste_before 를 붙여넣으세요. 거절하면 같은 대화에 retry_after_refusal 한 번. After: prompt_to_paste_after (연결된 도구 + 웹 검색 지시 + 응답시간 + 질문) 를 붙여넣으세요. 도구만 쓰거나 웹만 써도 고치지 말고 그대로 기록합니다. 답 마지막 줄의 N을 before_response_time_sec / after_response_time_sec 에 넣으세요. 수동 타이머는 쓰지 않습니다.",
+    "retry_after_refusal": "정확한 실시간 수치가 없다면, 지금 웹 검색으로 확인 가능한 가장 최근 자료 기준으로 답해주세요. 출처마다 숫자가 다르면 그 점도 같이 알려주세요."
+  },
+  "items": [
+    {
+      "question_id": "q01",
+      "question": "Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "simple_search",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "웹 검색만으로는 \"Backend Engineer 정규직 채용공고 전체 건수\"라는 단일 숫자를 정확히 확인할 수 없었습니다. 이유는 다음과 같습니다.\n\n\"어디서\"가 특정되지 않음: 원티드, 사람인, 잡코리아, 프로그래머스, 링크드인 등 플랫폼마다 검색 결과 건수가 다르고, 각 사이트 자체 집계 숫자(예: \"OOO건\")는 실시간 동적 페이지라서 일반 웹 검색 스니펫에 노출되지 않습니다.\n실제로 \"원티드 Backend Engineer 정규직 채용공고 건수\"로 검색해도 개별 공고 목록(굿럭컴퍼니, 고위드, 액션파워 등)만 나올 뿐, 필터링된 전체 건수 숫자는 검색 결과에 나타나지 않았습니다.\n사람인 쪽도 \"백엔드/서버개발\" 카테고리 페이지 링크만 확인되고, 정규직으로 필터링한 정확한 총 건수는 확인 불가했습니다.\n\n결론: 신뢰할 수 있는 출처와 함께 정확한 숫자를 드릴 수 없어, 추측성 숫자를 지어내지 않았습니다. 정확한 건수가 필요하시면 어느 플랫폼(원티드/사람인/잡코리아/링크드인 등) 기준인지 알려주시면, 해당 사이트를 직접 열어(web_fetch) 실시간 필터 결과 건수를 확인해드릴 수 있습니다.\n\n응답시간: 약 20초 (추정)",
+      "before_response_time_sec": 20,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Backend Engineer 정규직 채용공고 건수\n\n총 73건 (현재 활성 공고 기준)\n\n출처: 연결된 job-trend-mcp 채용정보 서버의 search_job_postings 조회 결과 (조건: job_function=Backend Engineer, employment_type=Full-time, active_only=true) — 조회 시점 2026-08-29. 이 데이터는 사람인·잡코리아·Indeed·Adzuna·The Muse·Remotive 등에서 수집된 공고를 취합한 내부 DB이며, 가장 최근 등록 공고는 2026-08-03자(Plaid, Ellipsis Labs 등)였습니다.\n\n참고할 점\n\n반환된 목록을 보면 같은 공고(예: 카카오뱅크 \"블록체인 서비스 백엔드 개발자\", 잡코리아 GI_Read/49646197)가 두 번씩 나타나는 경우가 있었습니다. 다만 count/total_matched 필드 자체는 도구가 자체적으로 집계한 값(73)이라, 화면에 보인 목록의 중복이 실제 집계 로직에도 영향을 줬는지는 확인할 수 없었습니다. 정확한 건수가 중요하시면 이 점을 감안해 주세요.\nLinkedIn·사람인 등 공개 웹페이지에서는 \"Backend Engineer + 정규직\"을 정확히 필터링한 총 건수를 페이지 상에 명시적으로 제공하지 않아(검색 결과는 개별 공고 나열 위주), 73건이라는 숫자를 별도의 공개 소스로 교차 검증하지는 못했습니다. 즉 이 숫자는 job-trend-mcp 내부 집계 결과이며, 사람인닷컴(saramin.co.kr)·잡코리아(jobkorea.co.kr)·LinkedIn 등 개별 사이트 페이지들은 그 안에 포함된 공고들의 원문 출처로만 확인했습니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "확인 불가 — 플랫폼 미지정, 필터 건수가 검색 스니펫에 없음",
+        "after_note": "MCP total_matched 73을 본문으로 제시. 웹은 교차 검증 불가라고 부연."
+      }
+    },
+    {
+      "question_id": "q02",
+      "question": "Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "simple_search",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "정확한 \"지금 몇 건\"이라는 숫자는 일반 웹 검색만으로는 신뢰성 있게 확인하기 어렵습니다. 이유는:\n\n원티드·잡코리아·사람인 등 채용 사이트는 필터링된 검색 결과를 JavaScript로 동적 렌더링하기 때문에, 웹 검색 스니펫에는 \"Backend Engineer + 서울\" 조건으로 정확히 필터링된 실시간 건수가 노출되지 않습니다.\n채용 공고는 매일 등록/마감되므로 캐시된 검색 결과의 숫자는 이미 지난 시점의 값일 가능성이 높습니다.\n사이트마다(원티드/잡코리아/사람인/링크드인/프로그래머스 등) 집계 기준과 \"Backend Engineer\" 표기 방식(백엔드 개발자, Backend Developer 등 포함 여부)이 달라 사이트 간 숫자가 일치하지 않습니다.\n\n참고로 검색 중 확인된 관련 수치는 다음과 같습니다 (단, 이는 \"Backend Engineer + 서울\" 정확 필터 결과가 아니라 \"백엔드\" 키워드 전체 검색 결과입니다):\n\n잡코리아 \"백엔드\" 키워드 검색: 총 2,587건 (전국 기준, 출처: jobkorea.co.kr/Search/?stext=백엔드, 확인 시점 2026-08-29)\n잡코리아 \"백엔드 개발자 신입\" 키워드 검색: 총 149건 (전국 기준, 동일 출처)\n\n정확한 건수가 필요하시면 원티드(wanted.co.kr)나 사람인(saramin.co.kr)에서 직접 \"Backend Engineer\" + \"서울\" 필터를 적용해 확인하시는 걸 추천드립니다. 그 방식이 지금 이 순간의 정확한 숫자를 보여줄 유일한 방법입니다.\n\n응답시간: 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "총 102건입니다.\n\n출처\n\njob-trend-mcp 서버의 search_job_postings 도구 (직무: Backend Engineer, 근무지: 서울, 활성 공고만 조회) → total_matched: 102 (조회 시각: 2026-08-29 기준)\n이 데이터는 jumpit, rallit, saramin, jobkorea 등에서 수집·집계된 내부 DB 결과입니다. 목록에 동일 공고가 재수집일 기준으로 중복 표시되는 경우도 있어(예: 같은 URL이 여러 날짜로 재등재), 실제 \"고유 채용 포지션\" 수는 이보다 다소 적을 수 있습니다.\n\n웹 검색으로 교차 확인한 참고 자료\n정확히 같은 조건(직무=Backend Engineer, 지역=서울, 활성 공고)으로 집계된 외부 공식 통계는 찾지 못했지만, 참고할 만한 자료는 다음과 같습니다.\n\nIndeed 검색 결과 페이지 기준 \"백엔드 개발자\" 검색 시 2026년 7월 22일 자로 \"50+건\"이 표시된 사례가 있습니다 (kr.indeed.com, 서울 외 지역 포함 전체 집계로 추정, 정확한 지역·직무 필터는 사이트 UI에서 확인 필요).\n사람인(saramin.co.kr)의 \"백엔드/서버개발\" 직종 카테고리에도 다수의 서울 소재 공고가 게시되어 있으나, 사이트에서 실시간 총 건수를 텍스트로 명시하지 않아 정확한 숫자 대사는 어려웠습니다.\n\n즉, 외부 채용 사이트들은 카테고리 분류 기준과 필터가 job-trend-mcp의 \"job_function=Backend Engineer\" 정의와 정확히 일치하지 않아 1:1 비교는 어렵고, 가장 신뢰할 수 있는 정확한 수치는 job-trend-mcp의 102건입니다.\n\n응답시간: 38초 (추정)",
+      "after_response_time_sec": 38,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "잡코리아 '백엔드' 키워드 2,587건 등 조건 불일치 대략치",
+        "after_note": "MCP total_matched 102를 본문으로 제시."
+      }
+    },
+    {
+      "question_id": "q03",
+      "question": "Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "simple_search",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "\"Software Engineer 정규직 채용공고 전체 건수\"는 어느 나라, 어느 사이트(잡코리아·사람인·LinkedIn·Indeed 등), 어느 지역을 기준으로 하느냐에 따라 완전히 다른 숫자가 나옵니다. 이번 검색에서 확인된 것만 봐도:\n\nLinkedIn(미국 전체, \"Software Engineer\"): \"1,000+\" 건으로 표시 (링크드인은 정확한 총건수 대신 \"1,000+\" 같은 하한선만 보여주는 방식)\nIndeed(뉴욕주 한정, \"Software Engineer\"): 약 2,209개 기업이 채용공고 게시 중이며, 이 중 약 86%가 정규직(full-time)이라고 명시 — 이걸로 역산하면 뉴욕 한 지역만 대략 수천 건대 \nIndeed\nTheMuse(\"full stack software engineer\"): \"10,000+\" 건으로 표시\n\n즉 특정 사이트·특정 국가/지역을 지정하지 않으면 \"정확한 전체 건수 1개\"는 애초에 존재하지 않고, 각 채용 플랫폼이 그때그때 집계한 \"1,000+\", \"10,000+\" 같은 하한값만 나옵니다. 정확한 단일 숫자를 원하시면 예를 들어 \"사람인/잡코리아에서 한국 기준 Software Engineer 정규직\" 또는 \"LinkedIn 미국 기준\"처럼 사이트와 지역을 지정해 주시면 그 출처 기준으로 다시 확인해 드리겠습니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "연결된 취업정보 MCP(job-trend-mcp)와 웹 검색 결과를 종합하면 다음과 같습니다.\n\n1) MCP 서버(연동된 채용 DB) 기준\nSoftware Engineer 직무 + 정규직(Full-time) 채용공고: 총 81건\n조회 시점: 방금(오늘, 2026-08-30) search_job_postings 도구로 job_function=Software Engineer, employment_type=Full-time, active_only=true 조건으로 조회한 total_matched 값입니다.\n이 데이터는 사용자님이 구축 중인 자체 크롤링 DB(job-trend-mcp)에 저장된 공고 기준이며, 예시로 반환된 공고 하나는 Talos Global의 \"Software Engineer, New York\"(2026-08-03 게시, indeed 출처)입니다.\n2) 참고용 웹 검색 결과 (다른 소스/범위 — 직접 비교 불가)\n\n같은 \"Software Engineer + Full-time\" 키워드로 Indeed 자체 공개 검색 결과를 확인해보니, 검색어 조합에 따라 규모가 크게 달랐습니다.\n\nIndeed에서 \"2026 Full Time Software Engineering\" 검색 시 2,143건의 공고가 있다고 표시됩니다 (출처: Indeed, \"2026 Full Time Software Engineering Jobs\" 페이지) \nIndeed\n\"2026 Software Engineer\" 검색 시에는 2,690건이 표시됩니다 (출처: Indeed, \"2026 Software Engineer Jobs\" 페이지) \nIndeed\n\n이 웹 검색 수치는 Indeed 전체 공개 검색 결과이며, 검색어·필터·집계 시점에 따라 계속 바뀌는 값이라 사용자님의 MCP DB(81건)와는 모집단 자체가 달라 직접 비교할 수 있는 숫자가 아닙니다. 정확한 \"지금 몇 건\"이라는 질문에 대해 사용자님이 실제로 쓰고 계신 시스템 기준 정답은 MCP DB의 81건입니다.\n\n응답시간: 28초 (추정)",
+      "after_response_time_sec": 28,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "LinkedIn/Indeed 대략치(1,000+/2,209 등). 모집단이 스냅샷과 다름",
+        "after_note": "MCP 81건을 본문으로 제시. 웹 수치는 비교 불가라고 명시."
+      }
+    },
+    {
+      "question_id": "q04",
+      "question": "Software Engineer이면서 근무지가 Berlin인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "simple_search",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이면서 근무지가 Berlin인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "\"Software Engineer\" + \"Berlin\" 조합으로 채용 사이트를 찾아본 결과입니다.\n\n전체 건수: 약 3,000건 이상 (LinkedIn 기준, \"3,000+\"로 표시되어 정확한 상한은 확인 불가)\n\n출처: LinkedIn Jobs — \"Software Engineer jobs in Berlin, Germany\" 검색 페이지 해당 페이지는 \"3,000+ Software Engineer jobs in Berlin, Germany\"로 공고 수를 표시 \nLinkedIn\n\nURL: linkedin.com/jobs/software-engineer-jobs-berlin\n조회 시점: 오늘(2026-08-29) 검색 결과 기준 (LinkedIn 페이지 자체에 검색 실행 날짜가 별도 표기되지는 않음)\n\n중요 참고사항\n\nLinkedIn은 정확한 숫자 대신 \"3,000+\"처럼 상한 없는 근사치만 보여줘서, 정확한 건수는 알 수 없습니다.\n검색어 조합(예: \"Senior Software Engineer\"는 별도로 676건, 1,000+건 등)에 따라 결과가 크게 달라지므로, \"Software Engineer\" 단독 검색과 시니어/주니어 등 세부 직무명을 포함한 검색은 서로 다른 숫자가 나옵니다.\n실시간으로 계속 갱신되는 값이라 지금 이 순간과 다시 검색했을 때 숫자가 달라질 수 있습니다.\nIndeed, Glassdoor 등 다른 플랫폼에서는 다른 건수가 나올 수 있어, \"몇 건인가\"에 대한 단일 정답은 존재하지 않습니다.\n\n응답시간: 8초 (추정)",
+      "before_response_time_sec": 8,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이면서 근무지가 Berlin인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "LinkedIn 기준으로도 \"Software Engineer + Berlin\" 검색 결과는 3,000건 이상으로 나오는 등, 플랫폼별로 집계 기준(활성 기간, 중복 게시, 카테고리 태깅 방식)이 크게 달라 절대적인 \"정답 숫자\"는 존재하지 않습니다.\n\n연결된 취업정보 MCP 서버(job-trend-mcp) 기준\n\nsearch_job_postings(job_function=\"Software Engineer\", location=\"Berlin\") 결과: 35건 (활성 공고, active_only=True 기본값)\n다만 원본 데이터를 확인해보니 동일 공고(같은 URL)가 대부분 2회씩 중복 등록되어 있어, 중복 제거 시 실제 고유 공고는 18건입니다.\n이 \"35건\"은 job_function이 \"Software Engineer\" 직군 카테고리로 태깅된 공고 수이며, Account Executive·Sales Engineer·Solutions Architect·Engineering Manager 등 제목에 \"Software Engineer\"가 없는 공고도 포함되어 있어, 직함(title) 기준 검색이 아니라 카테고리 분류 기준입니다.\n원 출처는 arbeitnow.com 크롤링 데이터이며, 각 공고에 posted_at이 2026-07-29~2026-07-31로 찍혀 있는 것으로 보아 이 MCP 데이터셋은 7월 말 시점에 수집된 스냅샷으로 보입니다(오늘 8/30 기준 실시간 데이터는 아닐 가능성이 있음).\n\n웹 검색으로 확인한 참고치 (2026-08-30 조회)\n\nLinkedIn \"Software Engineer jobs in Berlin, Germany\" 검색: 베를린의 Software Engineer 채용공고가 3,000건 이상으로 표시되며 매일 새 공고가 추가된다고 안내 (linkedin.com/jobs/software-engineer-jobs-berlin) \nLinkedIn\nLinkedIn \"Senior Software Engineer jobs in Berlin, Germany\": 676건으로 집계 (linkedin.com/jobs/senior-software-engineer-jobs-berlin) \nLinkedIn\n\n결론\n\n연결된 job-trend-mcp 도구 기준: 35건(중복 제거 시 18건) — 출처: job-trend-mcp 내부 DB(원출처 arbeitnow.com), 조회일 2026-08-30, 데이터는 7/29~7/31 수집분으로 추정\nLinkedIn 기준으로는 \"3,000건 이상\"으로 훨씬 크게 나오는데, 이는 집계 방식(전체 활성 게시물 vs 카테고리 태깅된 특정 데이터셋)의 차이 때문입니다. 즉, 절대적인 \"정답 숫자\"보다는 조회한 데이터 소스에 따라 결과가 크게 달라진다는 점을 참고하시기 바랍니다.\n\n응답시간: 42초 (추정)",
+      "after_response_time_sec": 42,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "LinkedIn Berlin 3,000+ — 잡보드 전수 대략치",
+        "after_note": "MCP 35건을 본문으로 제시. URL 중복 제거 시 18건이라고 부연했으나, 채점 기준(total_matched=35)과는 일치."
+      }
+    },
+    {
+      "question_id": "q05",
+      "question": "엔지니어링 직군이면서 원격 근무인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "simple_search",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n엔지니어링 직군이면서 원격 근무인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "\"엔지니어링 + 원격근무\" 채용공고의 전체 건수는 하나로 딱 떨어지지 않습니다. 어느 플랫폼을 기준으로 삼느냐에 따라 숫자가 크게 다르고, 대부분 미국 중심 사이트라 한국 채용 시장을 반영하지 못하기 때문입니다.\n\n검색으로 확인한 대표적인 수치는 다음과 같습니다.\n\nIndeed: 22,670건 Indeed에서 원격 엔지니어 채용공고 22,670건이 검색됩니다 (2026년 8월 27일 기준) \nIndeed\nGlassdoor: 32,508건 Glassdoor에서 미국 내 원격 엔지니어 채용공고 32,508건이 열려 있습니다 \nGlassdoor\nNoDesk: 2,788건 NoDesk에서는 모든 지역·회사를 합쳐 원격 엔지니어링 채용공고가 2,788건입니다 \nNoDesk\nLinkedIn: 5,000건 이상 LinkedIn 미국 내 원격 엔지니어 채용공고는 5,000건 이상으로 표시됩니다 \nLinkedIn\n\n결론적으로 \"지금 몇 건인가\"에 대한 단일한 정답은 없습니다. 같은 시점에도 사이트마다 22,670건(Indeed)부터 2,788건(NoDesk)까지 10배 넘게 차이가 나는데, 이는 (1) '엔지니어링'의 정의 범위(소프트웨어만인지 기계·전기까지 포함하는지), (2) 지역 범위(미국만인지 전세계인지), (3) 각 플랫폼이 자체 등록된 공고만 세는지 여부가 다르기 때문입니다. 특히 다은님이 준비 중인 백엔드/소프트웨어 엔지니어 직군, 한국 채용시장 기준으로는 위 숫자들이 거의 무의미합니다 — 전부 미국 중심 사이트입니다.\n\n만약 실질적으로 필요한 정보라면, 사람인·잡코리아·원티드 같은 한국 채용 플랫폼에서 \"백엔드 개발자 + 원격근무\" 필터로 직접 검색하시는 게 훨씬 정확할 것 같습니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n엔지니어링 직군이면서 원격 근무인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "연결된 job-trend-mcp(사용자가 만든 취업정보 MCP 서버 프로젝트) 도구로 직접 조회한 결과입니다.\n\n엔지니어링 직군(Engineering & Technology) + 원격 근무(REMOTE) 채용공고: 총 45건\n\n출처: job-trend-mcp:search_job_postings (job_category=\"Engineering & Technology\", work_arrangement=\"Remote\", active_only=true)\n조회 시점: 2026-08-30 (오늘)\n데이터 범위: 이 MCP가 잡코리아·사람인·점핏·랠릿·리모티브·인디드·Arbeitnow 등에서 수집한 공고 중 현재 active로 표시된 건들이며, 가장 최근 게시일은 2026-08-04(웹 어플리케이션 개발자, 네비웍스)입니다.\n참고로 백엔드(Backend Engineer) 직무만 추려도 이 45건 중 다수(예: 메인, 플렉스데이, 개츠소프트, 코드잇, 비욘드메디슨 등 Spring/Kotlin 기반 백엔드 공고)가 포함되어 있어, Spring Boot 개발자로서 지원 후보군을 좁힐 때 참고하기 좋습니다.\n\n웹 검색으로 확인한 보조 맥락\n\"엔지니어링+원격\"만 필터링한 통합 집계치를 공개적으로 제공하는 국내 채용 사이트는 찾지 못했습니다. 다만 잡코리아에서 '백엔드' 키워드로 검색하면 총 2,587건의 결과가 나오는데, 그중 일부 공고에 재택·원격근무 가능 표기가 붙어 있는 식으로 개별 공고 단위로만 원격 여부가 표시됩니다. 즉 \"원격+엔지니어링\" 전체 건수를 한 번에 보여주는 대시보드는 잡코리아·사람인 등에는 없고, 지금 답변드린 45건은 사용자님의 MCP 서버가 여러 소스를 통합 수집한 결과라는 점을 참고해 주세요. (2026-08-30 검색 기준, jobkorea.co.kr) \nJob Korea\n\n응답시간: 38초 (추정)",
+      "after_response_time_sec": 38,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "Indeed 원격 엔지니어 22,670건 등 글로벌 잡보드 전수",
+        "after_note": "MCP 45건을 본문으로 제시."
+      }
+    },
+    {
+      "question_id": "q06",
+      "question": "Backend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "웹 검색 결과를 종합하면, \"Backend Engineer\" 채용 공고 기술스택 빈도를 **정확한 건수(raw count)**로 공개한 단일 통계 자료는 찾지 못했습니다. 다만 채용 키워드 빈도를 **비율(%)**로 분석한 자료와 다수의 채용 동향 기사를 종합했을 때 가장 반복적으로 언급되는 기술스택은 아래와 같습니다.\n\nBackend Engineer 채용에서 가장 많이 요구되는 기술스택 (추정 순위)\n\nJava / Spring(Boot) — Backend Engineer·Backend Developer 채용 공고 상위 키워드에 공통적으로 포함ZipRecruiter의 Backend Developer 키워드 분석에서 Java, Docker, SQL 등이 상위 10개 필수 스킬에 포함되는 것으로 나타났습니다 \nZipRecruiter\nAWS(클라우드) / Docker·Kubernetes(컨테이너·인프라) — Amazon Web Services와 Docker가 Backend Developer 채용 공고 상위 스킬로 반복 등장 \nZipRecruiter\nSQL / 데이터베이스(RDBMS·NoSQL) — ZipRecruiter의 Backend Engineer 분석에서도 Database, SQL이 employer 상위 10개 키워드에 포함 \nZipRecruiter\nREST API / 마이크로서비스 아키텍처 — 다수의 실제 채용 공고(Built In NYC 등)에서 \"Rest Apis\", \"Microservices\"가 공통 필수 스킬로 명시실제 게시된 채용공고들의 Top Skills 목록에 Api Gateway, Rest Apis, Microservices, Event-Driven Architecture 등이 반복적으로 포함 \nBuilt In NYC\nCI/CD·Git 등 협업/배포 도구 — 진입 단계 채용에서도 Git/GitHub, Docker, 기본 CI(GitHub Actions, Jenkins) 역량이 필수로 요구 \nNucamp\n\n⚠️ 정확도에 대한 솔직한 안내\n\n요청하신 \"각 기술스택별 정확한 건수\"는 공개된 단일 출처에서 확인할 수 없었습니다. ZipRecruiter 자료는 건수가 아닌 상대적 비율(%)만 제공하며, 그마저도 \"상위 3개 키워드 합산 비율\" 형태라 개별 스택별 정확한 숫자를 특정하기 어렵습니다.\n위 순위는 (a) ZipRecruiter의 Backend Engineer/Developer 키워드 분석(직무명 Backend Engineer 기준, 2018년 1월 이후 누적 데이터), (b) 실제 채용 공고 표본(Built In NYC), (c) 2026년 채용 동향 기사 여러 건을 교차 참고해 제가 재구성한 것이며, 특정 표본 수·조사 기간이 통일된 단일 랭킹은 아닙니다. \nZipRecruiter\n정확한 정량 데이터가 필요하시면 LinkedIn Talent Insights, Lightcast(구 Burning Glass), 또는 국내라면 원티드·사람인의 \"기술스택별 공고 수\" 필터 기능으로 직접 집계하시는 것을 추천드립니다.\n\n출처\n\nZipRecruiter, \"Backend Engineer Must-Have Skills List & Keywords for Your Resume\" (조회일: 2026-08-29, 원자료는 2018년 1월 이후 누적)\nZipRecruiter, \"Backend Developer Must-Have Skills List & Keywords for Your Resume\" (조회일: 2026-08-29)\nBuilt In NYC, \"Best Backend Engineer Jobs in NYC 2026\" (조회일: 2026-08-29)\nNucamp, \"Top 10 Entry-Level Backend and DevOps Jobs in 2026\" (2026-01-15)\n\n응답시간: 약 45초 (추정)",
+      "before_response_time_sec": 45,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Backend Engineer 요구 기술스택 Top 5\n\n연결된 job-trend-mcp 서버(사용자님의 개인 MCP 서버, 전체 활성 공고 189건 기준)에서 집계한 결과입니다.\n\n순위\t기술\t건수 (전체 189건 중)\n1\tJava\t89건\n2\tAWS\t66건\n3\tMySQL\t44건\n4\tPython\t40건\n5\tDocker\t38건\n\n출처: job-trend-mcp get_skill_trend 도구 결과 (job_function=\"Backend Engineer\", active_only=true), 조회 시점: 2026-08-30. 이 수치는 사용자님이 연결하신 개인 MCP 서버에 적재된 데이터를 집계한 것으로, 공신력 있는 외부 리서치 기관의 통계는 아닙니다.\n\n웹에서 확인한 보완 정보\n\n이 정확한 건수 자체를 공개적으로 발표한 외부 리포트는 찾지 못했지만, 아래 내용으로 경향성은 교차 확인됩니다.\n\nIndeed에 게재된 백엔드 채용공고 사례를 보면 개발 직군은 Java 개발 경력 3년 이상을 필수로 요구하며, Java 기반 백엔드 개발 경험, Spring Framework 및 Spring Boot 기반 개발 경험, RDBMS(SQL) 활용 능력을 요구하는 경우가 흔합니다. (출처: Indeed, \"백엔드 개발자 채용공고\", 2026-07-22) \nIndeed\n코드트리 블로그가 인용한 Statista 자료에 따르면 가장 수요가 높은 직종이 풀스택 및 백엔드 개발자이며, 그다음이 AI·ML 전문가, 프런트엔드 엔지니어, DevOps 전문가 순이라고 합니다. (출처: 코드트리 블로그, \"2025년 개발자 채용 트렌드와 2026년 전망\", 2025-11-09) \nCodetree\n아웃소싱타임스 기사는 최근 개발자 채용 시장에서 수요·공급 모두 서버·백엔드 개발자에 쏠려 있다고 전했습니다. (출처: 아웃소싱타임스, 2025-08-27)\n\n즉 MCP 데이터의 \"Java 1위, AWS·MySQL·Python·Docker\" 조합은 실제 국내 채용시장에서 자주 언급되는 Java/Spring Boot + RDBMS + 클라우드(AWS) 조합과 방향이 일치하며, 사용자님이 이미 사용 중인 Spring Boot 스택과도 잘 맞습니다.\n\n⚠️ 다만 이 189건은 job-trend-mcp에 수집된 표본이라 전체 시장을 대표한다고 단정하긴 어렵습니다. 표본 편향(수집 사이트, 기간 등) 가능성을 감안해서 참고용으로 활용하시는 걸 추천드립니다.\n\n응답시간: 약 25초 (추정)",
+      "after_response_time_sec": 25,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "비율·기사 일반론. Java 89 등 스냅샷 건수 없음",
+        "after_note": "순위·이름·건수 Java 89 / AWS 66 / MySQL 44 / Python 40 / Docker 38 일치."
+      }
+    },
+    {
+      "question_id": "q07",
+      "question": "Software Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "웹 검색으로 찾은 자료 중, \"Software Engineer\" 직무명으로 필터링된 채용공고를 대상으로 스킬별 언급 비율(%)을 직접 공개한 가장 구체적인 자료는 InterviewStack.io의 분석입니다.\n\nTop 5 (Software Engineer 채용공고 기준, n=48,207건)\n순위\t기술/스킬\t언급 비율\t추정 건수(계산값)\n1\tPython\t34.8%\t약 16,776건\n2\tAgile\t29.8%\t약 14,366건\n3\tJava\t27.3%\t약 13,161건\n4\tAWS\t26.5%\t약 12,775건\n5\tCI/CD\t26.3%\t약 12,678건\n\n(참고로 SQL은 21.9%로 7위, JavaScript 19.2%, TypeScript 17.7%, Docker 17.2% 순)\n\n출처: interviewstack.io \"Software Engineer Skills Companies Want in 2026\" — 자사 잡보드에 등록된 활성 Software Engineer 공고 48,207건(2026년 5월 기준)을 분석. DEV Community에 2026년 5월 21일 게재된 버전으로 확인.\n\n⚠️ 주의할 점\n\n원문은 스킬별 \"비율(%)\"만 명시했고, 건수는 명시하지 않았습니다. 위 \"추정 건수\"는 제가 (비율 × 48,207)로 계산한 값이라 실제 원자료 숫자가 아닙니다.\nAgile은 엄밀히는 \"기술스택\"이 아니라 방법론/프로세스 스킬이라, 스택만 좁혀보면 Python·Java·AWS·CI/CD·SQL이 상위 5개가 됩니다.\n이 잡보드 특성상 미국(37.4%)·인도(19.1%) 비중이 높아 특정 지역·업종에 편향됐을 수 있습니다.\n다른 자료와의 교차 확인\nRezScore(Adzuna API 기반, 2026년 1월 미국 공고 스냅샷): Software Engineer 공고 140,068건 중 Python 언급 137,176건 — 다만 이건 \"Software Engineer\" 타이틀 내부 스킬 비율이 아니라 전체 공고군에서 키워드가 겹치는 카운트라 직접 비교는 어렵습니다.\nHackerRank(2024→2026 트렌드, gloroots.com 재인용): 초대량 기준 상위 5개 스킬은 SQL, REST API, Java, Python, JavaScript.\nBridgeView IT(2026년 리프레시): 미국 채용 수요 기준 Python, Java, SQL, Go, JavaScript.\n\n전반적으로 Python·Java·SQL·AWS(클라우드)·CI/CD(또는 JavaScript)가 여러 자료에서 반복적으로 상위권에 오르는 조합이라, \"Top 5\"로 가장 방어 가능한 답은 Python, Java, AWS, SQL, JavaScript/CI/CD 정도로 보시면 됩니다. Spring Boot를 주력으로 하신다면 Java + SQL + AWS 조합은 여전히 견고한 선택지입니다.\n\n응답시간: 약 55초 (추정)",
+      "before_response_time_sec": 55,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Software Engineer 채용공고 기술스택 Top 5\n\n연동된 취업정보 MCP 서버(job-trend-mcp)에서 \"Software Engineer\" 직무로 등록된 공고 209건을 분석한 결과입니다.\n\n순위\t기술\t언급 건수 (전체 209건 중)\n1\tPython\t102건 (약 48.8%)\n2\tAWS\t53건 (약 25.4%)\n3\tKubernetes\t47건 (약 22.5%)\n4\tDocker\t45건 (약 21.5%)\n5\tGo\t32건 (약 15.3%)\n출처: job-trend-mcp:get_skill_trend (job_function=\"Software Engineer\") 실시간 조회 결과, 오늘(2026-08-30) 기준.\n참고로 Java는 6위(27건), Kafka·Terraform·PostgreSQL이 그 뒤를 잇습니다.\n웹에서 확인한 유사 조사와 비교\n\nMCP 데이터는 우리 서버에 등록된 국내/특정 채용 데이터셋 기준이라, 규모가 큰 글로벌 조사와 순위가 다소 다릅니다. 참고용으로 함께 정리했습니다.\n\nQarera가 2025년 12월~2026년 6월 사이 수집한 채용공고 36만여 건을 분석한 보고서에 따르면, 전체 직군 통틀어 AI가 SQL, AWS, Java를 제치고 전체 기술 중 요청 빈도 2위 스킬로 올라섰다고 밝혔습니다. (출처: Qarera, \"Most In-Demand Skills of 2026\", 2026-06-16 공개) \nQarera\nDEV Community에 게재된 4.8만 건의 \"Software Engineer\" 공고 분석 글은 다른 결과를 보여주는데, Python이 34.8%로 1위지만 그 정도 비중을 넘는 스킬이 하나도 없어 SW Engineer라는 타이틀 자체가 매우 파편화된 직군임을 보여준다고 설명합니다. (출처: DEV Community, \"Software Engineer Skills Companies Want in 2026\", 2026-05-21) \nDEV Community\nPluralsight의 학습자 290만 명 데이터 기반 보고서는 올해 IT 전문가들이 가장 많이 업스킬링한 분야가 AI가 아니라 클라우드 컴퓨팅이었다고 밝혔습니다. (출처: Pluralsight, \"6 Most In-Demand Tech Skills in 2026\") \nPluralsight\n\n정리하면: 우리 MCP 데이터에서는 Python·AWS·Kubernetes·Docker·Go 순으로 백엔드/인프라 중심 스택이 강세이고, 이는 클라우드·컨테이너 오케스트레이션 수요가 높다는 Pluralsight 조사 흐름과 방향이 일치합니다. 다만 외부 대규모 조사(Qarera, DEV Community)에서는 AI 관련 스킬이나 Python 단독 비중이 다르게 나타나므로, 특정 회사·직무에 지원할 때는 채용 대상 기업의 공고를 직접 확인하시는 게 가장 정확합니다.\n\n응답시간: 약 45초 (추정)",
+      "after_response_time_sec": 45,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "InterviewStack n=48,207 비율 통계. 스냅샷 top5와 불일치",
+        "after_note": "Python 102 / AWS 53 / Kubernetes 47 / Docker 45 / Go 32 일치."
+      }
+    },
+    {
+      "question_id": "q08",
+      "question": "Frontend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nFrontend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "Frontend Engineer 채용 공고에서 가장 많이 요구되는 기술스택\n\n가장 신뢰할 수 있는 실제 \"채용 공고\" 기반 수치는 DevJobsScanner가 2025년 1월~12월(12개월) 동안 LinkedIn, Glassdoor, RemoteOK, Dice 등에서 수집한 약 15.6만 건의 프론트엔드 채용 공고를 분석한 결과입니다. (단, 프레임워크를 명시적으로 요구한 공고만 집계됨 — 즉 JS/TS/HTML 같은 언어 자체나 CSS 툴링은 별도 집계)\n\n순위\t기술스택\t공고 건수\t비중\n1\tReact\t약 84,000건\t~54%\n2\tAngular\t약 56,000건\t~36%\n3\tVue\t약 13,000건\t~8%\n4~5\tSvelte, Solid.js, Alpine, Lit, Backbone 등 기타\t합산 약 3,000건\t~2%\n\n출처: DevJobsScanner, \"The Most Demanded Frontend Frameworks in 2025\" (2026-06-09 게시, 2025년 1~12월 데이터 기준)\nhttps://www.devjobsscanner.com/blog/the-most-demanded-frontend-frameworks/\n\n참고할 점\n이 데이터는 글로벌(주로 미국·유럽 중심) 공고를 집계한 것으로, 한국 채용 시장에 그대로 적용하긴 어렵습니다. 국내는 원티드·잡코리아·사람인 등에서 별도 통계를 내지만, 검색 결과로는 \"TOP5 건수·비중\" 형태의 공개된 정기 리포트를 찾지 못했습니다.\n4~5위는 원본 자료가 \"Others\"로 묶어서 발표해서, Svelte·Solid.js 등 개별 건수는 이 출처만으로는 나오지 않습니다. 정확한 개별 수치가 필요하시면 말씀해 주시면 추가로 찾아보겠습니다.\n참고로 State of JS/Stack Overflow 등 \"개발자 설문(사용률·만족도)\" 기준으로는 React > Next.js > Angular > Vue 순으로 나오지만, 이는 \"채용 요구\"가 아니라 \"개발자가 쓰고 있다고 응답한 비율\"이라 질문하신 것과는 성격이 다릅니다.\n\n응답시간: 68초 (추정)",
+      "before_response_time_sec": 68,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nFrontend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "job-trend-mcp 데이터와 웹 검색 결과를 함께 정리했습니다.\n\njob-trend-mcp 집계 결과 (Frontend Engineer, 활성 공고 26건 기준)\n순위\t기술\t요구 건수\n1\tReact\t24건\n1(공동)\tPHP\t24건\n3\tAWS\t22건\n3(공동)\tUI/UX\t22건\n3(공동)\tJira\t22건\n출처: job-trend-mcp get_skill_trend (job_function=\"Frontend Engineer\", active_only=true) 조회 결과, 전체 공고모수 26건\n다만 표본이 26건으로 매우 작고, PHP·Jira처럼 프론트엔드 직무와 다소 이질적인 항목이 상위에 오른 걸 보면 이 MCP 서버의 데이터셋 자체가 실제 채용 시장 전체를 대표하기엔 규모가 작을 가능성이 높습니다. 참고용으로만 활용하시는 게 안전합니다.\n웹에서 확인한 국내 프론트엔드 채용 트렌드 (2025~2026)\n\n정량적인 \"건수\" 순위 데이터(예: 원티드·사람인의 공식 통계 리포트)는 검색 결과에서 찾지 못했지만, 정성적인 트렌드는 다음과 같이 일관되게 나타납니다.\n\nReact(Next.js): 원티드·프로그래머스 등 국내 채용 공고 기준으로 프레임워크 수요가 압도적으로 높다고 보도됨 (브런치, \"2026 프론트엔드 기술 스택 선택 가이드\", 2026.3.18)\nTypeScript: JavaScript와 함께 프론트엔드 핵심 언어로 자리잡았고, 대규모 앱 개발에 특히 요구된다고 언급 (코드프레소 블로그, \"2026년 코딩 기술 트렌드\", 2026.1.19)\nCI/CD·Docker·AWS/Vercel 등 인프라 운영 능력: \"State of JS 2025\" 설문과 원티드 데이터를 인용해, 프론트엔드 채용 공고의 약 40% 이상이 CI/CD, Docker, AWS/Vercel 같은 인프라 운영 능력을 필수 역량으로 요구하기 시작했다고 보도됨 (요즘IT, \"2026년 프론트엔드 트렌드 총정리\", 약 2주 전) \nYozm\n카카오·네이버: React/Next.js 기반 반응형 웹과 데이터 시각화 경험 선호가 채용공고에 명시된다고 소개됨 (브런치, \"2025 프론트엔드 로드맵\", 2025.6.26)\n정리\nMCP 서버 자체 집계로는 React·AWS가 상위권이라는 점은 웹에서 확인한 일반적 트렌드(React·AWS/Vercel 인프라 역량 중시)와 방향은 일치합니다.\n다만 MCP 데이터의 PHP·Jira 상위 랭크나 26건이라는 작은 표본 크기는 국내 시장 전체를 대표한다고 보기 어려우니, 이 수치는 \"참고 데이터\"로, 정성적 트렌드는 \"업계 보도\"로 구분해서 보시길 권합니다.\n만약 정확한 정량 순위(예: 원티드/사람인 공식 채용 통계 리포트의 %)가 필요하시면, 특정 플랫폼을 지정해 검색해 드릴 수 있습니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "DevJobsScanner 글로벌 15.6만 건 비율. 스냅샷 26건과 모집단 다름",
+        "after_note": "React 24 / PHP 24 / AWS 22 / UI/UX 22 / Jira 22 일치(공동 순위 표기)."
+      }
+    },
+    {
+      "question_id": "q09",
+      "question": "DevOps / Platform Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nDevOps / Platform Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "DevOps / Platform Engineer 채용 요구 기술스택 Top 5\n\n일반 웹 검색으로 찾은 자료 중, 실제 채용공고 건수를 정량화해 공개한 곳은 InterviewStack.io가 유일했습니다. 이 자료는 2026년 6월 기준 InterviewStack.io 채용 게시판에 올라온 7,523건의 활성 DevOps Engineer 채용공고를 분석했으며, 스킬을 추출하고 유사 표현을 통합한 결과입니다. \nInterviewstack\n\nTop 5 (건수 기준, 전체 7,523건 중 등장 비율)\n\n순위\t기술\t등장 비율\t추정 건수(약)\n1\tCI/CD\t67% \nInterviewstack\n\t약 5,040건\n2\tAutomation(자동화)\t58% \nInterviewstack\n\t약 4,363건\n3\tKubernetes\t56% \nInterviewstack\n\t약 4,213건\n4\tAWS\t54% \nInterviewstack\n\t약 4,062건\n5\tPython\t53% \nInterviewstack\n\t약 3,987건\n\n(건수는 비율 × 7,523건으로 역산한 추정치이며, 원문에는 %만 명시되어 있습니다.)\n\n참고 사항\n\nTerraform은 49.99%로 사실상 6번째 필수 스킬로 분류됩니다. \nInterviewstack\n스프링부트 개발 배경이라면, Java/Spring 계열은 여기서는 상위권이 아니고 Java(15%), TypeScript(12%) 등 코딩 언어 계열 중 하나로 낮은 비중입니다. DevOps/Platform 직군은 Python이 사실상 표준 스크립팅 언어로 자리잡은 상태입니다. \nInterviewstack\nPlatform Engineer만 별도로 정량화한(건수·%가 명시된) 자료는 이번 검색에서 찾지 못했습니다. 여러 채용 가이드(KORE1, Artech, RemoteHerd 등)에서는 정성적으로 \"Kubernetes, Terraform, CI/CD, IaC(Infrastructure as Code), 클라우드 플랫폼\"이 핵심이라 언급했지만 구체적 등장 비율이나 표본 수는 제공하지 않았습니다.\n\n출처\n\nInterviewStack.io, \"DevOps Engineer Skills in 2026: The Reliability Tier Pays $30K More\", 2026-06-05 게시, https://interviewstack.io/blog/devops-engineer-skills-companies-want-2026 (7,523건 채용공고 분석, 2026년 6월 기준)\n\n응답시간: 45초 (추정)",
+      "before_response_time_sec": 45,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nDevOps / Platform Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "DevOps / Platform Engineer 요구 기술스택 TOP 5\n\n연결된 job-trend-mcp(취업정보 MCP 서버) 집계 결과 — 현재 활성 공고 34건 기준\n\n순위\t기술\t건수\n1\tKubernetes\t18건\n2\tPython\t11건\n3\tGo\t10건\n4\tAWS\t10건\n5\tDocker\t8건\n\n이 수치는 사용자님이 진행 중인 [[mcp-job-server]] 프로젝트의 job-trend-mcp 서버가 수집·집계한 데이터로, 오늘(2026-08-30) 시점의 활성 공고만 반영한 값입니다.\n\n웹 검색으로 확인한 정황 (교차 검증)\n\nIndeed 채용공고 검색 결과, Kubernetes 관련 채용공고는 쿠버네티스 또는 Openshift 기반 컨테이너 오케스트레이션 경험, Docker·Kubernetes 활용 능력, AWS 클라우드 환경 경험이 반복적으로 요구되고 있음을 보여줍니다 (Indeed, \"Kubernetes 채용공고 75+건\", 2026년 8월 24일 기준). \nIndeed\n플랫폼 엔지니어링 채용 동향 분석에 따르면 쿠버네티스 기반 컨테이너 오케스트레이션 및 멀티클라우드 운영, Terraform 등 IaC 전문성이 필수 요건으로 꼽히고 있습니다 (KiTalent, 플랫폼 엔지니어링 채용 페이지). \nKiTalent\nSRE/DevOps 공고 분석 결과, AWS·NCP·GCP 등 클라우드 환경에서의 인프라 구축·운영 경험과 Kubernetes 컨테이너 운영 경험, Terraform·Ansible 등 IaC 자동화 경험이 공통 요건으로 나타났습니다 (Indeed, \"Sre Devops 채용공고\", 2026년 8월 3일). \nIndeed\n2026년 자격증 트렌드 정리 글에서는 Kubernetes CKA, Terraform, AZ-400, AWS DOP, GCP PCD가 플랫폼 엔지니어링 역량을 입증하는 대표 자격증으로 언급됩니다 (examcert.app, 2026년 4월 23일). \nExamcert\n\n정리: job-trend-mcp의 실제 공고 집계(내부 데이터, n=34)와 웹상의 최신 채용 트렌드 기사 모두 Kubernetes와 AWS(클라우드)를 핵심 축으로 보고 있다는 점에서 방향이 일치합니다. 다만 job-trend-mcp 결과에서 Python·Go 언어가 상위에 오른 것은 웹 검색 기사들이 언급하지 않는 부분으로, 이는 두 자료의 표본 규모와 대상 공고 범위가 다르기 때문일 수 있어 참고용으로만 활용하시는 게 좋습니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "InterviewStack DevOps 7,523건 비율. 스냅샷 34건과 불일치",
+        "after_note": "Kubernetes 18 / Python 11 / Go 10 / AWS 10 / Docker 8 일치."
+      }
+    },
+    {
+      "question_id": "q10",
+      "question": "Data Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nData Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "Data Engineer 채용 공고 최다 요구 기술스택 Top 5\n\n여러 채용 공고 분석 리포트를 종합하면, 2026년 기준 데이터 엔지니어 채용에서 가장 자주 요구되는 기술은 아래와 같습니다.\n\n1. SQL / 데이터 파이프라인 구축 — 채용공고의 약 71~74%\n2. Python — 약 70~71%\n3. 클라우드 플랫폼(특히 AWS) — 약 44% (Azure는 별도 조사에서 약 75%로 보고되기도 함)\n4. Snowflake / Databricks (모던 데이터 스택) — Snowflake 약 29~31%, Databricks 약 29%\n5. Apache Spark / Airflow / dbt — Spark 약 38.7%, Airflow 약 29%, dbt 약 24%\n\n출처 및 근거:\n\n2026년 데이터 엔지니어 공고에서 데이터 파이프라인(74%), SQL(71%), Python(71%) 세 가지가 표준으로 자리잡았으며, Python과 SQL은 6,877건 중 4,002건(58%)에서 함께 등장했다고 InterviewStack.io가 2026년 5월 8일 자 글에서 밝혔습니다. 같은 자료에서 AWS(44%), 데이터 품질(43%), 데이터 모델링(38%), Snowflake(31%), Databricks(29%), Airflow(29%), dbt(24%)가 뒤를 이었습니다. \nInterviewstack\nInterviewstack\n365 Data Science는 2026년 4월 23일 자 리포트(1,000건 채용공고 분석)에서 Python이 70%, SQL이 69%의 공고에서 요구되며, Apache Spark가 38.7%로 가장 지배적인 프레임워크, Snowflake 29.2%, Databricks 16.8%라고 보고했습니다. \n365 Data Science\n같은 매체의 다른 2026년 4월 23일 자 글에서는 클라우드 플랫폼 중 Azure가 거의 75%의 공고에서 언급되고, Kafka는 16.2%, Airflow는 3.3%의 공고에서 파이프라인 관리 도구로 요구된다고 다른 수치를 제시하기도 했습니다. \n365 Data Science\n\n⚠️ 주의: 조사마다 표본(국가, 공고 수, 수집 시점)이 달라 순위와 수치가 다소 엇갈립니다(예: Airflow가 29% vs 3.3%). 가장 표본이 크고(6,877건) 방법론이 명확한 InterviewStack.io 수치를 기준으로 삼고, 나머지는 교차 참고용으로 보시는 게 안전합니다. 백엔드(Spring Boot) 이력이 있으시면 SQL/Python 기반 파이프라인 툴(Airflow, dbt) 쪽이 진입 장벽이 상대적으로 낮은 편입니다.\n\n응답시간: 45초 (추정)",
+      "before_response_time_sec": 45,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nData Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Data Engineer 채용 요구 기술스택 Top 5\n\n연동된 job-trend-mcp 데이터 (전체 33건의 Data Engineer 공고 기준)\n\n순위\t기술\t건수\n1\tPython\t25건\n2\tAirflow\t20건\n3\tKafka\t14건\n4\tGCP\t12건\n5\tAWS\t9건\n\n출처: job-trend-mcp get_skill_trend 도구 조회 결과 (2026-08-30 기준, 진행 중인 공고만 집계된 것으로 추정)\n\n웹 검색으로 확인한 참고 정보\n\n실제 국내 채용 공고(아임웹, 올리브영 등)를 봐도 Kafka, Airflow, Python, AWS/클라우드가 공통적으로 요구되는 핵심 스택으로 반복 등장합니다 아임웹은 Kafka를 활용한 CDC 파이프라인을 운영하며 Databricks, Airflow를 활용해 ETL 파이프라인을 구축하고, Python 기반 데이터 파이프라인을 운영한다고 밝혔습니다 (아임웹 채용공고, career.imweb.me). \nImweb\n올리브영 공고에서도 Python, SQL, Airflow를 능숙히 다뤄 데이터 워크플로우를 자동화할 수 있는 인재를 요구하고 있습니다 (career.oliveyoung.com). \nOliveyoung\n해외 동향을 보면, 2025년 dbt Labs 설문 기준으로 SQL과 Python이 데이터 엔지니어링 공고의 94%에서 요구되고, 그다음으로 dbt(61%), Airflow(58%) 순이라는 조사 결과가 있습니다 (jobstrack.io, 2026-05-07 게시, dbt Labs 2025 서베이 인용). \nJobstrack\n2026년 데이터 엔지니어링 스택 흐름은 SQL+Python(기초) → Spark/PySpark+dbt(처리·모델링) → Airflow(오케스트레이션) → AWS/GCP/Azure(클라우드) → Kafka+Flink(스트리밍) 순으로 정리됩니다 (Medium, AIDE Learning, 2026-03-25). \nMedium\n\n정리: 내부 MCP 데이터(33건 표본)와 웹상의 최신 채용 트렌드 기사 모두 **Python·Airflow·Kafka·클라우드(AWS/GCP)**가 Data Engineer 채용의 핵심 축이라는 점에서 방향이 일치합니다. 다만 MCP 데이터는 표본이 33건으로 작아 특정 플랫폼·시기에 국한된 결과일 수 있으니, 지원 전에는 목표 기업 공고를 직접 확인하시는 걸 권해드립니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "SQL/Python 비율 리포트. 건수·순위가 스냅샷과 다름",
+        "after_note": "Python 25 / Airflow 20 / Kafka 14 / GCP 12 / AWS 9 일치."
+      }
+    },
+    {
+      "question_id": "q11",
+      "question": "Mobile Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nMobile Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "웹 검색 결과, \"Mobile Engineer\" 채용공고만 따로 집계해서 \"top 5 기술스택 + 정확한 건수\"를 발표한 단일 신뢰 출처는 찾지 못했습니다. 다만 관련된 개별 데이터를 조합하면 대략적인 그림은 그릴 수 있습니다.\n\n1) 채용공고 건수 기반 (LinkedIn US, 2025년 기준)\n\nReact Native: LinkedIn US에서 React Native 개발자 채용공고 6,413건 \nDEV Community\nFlutter: LinkedIn US에서 Flutter 채용공고 1,068건 \nDEV Community\n출처: dev.to, \"Flutter vs React Native vs Native 2025\" (2025.7.17)\n\n2) 시장 점유율 기반 (2026년, Kotlin Multiplatform 포함)\n\nFlutter: 크로스플랫폼 시장의 약 46% \nKORE1\nReact Native: 약 35~40% \nKORE1\nKotlin Multiplatform: 2024년 7%에서 2025년 18%로 두 배 이상 성장 (JetBrains Developer Ecosystem 설문 기준) \nKORE1\n출처: KORE1, \"Hire a Mobile App Developer 2026\" (2026.7.1)\n\n3) 기본 요구 스킬 (ZipRecruiter, 2026.5.27 기준)\n\nSwift, Kotlin, Java 같은 프로그래밍 언어 숙련도와 모바일 개발 프레임워크 이해 \nZipRecruiter\nXcode, Android Studio, Git 같은 버전관리 도구, API·테스팅 프레임워크 경험 \nZipRecruiter\n출처: ZipRecruiter, \"Mobile Engineering Jobs\" 페이지 (2026.5.27 기준 데이터)\n\n종합해서 대략적인 순위를 매기면 (정확한 통합 건수는 아님, 여러 출처를 조합한 추정)\n\nSwift (iOS 네이티브)\nKotlin (Android 네이티브)\nReact Native\nFlutter\nKotlin Multiplatform (KMP) — 최근 급성장 중\n\n주의드릴 점: 각 숫자는 서로 다른 시점(2025~2026), 서로 다른 조사 방식(공고 건수 vs 시장 점유율 vs 설문조사)에서 나온 것이라 하나의 표로 직접 비교하기는 어렵습니다. \"Mobile Engineer\"라는 직무명 하나로 필터링해 top 5를 건수까지 정확히 낸 리포트는 이번 검색으로는 확인되지 않았습니다. 더 정확한 숫자가 필요하시면 LinkedIn Jobs, Indeed Hiring Lab, 또는 Stack Overflow Developer Survey 2026을 직접 필터링해서 보시는 걸 추천드립니다.\n\n응답시간: 약 35초 (추정)",
+      "before_response_time_sec": 35,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nMobile Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Mobile Engineer 요구 기술스택 Top 5\n\njob-trend-mcp 내부 채용공고 데이터 기준 (전체 Mobile Engineer 공고 35건 대상, 활성 공고만 집계, 조회일: 2026-08-30)\n\n순위\t기술\t언급 건수\n1\tGit\t12건\n2\tJava\t11건\n3\tJavaScript\t9건\n3\tSwift\t9건\n5\tReact\t8건\n\n출처: 연결된 job-trend-mcp (사용자 계정에 연동된 채용 데이터 MCP 서버)의 get_skill_trend 결과, job_function=\"Mobile Engineer\", 전체 표본 35개 공고.\n\n웹 검색으로 확인한 내용\n\n이 정확한 수치(35건, 각 기술별 건수)와 1:1로 대조할 수 있는 공개 통계는 웹에서 찾지 못했습니다 — job-trend-mcp는 사용자님 계정에 연동된 자체 수집 데이터라서, 외부 공개 리포트와 표본이 다릅니다.\n\n다만 방향성 측면에서는 부분적으로 일치합니다. 모바일 엔지니어 채용 전문 리크루팅펌 Cadre(2026년 7월 업데이트)에 따르면, Swift와 Kotlin이 여전히 핵심 기술로 꼽히며, React Native와 Flutter도 많은 제품에서 정당한 선택지로 인정받고 있다고 합니다. 또한 2026년의 새로운 트렌드로 온디바이스 AI(Core ML, 온디바이스 LLM)와 프라이버시 중심 아키텍처가 부상하고 있다는 점도 언급됩니다.\n(출처: Cadre, \"Hire Mobile Engineers\", 2026년 7월 업데이트, yourcadre.com) \nCadre\nCadre\n\n참고할 점\njob-trend-mcp 쪽 수치는 표본이 35건으로 작아서, 통계적 대표성은 제한적입니다. 참고용 스냅샷 정도로 보시는 게 안전합니다.\nGit·Java·JavaScript가 상위권인 건 \"Mobile Engineer\" 공고에 백엔드/풀스택 겸직 요구가 섞여 있을 가능성을 시사합니다(순수 iOS/Android 네이티브라면 Swift/Kotlin 비중이 더 높은 게 일반적).\n\n응답시간: 28초 (추정)",
+      "after_response_time_sec": 28,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "LinkedIn US 등 조합 추정. Git 12건 등 스냅샷 수치 없음",
+        "after_note": "Git 12 / Java 11 / JavaScript 9 / Swift 9 / React 8 일치."
+      }
+    },
+    {
+      "question_id": "q12",
+      "question": "Software Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "before_answer": "웹 검색으로 확인한 결과, \"Software Engineer\" 채용 공고의 급여 데이터는 특정 채용 사이트 한 곳의 실시간 공고를 직접 셀 수는 없고, 각 사이트가 공개한 집계 통계로만 확인 가능합니다. 사이트마다 표본(공고 건수)과 통화, 단위가 다르므로 섞지 않고 출처별로 정리했습니다. (모두 미국 USD 기준 연봉이며, 한국 원화 공고 데이터는 검색 결과에서 확인되지 않았습니다.)\n\n출처별 급여 데이터 (통화: USD, 단위: 연봉)\n\n출처\t급여 명시 표본 수\t최소\t최대\t평균/중앙값\t기준일\nIndeed\t39.4k건 (최근 36개월 공고 기준) \nIndeed\n\t$80,144 \nIndeed\n\t$229,507 \nIndeed\n\t평균 $135,623 \nIndeed\n\t2026년 8월 17일 업데이트 \nIndeed\n\nZipRecruiter\t명시 안 됨\t$63,500 \nZipRecruiter\n\t$205,500 \nZipRecruiter\n\t평균 $147,524 \nZipRecruiter\n\t2026년 8월 26일 기준 \nZipRecruiter\n\nPayScale\t25,510건 급여 프로필 \nPayScale\n\t$72k \nPayScale\n\t$142k \nPayScale\n\t평균 $98,200 \nPayScale\n\t2026년 7월 14일 업데이트 \nPayScale\n\nRobert Half\t명시 안 됨 (자체+Textkernel 공고 데이터 결합)\t$109,250 \nRobert Half\n\t$175,500 \nRobert Half\n\t명시 안 됨\t2026 Salary Guide (1주 전 확인)\n\n참고 사항\n\n동일한 \"Software Engineer\" 직함이라도 소스마다 조사 대상 모집단과 직급 구성이 달라 같은 연도에도 결과 편차가 크게 나타납니다(KORE1은 7개 소스 간 중앙값 격차가 약 $135,000에 달한다고 지적). \nKORE1\n\"급여가 명시된 공고 건수\"를 정확히 세려면 특정 채용 플랫폼(예: LinkedIn, 원티드, 사람인 등)의 실시간 공고를 직접 크롤링/필터링해야 하며, 일반 웹 검색으로는 사이트별 집계 통계 이상은 확인이 어렵습니다. 특정 사이트를 지정해 주시면 그 사이트 기준으로 다시 찾아볼 수 있습니다.\n시급/월급 기준 데이터도 있었으나(ZipRecruiter의 시급 환산치 등) 혼동 방지를 위해 위 표는 연봉 기준만 남겼습니다.\n\n응답시간: 약 35초 (추정)",
+      "before_response_time_sec": 35,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "after_answer": "Software Engineer 급여 공고 통계 (job-trend-mcp 기준)\n\n전체 매칭 공고 수: Software Engineer 직무 공고 209건 중, 급여가 숫자로 명시된 공고는 77건입니다. 이 77건은 통화(USD/GBP/EUR)와 지급 주기(연봉/월급/시급/일급/불명)가 섞여 있어, 단순 합산하지 않고 아래처럼 그룹별로 나눠 정리했습니다.\n\n1) 연봉(ANNUAL) 기준\n통화\t건수\t최소\t최대\t평균\nUSD\t34건\t$20,000\t$500,000\t약 $167,883\nGBP\t11건\t£30,870\t£163,000\t약 £78,618\nEUR\t6건\t€46\t€250,000\t약 €83,365\nUSD 연봉 그룹은 최소값 $20,000·최대값 $500,000처럼 편차가 매우 커서, 신입~인턴 공고와 임원급/스톡옵션 포함 공고가 섞여 있을 가능성이 높습니다.\nEUR 연봉 그룹의 최소값 €46은 명백한 이상치(데이터 오류 혹은 시급이 연봉으로 잘못 태깅된 사례)로 보이며, 평균값(€83,365)을 그대로 신뢰하기는 어렵습니다.\n2) 시급(HOURLY) / 일급(DAILY) / 월급(MONTHLY)\n통화·주기\t건수\t최소\t최대\t평균\nUSD 시급\t4건\t$90\t$170\t$132.5\nGBP 일급\t1건\t£300\t£350\t£325\nUSD 월급\t2건\t$270\t$270\t$270\nUSD 월급 $270은 상식적으로 월급이라 보기 어려운 값이라, 데이터 라벨링 오류(예: 시급이 월급으로 잘못 기록)로 추정됩니다. 참고용으로만 보시는 걸 권합니다.\n3) 지급 주기 불명(UNKNOWN)\n통화\t건수\t최소\t최대\t평균\nUSD\t17건\t$3\t$175,000\t$17,909\nEUR\t2건\t€16\t€18\t€17\n이 그룹은 연봉인지 시급인지 원문에서 명확히 구분되지 않은 공고들이라, 평균값($17,909)은 실질적 의미가 없습니다(연봉 데이터와 시급 데이터가 뒤섞여 평균이 왜곡됨).\n\n출처: job-trend-mcp get_salary_summary (job_function=\"Software Engineer\"), 조회 시점 2026-08-30(오늘). 이 데이터는 사용자님의 MCP 서버에 수집된 채용공고 DB 기준이며, 외부 공식 통계가 아닙니다.\n\n웹 검색으로 확인한 시장 벤치마크 (참고용, 미국 기준)\n\nMCP 데이터의 USD 연봉 평균(약 $167,883, 표본 34건)이 실제 시장 평균보다 높게 나오는데, 이는 표본이 적고 $500,000 같은 이상치가 포함된 영향으로 보입니다. 2026년 8월 기준 주요 채용정보 사이트들의 수치는 다음과 같습니다.\n\nZipRecruiter: 2026년 8월 기준 미국 소프트웨어 엔지니어의 평균 연봉은 시간당 $70.92, 연 $147,524이며, 대부분은 $120,000~$173,000 구간에 분포 (ziprecruiter.com, 2026-08-26 갱신) \nZipRecruiter\nGlassdoor: 평균 연봉 $151,232(시간당 $73), 상위 10%는 $236,016까지, 25~75퍼센타일은 $120,797~$191,844 (glassdoor.com) \nGlassdoor\nIndeed: 최근 36개월 채용공고 3만9,400건 기준 평균 연봉 $135,623 (indeed.com, 2026-08-17 갱신) \nIndeed\nRippling(BLS 기반): 미국 평균은 $148,100이며, 중앙값 $135,980이 이상치 영향을 덜 받는 더 신뢰할 만한 기준 (rippling.com, 2026-06-09 게시) \nRippling\nPayScale: 평균 $98,200 (중앙값 $98k, 10~90퍼센타일 $72k~$142k, 표본 25,510건, 2026-07-14 갱신) — 다른 사이트보다 낮은 편으로, 총보상(TC)이 아닌 기본급 위주 표본 특성 때문일 수 있습니다. \nPayScale\n\n정리: 외부 시장 기준으로는 미국 소프트웨어 엔지니어 평균 연봉이 대체로 $135,000~$151,000 구간에 모여 있고, MCP 데이터의 $167,883은 이보다 다소 높은 편입니다(표본 수 34건으로 적고 고액 이상치 포함).\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "미국 연봉 사이트 집계(Levels/Salary.com). matched 209·salary 77 없음",
+        "after_note": "matched 209, salary_data 77, 통화×pay_period 그룹 min/max/avg 일치."
+      }
+    },
+    {
+      "question_id": "q13",
+      "question": "Backend Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "category": "aggregation",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "before_answer": "웹 검색으로 확인한 결과, \"Backend Engineer 채용 공고 중 급여가 명시된 것\"을 개별적으로 세어주는 자료는 찾지 못했습니다. 대신 나온 것은 대부분 연봉 정보 집계 사이트(Glassdoor, ZipRecruiter, Salary.com, Wellfound 등)의 통계이며, 이들은 \"채용 공고 몇 건\"이 아니라 \"제출된 급여 데이터 표본 수\"를 기준으로 평균을 냅니다. 정확한 공고 건수 카운트는 실제 구인 사이트(LinkedIn, Indeed 등)를 직접 크롤링/필터링해야 나오는데, 이번엔 도구 없이 일반 웹 검색 스니펫만 사용했기 때문에 그 부분은 신뢰성 있게 제공드리기 어렵습니다. 대신 찾은 급여 통계를 통화·기간 단위별로 정리해 드립니다.\n\n통화: 전부 USD (미국 기준)\n\n연봉 (Annual) 기준\n\n출처\t최소\t최대\t평균\t표본/기준\t날짜\nGlassdoor (Backend Engineer)\t$137,482(25th %ile)\t$231,932(75th %ile)\t$177,202\t1,141건의 자진 제출 급여 \nGlassdoor\n\t2026.6.19\nZipRecruiter\t$60,500\t$199,000\t$147,662\tZipRecruiter 채용공고 및 제3자 데이터 기반 추정 \nZipRecruiter\n\t2026.7.30\nSalary.com\t$111,807\t$148,929\t$132,881\t급여 데이터베이스 추정\t2026.7.1\nWellfound (스타트업)\t$62,000\t$249,000\t$146,208\t스타트업 데이터 기반\t2026\nKORE1 (자체 배치 63건 기준)\t$98,000\t$185,000(base)\t—\t2025 Q3~2026 Q1 배치 63건 기준 \nKORE1\n\t2026.5.22\n\n시급(Hourly) 기준\n\nGlassdoor: 평균 $85/시간\nZipRecruiter: 평균 $70.99/시간\nSalary.com: 평균 $64/시간 (범위 $54~$72)\n\n월급(Monthly) 기준\n\nZipRecruiter: 약 $12,305/월\n\n요청하신 \"공고 건수\"는 정확히 답변드릴 수 없는 점 양해 부탁드립니다. 만약 특정 채용 사이트(예: 사람인, 잡코리아, LinkedIn, Indeed)를 지정해 주시면 해당 사이트 내 \"Backend Engineer\" 검색 결과와 급여 명시 여부를 다시 확인해 보겠습니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "after_answer": "Backend Engineer 급여 데이터 (job-trend-mcp, 사내 채용공고 DB)\n\n전체 매칭 공고는 189건이고, 그중 급여가 숫자로 명시된 공고는 49건입니다. 통화·급여 주기가 섞여 있어 그룹별로 나눠서 봐야 합니다.\n\n통화 / 주기\t건수\t최소\t최대\t평균\nUSD / 연봉\t16\t$80,000\t$85,000,000 ⚠\t$5,473,787.5 ⚠\nKRW / 연봉\t14\t30,000,000원\t80,010,000원\t48,431,428.6원\nUSD / 미상(기간 불명)\t9\t$1\t$5,000\t$642.5\nEUR / 연봉\t2\t€2,000\t€2,000\t€2,000\nKRW / 월급\t2\t4,000,000원\t4,000,000원\t4,000,000원\nKRW / 미상\t2\t6,000원\t6,000원\t6,000원\nUSD / 월급\t2\t$270\t$270\t$270\nGBP / 연봉\t1\t£66,663\t£66,663\t£66,663\nGBP / 일급\t1\t£500\t£525\t£512.5\n\n⚠ 데이터 품질 주의: USD/연봉 그룹의 최댓값(8,500만 달러)은 명백한 이상치(오타 또는 파싱 오류로 추정)로, 이 값 하나가 평균($547만)을 크게 왜곡시키고 있습니다. 이 수치를 그대로 신뢰하기보다는, 표본이 상대적으로 안정적인 **KRW/연봉 그룹(14건, 평균 약 4,843만 원)**을 기준으로 보시는 걸 권합니다. USD/미상, KRW/미상, EUR/연봉, USD/월급, GBP 그룹은 표본이 1~2건에 불과해 통계적 의미는 크지 않습니다.\n(조회 시점: 2026-08-30, active_only 기준 job-trend-mcp 내부 DB)\n\n웹 검색으로 확인한 시장 시세 (참고용, 미국 기준)\n\n내부 DB의 USD 그룹과 비교할 참고선으로 최근 시세를 찾아봤습니다.\n\nSalary.com은 2026년 7월 1일 기준 Backend Engineer 평균 연봉을 약 13만 2,881달러(시급 64달러), 범위는 약 11만 1,807~14만 8,929달러로 집계했습니다. \nSalary.com\nGlassdoor는 Backend Engineer 평균 연봉을 17만 7,202달러로, 25~75백분위 구간은 약 13만 7,482~23만 1,932달러라고 밝혔습니다. \nGlassdoor\nZipRecruiter는 2026년 7월 30일 기준 전국 평균 연봉이 약 14만 7,662달러이며, 25~75백분위는 12만 4,000~17만 2,000달러라고 보고했습니다. \nZipRecruiter\n스타트업 채용 플랫폼 Wellfound는 2026년 Backend Engineer 평균 연봉이 약 14만 6,000달러이며 6만 2,000~24만 9,000달러 범위라고 설명합니다. \nWellfound\nCoursera(2026년 7월 31일 업데이트)는 미국 백엔드 개발자 전체 중위 연봉을 약 12만 1,000달러, 신입은 약 9만 2,000달러로 안내합니다. \nCoursera\n\n비교하면, 내부 DB의 KRW/연봉 그룹(평균 약 4,843만 원)은 원화 기준이라 직접 비교는 어렵지만, USD/연봉 그룹의 정상 범위 값들($80,000 등)은 위 시장 평균(약 12만~17만 달러) 대비 낮은 편이고, 이상치를 제거하면 표본 자체가 하위권 값 위주로 구성돼 있을 가능성이 있습니다.\n\n응답시간: 42초 (추정)",
+      "after_response_time_sec": 42,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "Glassdoor 등 시장 연봉. matched 189·salary 49 없음",
+        "after_note": "matched 189, salary_data 49, 9개 그룹 min/max/avg 일치."
+      }
+    },
+    {
+      "question_id": "q14",
+      "question": "Backend Engineer이고 서울 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "combo_filter",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer이고 서울 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "일반 웹 검색으로는 이 질문에 정확한 숫자를 드릴 수 없습니다. 이유는 다음과 같습니다.\n\n왜 \"정확한 건수\"가 안 나오는지\n\n채용 사이트(사람인·잡코리아·인크루트·원티드·Indeed 등)는 각자 다른 DB를 가지고 있고, \"Backend Engineer / 서울 / 정규직\"이라는 3개 필터를 동시에 건 검색 결과 페이지의 총 건수는 사이트에 로그인해서 필터를 직접 적용해야만 볼 수 있습니다. 일반 텍스트 검색으로는 그 필터링된 결과 페이지의 카운터 숫자가 스니펫에 그대로 노출되지 않습니다.\n검색 결과 중 잡코리아에서 '백엔드' 키워드로 검색하면 총 2,587건이라는 숫자가 나왔지만, 이는 '백엔드'라는 단어가 포함된 전체 공고(프론트엔드, 서버 정비, 계약직 등 포함) 수이지 \"Backend Engineer / 서울 / 정규직\" 조건과는 다릅니다. 즉 신뢰할 수 있는 답이 아닙니다. \nJob Korea\nIndeed의 경우도 '백엔드 개발자' 검색 시 50+건, '백엔드 엔지니어' 검색 시 25+건으로 표시되는데, 이 역시 날짜(2025년 12월, 2026년 7월)가 오래된 캐시 스니펫이고 \"50+\", \"25+\"처럼 근사치일 뿐 정확한 실시간 건수가 아닙니다. \nIndeed\nIndeed\n\n결론\n일반 웹 검색만으로는 \"지금 이 순간\" 조건(Backend Engineer + 서울 + 정규직)에 정확히 맞는 채용공고 총 건수를 신뢰성 있게 제시할 수 없습니다. 정확한 숫자가 필요하시면 원티드/사람인/잡코리아/프로그래머스 등에서 직접 \"직무: 백엔드 개발자, 지역: 서울, 고용형태: 정규직\" 필터를 걸어 나오는 결과 건수를 확인하시는 것을 추천드립니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nBackend Engineer이고 서울 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "결과 요약\n\nBackend Engineer / 서울 / 정규직(Full-time) 채용공고: 42건 (job-trend-mcp 데이터셋 기준)\n\n출처: job-trend-mcp search_job_postings (job_function=\"Backend Engineer\", location=\"서울\", employment_type=\"Full-time\", active_only=true)\n조회 시점: 2026-08-30 (오늘)\n데이터 원천: saramin, jobkorea 게시글 (사이트별 크롤링본)\n⚠️ 데이터 품질 참고사항\n\n42건 중 실제로는 같은 원본 URL이 두 번씩 중복 수집된 공고가 여러 건 포함되어 있습니다(예: 펜타시스템테크놀러지, 멋쟁이사자처럼, 누리미디어, 더블미디어, 동화세상에듀코, 캐롯아이(MES), 비엠아이씨앤에스, 캐롯아이(6/26) 등 8건이 중복). URL 기준으로 중복을 제거하면 고유 공고는 약 34건입니다.\n\n또한 이 데이터셋은 employment_type 필드가 공란(\"\")인 공고가 많아(같은 조건에서 employment_type 필터 없이 검색 시 total_matched=102), 정규직으로 명시된 공고 외에도 실제로는 정규직일 가능성이 있는 미표기 공고가 다수 존재합니다. 즉 42는 \"정규직이라고 명시적으로 태그된\" 공고 수이며, 서울 지역 백엔드 전체 활성 공고(102건) 대비 하한선에 가깝습니다.\n\n웹 검색으로 교차 확인한 내용\n\n사람인(saramin.co.kr) '백엔드/서버개발' 직무 카테고리 페이지를 직접 조회한 결과, 이 카테고리는 전체 채용정보 1,865건으로 표시되었습니다 — 다만 이는 전국·전체 고용형태 기준이며, 사람인 사이트가 자바스크립트 기반이라 \"서울 + 정규직\"만 필터링한 정확한 숫자를 정적 페이지 조회로는 얻을 수 없었습니다(로그인 후 직접 필터를 걸어야 정확한 값 확인 가능). 따라서 이 숫자는 참고용이며, 본문의 42건(또는 중복제거 34건)이 질문에 대한 직접적인 답입니다. \nSaramin\n\n출처: 사람인 '백엔드/서버개발' 카테고리 페이지, 조회일 2026-08-30 (https://www.saramin.co.kr/zf_user/jobs/list/job-category?cat_kewd=84)\n\n응답시간: 105초 (추정)",
+      "after_response_time_sec": 105,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "3중 필터 건수 확인 불가. 잡코리아 키워드 2,587건은 조건 불일치",
+        "after_note": "MCP 42건을 본문으로 제시. URL 중복·employment_type 공란을 품질 이슈로 부연."
+      }
+    },
+    {
+      "question_id": "q15",
+      "question": "Software Engineer이고 London 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "combo_filter",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이고 London 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "죄송하지만 \"Software Engineer / London / Full-time\"이라는 정확한 필터를 동시에 적용한 단일 정확 건수는 일반 웹 검색만으로는 확인할 수 없었습니다. 검색 결과들은 필터 조합 없이 사이트가 보여주는 대략치(반올림된 \"9,000+\" 같은 값)이거나, 필터가 다르게 적용된 값이었습니다. 확인된 것 중 가장 근접한 수치는 아래와 같습니다.\n\nGlassdoor: \"London, England\"에서 \"software engineer\"로 검색 시 1,753건 (Full-time 필터 별도 적용 여부는 불명확)\n출처: glassdoor.co.uk/Job/london-software-engineer-jobs, 페이지 제목 기준 \"August 2026\"\nLinkedIn (uk.linkedin.com): \"Software Engineer jobs in London Area, United Kingdom\" 검색 시 9,000+건 (반올림된 근사치, Full-time 필터 미적용 상태의 전체 고용형태 합산으로 추정)\n출처: uk.linkedin.com/jobs/software-engineer-jobs-london\n\n즉, \"Full-time\"만 따로 필터링한 정확한 숫자는 이 두 출처 어디에서도 명시적으로 나오지 않았고, LinkedIn 수치는 \"9,000+\"처럼 반올림된 표시라 정확한 건수라고 보기 어렵습니다. 정확한 값이 필요하시면 LinkedIn Jobs나 Glassdoor에서 직접 \"Software Engineer\" + \"London\" + \"Full-time\" 필터를 넣고 조회하시는 것을 권장드립니다.\n\n응답시간: 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이고 London 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "검색 결과\n\n연결된 채용정보 MCP(job-trend-mcp) 기준\n\n조건: Job Function = Software Engineer, Location = London, Employment Type = Full-time, 진행 중인 공고만(active_only)\n결과: 22건\n이 데이터의 출처는 arbeitnow.co.uk, adzuna.co.uk를 크롤링해 만든 이 MCP 서버 자체의 내부 DB이며, 공고 게시일은 2025-03-31 ~ 2026-07-30 범위입니다. (즉 \"지금 활성 상태로 잡혀 있는\" 공고 22건이라는 뜻이고, 실시간 시점은 이 MCP DB가 마지막으로 갱신된 시점 기준입니다.)\n\n웹 검색으로 확인한 일반 채용 플랫폼 수치 (참고용, 같은 조건은 아님)\n같은 조건(Software Engineer / London / Full-time)으로 대형 채용 플랫폼을 보면 숫자가 훨씬 큽니다.\n\nGlassdoor: 2026년 8월 기준 런던 지역 \"software engineering\" 직군 공고가 1,832건 집계되어 있습니다. \nGlassdoor\nJooble: 2026년 6월 기준 런던 소재 소프트웨어 엔지니어 공고를 2,888건으로 집계하고 있습니다. \nJooble\n\n⚠️ 주의: 이 웹 검색 결과 수치(1,800~2,900건대)는 Glassdoor/Jooble이 자체 크롤링·집계한 \"Software Engineer\" 관련 전체 공고 수로, London 근무·Full-time만 별도로 필터링한 정확한 값이 아니라 검색 결과 페이지 상단에 표시된 대략적인 총계입니다. 반면 job-trend-mcp의 22건은 이 대화에 연결된 도구가 직접 관리하는 좁은 범위의 자체 DB(주로 arbeitnow, adzuna 두 소스)에서 조건을 정확히 필터링한 값입니다. 두 수치는 모집단(소스) 자체가 완전히 다르므로 직접 비교하거나 하나로 합칠 수 없습니다.\n\n결론\n정확히 요청하신 도구(job-trend-mcp) 기준 답: 22건 (arbeitnow/adzuna 크롤링 DB, active_only 기준)\n시장 전체 규모 참고용 웹 수치: Glassdoor 약 1,832건(2026.08 기준), Jooble 약 2,888건(2026.06 기준) — 단, 조건이 완전히 동일하지 않음\n\n응답시간: 42초 (추정)",
+      "after_response_time_sec": 42,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "LinkedIn 등 9,000+ 대략치. 3중 필터 정확 건수 없음",
+        "after_note": "MCP 22건을 본문으로 제시."
+      }
+    },
+    {
+      "question_id": "q16",
+      "question": "Software Engineer이고 Germany 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "combo_filter",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이고 Germany 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "웹 검색만으로는 \"Software Engineer + Germany + Full-time\" 조건을 정확히 필터링한 실시간 정확한 건수를 확인하기 어렵습니다. 검색 스니펫은 각 채용 플랫폼이 그때그때 보여주는 대략적인 결과이고, 사이트마다 집계 기준(직무명 포함 여부, full-time 필터 적용 여부)이 달라 편차가 큽니다.\n\n검색으로 확인된 수치 (참고용, 정확한 필터링된 건수 아님):\n\nLinkedIn — \"Software Engineer\" + Germany 검색 결과: 11,000+ 건 (출처: linkedin.com/jobs/search?keywords=Software+Engineer&geoId=101282230, 확인일 2026-08-29) — 단, 이 숫자는 Full-time 필터를 적용한 결과가 아니라 전체 검색 결과입니다.\nGlassdoor — \"software engineer\" jobs in Germany: 6,162건 (2026년 8월 기준, 출처: glassdoor.co.in/Job/germany-software-engineer-jobs, 확인일 2026-08-29)\nIndeed — \"Software Engineer in Germany\" 검색: 509건 (출처: indeed.com/q-Software-Engineer-in-Germany-jobs.html, 확인일 2026-08-29)\n\n세 곳 모두 서로 다른 숫자를 보여주며, 어느 것도 \"Full-time\"만 필터링한 정확한 건수는 아닙니다.\n\n결론: 정확한 \"전체 건수\"를 원하신다면, 이 정보들은 검색 스니펫 기반이라 신뢰도가 낮으니 LinkedIn/Indeed/Glassdoor에서 직접 지역(Germany), 직무(Software Engineer), 고용형태(Full-time) 필터를 적용해서 확인하시는 걸 추천드립니다. 제가 직접 필터를 적용해 실시간으로 확인하는 것은 이 답변 방식(일반 웹 검색만 사용)으로는 불가능합니다.\n\n응답시간: 28초 (추정)",
+      "before_response_time_sec": 28,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nSoftware Engineer이고 Germany 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "채용 정보 MCP 서버 (job-trend-mcp) 조회 결과\n\n연결된 job-trend-mcp(다은님이 만든 취업정보 MCP 서버, arbeitnow 소스 크롤링 데이터) 기준으로 검색했습니다.\n\n조건: job_function=\"Software Engineer\", location=\"Germany\", employment_type=\"Full-time\", active_only=true\n결과: count: 20, total_matched: 20\n\n다만 반환된 목록을 직접 확인해보니 같은 공고(제목·회사·URL 동일)가 2번씩 중복 등록된 케이스가 다수 있었습니다(예: 1Komma5Grad \"Principal Software Engineer\", constellr \"Mission Planning Software Engineer\" 등). 중복을 제거하면 실질적으로는 서로 다른 공고 기준 약 10건 정도로 보입니다. 이건 MCP 서버 DB에 중복 데이터가 들어가 있을 가능성을 시사하니, 크롤러 적재 로직(중복 방지 키) 한 번 점검해보시면 좋을 것 같습니다.\n\n웹 검색으로 확인한 참고 수치 (다른 출처·다른 기준)\n\n같은 원본 소스인 Arbeitnow 웹사이트 자체 카테고리 페이지를 확인했는데, 필터 기준이 달라서 직접 비교는 어렵습니다:\n\nArbeitnow \"Software Jobs in Germany\" 페이지: 2026년 8월 기준 독일 소재 Software 관련 공고가 732건이라고 안내하고 있습니다. (arbeitnow.com/jobs/software, 2026-08 표기) \nArbeitnow\n이건 \"Software Engineer\" 직무명 정확히 일치나 \"Full-time\" 고용형태로 별도 필터링된 수치가 아니라, \"software\" 키워드가 들어간 전체 공고(파트타임·인턴 포함) 수치라서 MCP 서버의 20건(또는 중복 제거 시 ~10건)과 성격이 다릅니다.\n\n정리: 다은님 MCP 서버 자체 데이터 기준으로는 20건(원본 API count 값), 중복 제거 시 약 10건입니다. 이 숫자를 Arbeitnow 사이트의 전체 \"Software\" 카테고리 732건과 동일 선상에서 비교하기는 어렵고, 서로 다른 필터·집계 기준의 수치로 이해하시면 됩니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "LinkedIn Germany 11,000+ 등. 스냅샷 20과 모집단 다름",
+        "after_note": "MCP total_matched 20을 본문으로 제시."
+      }
+    },
+    {
+      "question_id": "q17",
+      "question": "엔지니어링 직군이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "combo_filter",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n엔지니어링 직군이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "이 질문에는 정확한 답을 드리기 어렵습니다. 이유를 말씀드릴게요.\n\n정확한 건수를 제시할 수 없는 이유\n\n\"엔지니어링 직군 + 서울 근무\"라는 조건에 정확히 부합하는 채용공고 총 건수를 실시간으로 집계해주는 단일 공식 통계는 없습니다.\n사람인, 잡코리아, 원티드, 프로그래머스 등 플랫폼마다 검색 결과 건수가 다르고, 이 숫자는 필터 조건(직무 카테고리 정의, 지역 범위, 신입/경력 여부)에 따라 계속 바뀝니다.\n일반 웹 검색으로 얻은 결과는 각 사이트의 개별 공고 스니펫이나 페이지 일부일 뿐, \"현재 총 몇 건\"이라는 신뢰할 수 있는 집계 숫자가 검색 결과에 명확히 나타나지 않았습니다. (검색된 사람인 페이지들에는 개별 공고 목록만 보이고, 필터링된 전체 건수 표시는 확인되지 않았습니다.)\n\n대신 직접 확인하는 방법\n정확한 숫자가 필요하시면 아래 사이트에서 직접 필터를 걸어 확인하시는 게 가장 정확합니다.\n\n사람인: IT개발·데이터 카테고리 + 지역 '서울' 필터\n잡코리아: 직군 '개발' + 지역 '서울'\n원티드/프로그래머스: 직무 필터 + 서울 지역\n\n원하시면 이 중 특정 플랫폼 하나를 정해서 그 사이트 결과 페이지에 나오는 건수(및 조회 시점)를 다시 검색해서 알려드릴 수 있습니다. 어느 플랫폼 기준으로 확인해드릴까요?\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n엔지니어링 직군이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "결과: 111건\n\n\"Engineering & Technology\" 직군 + 근무지 \"서울\" 조건으로 연동된 채용정보 MCP 서버(job-trend-mcp)에서 조회한 결과, 활성 공고(active_only=true, 기본값) 기준 총 111건이 검색되었습니다.\n\n출처: 연동된 job-trend-mcp 도구(search_job_postings, job_category=\"Engineering & Technology\", location=\"서울\") — jumpit, rallit, saramin, jobkorea, work24 등에서 수집한 자체 채용공고 데이터베이스\n조회 시점: 2026-08-30(오늘)\n개별 공고 등록일은 2024-10월부터 2026-08-04까지 분포하며, 동일 공고가 중복 수집된 항목도 일부 포함되어 있었습니다(예: 코드잇 \"백엔드 엔지니어\" 등).\n\n참고(웹 검색 교차 확인)\n같은 조건으로 잡코리아·사람인 등 공개 채용 사이트를 직접 검색하면 잡코리아에서 '백엔드' 키워드로만 검색해도 2,587건이 나오는 등 훨씬 큰 숫자가 나옵니다. 다만 이는 ①지역 필터 없이 전국 대상, ②직군 분류 체계가 다름(엔지니어링&테크놀로지처럼 세분화되지 않음), ③중복/만료 공고 포함 여부가 다름 등의 이유로 이 MCP 데이터베이스의 111건과 직접 비교할 수 있는 수치가 아닙니다. 즉, 111건은 공개 채용 사이트 전체 집계가 아니라, 연동된 job-trend-mcp가 자체 기준으로 정제·분류한 서울 소재 엔지니어링 직군 활성 공고 수로 이해하시면 됩니다. \nJob Korea\n\n응답시간: 22초 (추정)",
+      "after_response_time_sec": 22,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "확인 불가 — 직군+서울 통합 건수를 내는 공개 통계 없음",
+        "after_note": "MCP 111건을 본문으로 제시."
+      }
+    },
+    {
+      "question_id": "q18",
+      "question": "정규직(Full-time) 채용공고는 지금 몇 건인가요? 직무를 가리지 말고, 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "broad_control",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n정규직(Full-time) 채용공고는 지금 몇 건인가요? 직무를 가리지 말고, 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "정규직 채용공고 \"전체 건수\"를 확인하려면 기준이 되는 채용 플랫폼(사람인, 잡코리아, 원티드, 잡플래닛, 링크드인 등)이 필요합니다. \"전 세계/전 산업의 모든 정규직 채용공고 수\"를 집계해서 발표하는 단일 출처는 존재하지 않기 때문에, 특정 사이트를 지정해 주셔야 검색으로 확인할 수 있습니다.\n\n혹시 특정 채용 사이트(예: 사람인, 원티드)를 염두에 두고 계신가요? 아니면 개발자/백엔드 등 특정 직무·지역 기준으로 좁혀서 찾아드릴까요?\n\n응답시간: 5초 (추정)",
+      "before_response_time_sec": 5,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n정규직(Full-time) 채용공고는 지금 몇 건인가요? 직무를 가리지 말고, 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "job-trend-mcp(취업정보 MCP 서버, 별명 job-trend-mcp) 데이터 기준으로 확인했습니다.\n\n결과\n\n정규직(Full-time) 채용공고: 총 440건\n\n조회 조건: employment_type = \"Full-time\", active_only = true (직무 무관, 전체)\n출처: 연결된 job-trend-mcp 커넥터의 search_job_postings 도구, 응답 필드 total_matched\n조회 시각: 2026-08-30(오늘) 기준 도구 호출 결과\n참고 사항\n이 숫자는 사용자님이 직접 운영 중인 채용정보 크롤링 DB(job-trend-mcp)에서 나온 값이라, 공개 웹 검색으로는 대조·검증이 불가능한 비공개 데이터입니다. 그래서 이번 답변에서 별도의 웹 출처는 첨부하지 않았습니다 — 사실과 다른 웹 자료를 억지로 끼워 넣는 것보다는 이 점을 투명하게 말씀드리는 게 맞다고 판단했습니다.\n데이터 스키마 상 employment_type 필드가 비어 있는(\"\") 공고도 다수 있어(예: jumpit·rallit 등 국내 소스 상당수), 실제로는 정규직이지만 필드값이 채워지지 않아 이번 집계(440건)에서 빠졌을 가능성이 있습니다. 정확한 국내 정규직 공고 수를 원하시면 크롤러의 employment_type 매핑 로직을 먼저 점검하시는 걸 권해드립니다.\n\n응답시간: 18초 (추정)",
+      "after_response_time_sec": 18,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "before_reason": "플랫폼 미지정으로 전수 집계 거부. 시장 전수는 스냅샷 440과 다른 질문",
+        "after_note": "MCP Full-time 440을 본문으로 제시. 웹 전수와 모집단이 다르다고 명시(대조군 해석)."
+      }
+    }
+  ]
+}

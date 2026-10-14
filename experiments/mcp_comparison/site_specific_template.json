@@ -1,0 +1,152 @@
+{
+  "meta": {
+    "experiment_version": 3,
+    "kind": "site_specific",
+    "condition_before": "web_search_on, mcp_off",
+    "condition_after": "web_search_on, mcp_on, instruct_use_both",
+    "mcp_source_filter": true,
+    "instructions": "기존 18문항과 별도. Before: prompt_to_paste_before. 거절하면 retry_after_refusal 한 번. After: prompt_to_paste_after (연결된 도구 + 웹 검색 지시 + 응답시간 + 질문, 사이트명 포함). 도구만 쓰거나 웹만 써도 고치지 말고 그대로 기록. 답 마지막 줄 N을 *_response_time_sec 에 넣음. 수동 타이머 없음.",
+    "retry_after_refusal": "정확한 실시간 수치가 없다면, 지금 웹 검색으로 확인 가능한 가장 최근 자료 기준으로 답해주세요. 출처마다 숫자가 다르면 그 점도 같이 알려주세요.",
+    "time_instruction": "답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요."
+  },
+  "items": [
+    {
+      "question_id": "s01",
+      "question": "점핏에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "점핏",
+      "source_name": "jumpit",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n점핏에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "일반 웹 검색으로는 점핏(Jumpit) 사이트에서 \"직무: Backend Engineer\" + \"근무지: 서울\"로 필터링했을 때 나오는 정확한 총 건수를 확인할 수 없었습니다.\n\n이유는:\n\n점핏의 채용공고 목록 페이지(jumpit.saramin.co.kr/positions)는 자바스크립트로 필터링된 결과를 동적으로 렌더링하는 방식이라, 검색엔진이나 단순 페이지 요청으로는 필터가 적용된 \"총 건수\" 숫자 자체가 노출되지 않습니다.\n검색 결과에는 개별 채용공고(스마일드래곤, AB180, 오늘의집 등)만 낱개로 나올 뿐, 해당 조건의 집계 수치를 보여주는 페이지나 캐시된 스냅샷은 찾지 못했습니다.\n\n결론: 요청하신 \"서울 소재 Backend Engineer 채용공고 전체 건수\"는 이번 검색 결과만으로는 확인이 불가능합니다. 정확한 숫자가 필요하시면 점핏 사이트(jumpit.saramin.co.kr)에 직접 접속해서 '직무: Backend Engineer' + '지역: 서울' 필터를 적용해 화면에 표시되는 건수를 확인하시는 방법이 가장 정확합니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n점핏에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "결과\n\n9건입니다.\n\n출처: 사용자가 구축 중인 [[mcp-job-server]] 프로젝트(job-trend-mcp)의 크롤링 DB\n조건: job_function=Backend Engineer, location=서울, source_name=jumpit, active_only=true(진행 중 공고만)\n조회 시각: 2026-08-30(오늘) 이 도구를 호출한 시점\n다만 꼭 확인해주셔야 할 점\n\n이 9건은 점핏 사이트를 실시간으로 조회한 값이 아니라, MCP 서버 DB에 저장된 크롤링 결과입니다. 실제로 결과에 포함된 공고들의 등록일(posted_at)을 보면 2026-07-27 ~ 2026-08-04 범위였고, 오늘(8/30)까지 새로 올라온 공고는 이 DB에 반영되지 않았을 가능성이 높습니다. 즉 \"지금\" 시점 점핏의 실제 공고 수와는 차이가 있을 수 있습니다.\n\n또한 웹에서 점핏 사이트(jumpit.co.kr / jumpit.saramin.co.kr)를 직접 확인하려 했으나:\n\n점핏 채용 목록 페이지는 자바스크립트로 렌더링되는 SPA라 web_fetch로는 필터링된 실제 건수를 가져올 수 없었습니다(정적 HTML만 확인됨, 확인: https://jumpit.saramin.co.kr/positions).\nClaude in Chrome 확장 연결이 이 세션에서 끊겨 있어 직접 접속해 필터 결과를 캡처하지 못했습니다.\n\n정확한 \"지금 이 순간\" 건수를 원하시면 점핏에서 직무 \"서버·백엔드 개발자\" + 지역 \"서울\"로 직접 필터링해 확인하시는 걸 추천드립니다: https://www.jumpit.co.kr/positions\n\n응답시간: 약 40초 (추정)",
+      "after_response_time_sec": 40,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "점핏 SPA라 필터 건수 확인 불가. GT 9를 제시하지 않음.",
+        "after_note": "본문 9건, source_name=jumpit. 웹(jumpit SPA)은 교차 불가라고 부연."
+      }
+    },
+    {
+      "question_id": "s02",
+      "question": "잡코리아에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n잡코리아에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "현재 일반 웹 검색만으로는 잡코리아에서 \"Backend Engineer\" + 근무지 \"서울\" 두 조건을 동시에 필터링한 정확한 실시간 건수를 확인할 수 없었습니다. 이유와 함께 찾은 내용을 정리해 드립니다.\n\n확인된 내용\n\n잡코리아 통합검색에서 \"BACKEND\"로 검색 시 총 2,378건 (출처: jobkorea.co.kr/Search/?stext=BACKEND, 검색엔진 캐시 스냅샷 기준)\n\"Backend developer\"로 검색 시 총 2,195건 (출처: jobkorea.co.kr/Search/?stext=Backend+developer)\n\"백엔드 엔지니어\"로 검색 시 총 890건 (출처: jobkorea.co.kr/Search/?stext=백엔드+엔지니어)\n\"python 백엔드\"로 검색 시 총 675건 (출처: jobkorea.co.kr/Search/?stext=python+백엔드)\n\n왜 정확한 답을 드릴 수 없는지\n\n위 수치들은 검색엔진에 색인된 스냅샷(캐시) 페이지의 건수이며, \"Backend Engineer\"라는 정확한 문구 + \"근무지역: 서울\" 지역 필터를 동시에 적용한 결과는 검색 결과에 잡히지 않았습니다.\n잡코리아의 지역 필터(예: 서울만 체크)는 자바스크립트 기반 동적 필터링으로 동작해서, 필터가 적용된 상태의 페이지는 검색엔진에 별도로 색인되지 않는 경우가 많습니다.\n\"일반 웹 검색만 사용\"이라는 제약 때문에 잡코리아 사이트에 직접 접속해 필터를 걸고 실시간 값을 읽어오는 방식은 사용할 수 없었습니다.\n\n정확한 건수가 필요하시면 잡코리아 사이트에서 직접 \"Backend Engineer\" 검색어 + 지역 필터(서울)를 설정해서 확인하시는 것을 권해드립니다. 원하시면 검색 URL과 필터 설정 방법을 안내해 드릴 수 있습니다.\n\n응답시간: 약 25초 (추정)",
+      "before_response_time_sec": 25,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n잡코리아에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "답변\n\n연결된 채용정보 도구(job-trend-mcp)로 조회한 결과, 잡코리아(jobkorea) 소스 기준으로 직무=Backend Engineer, 지역=서울 조건에 맞는 활성 채용공고는 11건입니다.\n\n출처: 대은님의 mcp-job-server 프로젝트에 연결된 job-trend-mcp 도구(search_job_postings, source_name=jobkorea, job_function=Backend Engineer, location=서울) 조회 결과, count=11\n이 데이터는 대은님 프로젝트가 자체 크롤링해 둔 DB 스냅샷이며, 공고 게재일 범위는 2026-06-26 ~ 2026-07-27로 확인됩니다.\n즉, \"지금 이 순간\" 잡코리아 웹사이트가 보여주는 실시간 수치가 아니라 이 프로젝트 DB에 적재된 시점 기준 수치라는 점은 감안해 주세요.\n\n웹에서 잡코리아 실제 사이트를 직접 검색해 교차 확인한 결과, 정확히 \"직무=Backend Engineer + 지역=서울\"로 필터링된 단일 숫자는 검색 스니펫만으로는 확인할 수 없었고, 대신 키워드 검색 기준 건수만 확인됐습니다:\n\n잡코리아에서 \"백엔드\" 키워드로 검색하면 총 2,587건의 결과가 나옵니다(잡코리아, 검색 시점 기준). \nJob Korea\n\"백엔드 엔지니어\" 키워드 검색 시에는 총 2,262건이 나옵니다(잡코리아). \nJob Korea\n\"백엔드 개발자 신입\" 키워드로 좁히면 총 149건으로 줄어듭니다(잡코리아). \nJob Korea\n\n이 수치들은 서울 지역 필터나 \"Backend Engineer\" 정확한 직무명 필터를 건 게 아니라 자유 키워드 매칭 결과라서, 대은님이 원하시는 \"직무=Backend Engineer + 근무지=서울\" 정확한 조건과는 정의가 다릅니다. 그래서 정확히 그 조건에 맞는 잡코리아 실시간 전체 건수를 확인하려면 잡코리아 사이트에 직접 접속해 직무 필터(Backend Engineer)와 지역 필터(서울)를 함께 걸고 봐야 하며, 검색 스니펫만으로는 그 정확한 실시간 숫자를 재현하지 못했습니다.\n\n정리\n\n신뢰도 높은 숫자(조건 정확히 일치): 11건 — 단, 대은님 프로젝트 DB 기준(자체 크롤링, 실시간 아님)\n참고용 대략 수치(조건 다름, 실시간 잡코리아 키워드 검색): \"백엔드\" 2,587건 / \"백엔드 엔지니어\" 2,262건 / \"백엔드 개발자 신입\" 149건\n\n응답시간: 약 55초 (추정)",
+      "after_response_time_sec": 55,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "키워드 검색 2,378/2,195/890 등. Backend×서울 필터 11이 아님.",
+        "after_note": "본문 11건, source_name=jobkorea. count=11로 적었으나 total_matched와 값이 같아 정답. 웹 키워드 2,587은 참고용."
+      }
+    },
+    {
+      "question_id": "s03",
+      "question": "잡코리아에서 Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n잡코리아에서 Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "일반 웹 검색으로는 잡코리아 사이트에서 \"Backend Engineer\" + \"정규직\" 필터를 실시간으로 직접 적용한 검색결과 페이지(정확한 건수 숫자)를 찾지 못했습니다.\n\n검색으로 확인된 것은 다음과 같습니다.\n\n\"BACKEND\" 통합검색: 총 2,378건 (jobkorea.co.kr/Search/?stext=BACKEND)\n\"백엔드\" 통합검색: 총 2,587건 (jobkorea.co.kr/Search/?stext=백엔드)\n\"backend developer\" 검색: 총 61건 (jobkorea.co.kr/Search/?stext=backend+developer)\n\n이 수치들은 모두 \"Backend Engineer\" 직무명과 \"정규직\" 고용형태 필터를 동시에 적용한 결과가 아니라, 검색어만 다르게 넣은 통합검색 결과이며, 잡코리아는 검색어·근무형태·경력 등 필터 조합에 따라 실시간으로 건수가 달라지는 구조라 캐시된 웹 검색 스니펫만으로는 \"Backend Engineer × 정규직\" 조합의 정확한 현재 건수를 확인할 수 없었습니다.\n\n정확한 숫자가 필요하시면 잡코리아 사이트에서 직접 \"Backend Engineer\"로 검색 후 고용형태를 '정규직'으로 필터링한 결과 페이지 상단의 건수를 확인하시는 것이 가장 정확합니다(실시간으로 계속 갱신되는 값이라, 방금 검색된 웹 캐시 결과와도 차이가 있을 수 있습니다).\n\n응답시간: 약 35초 (추정)",
+      "before_response_time_sec": 35,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n잡코리아에서 Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "잡코리아(JobKorea)의 Backend Engineer × 정규직(Full-time) 채용공고 건수를 두 가지 경로로 확인했습니다. 결과가 서로 다른 성격의 숫자라 함께 설명드립니다.\n\n1) 연결된 job-trend-mcp 도구(수집 데이터베이스) 기준\n\n조건: source=jobkorea, job_function=Backend Engineer, employment_type=Full-time, active_only=true\n결과: 17건\n이 숫자는 job-trend-mcp가 잡코리아에서 미리 수집·저장해 둔 스냅샷 데이터베이스를 집계한 것입니다. 확인 시점 기준 가장 오래된 공고는 2026-06-06, 가장 최근 공고는 2026-07-27 등록분이었습니다.\n\n2) 웹 검색으로 확인한 잡코리아 실제 사이트\n\n잡코리아 통합검색(https://www.jobkorea.co.kr/Search/?stext=백엔드)에서 \"백엔드\" 키워드로 검색하면 잡코리아 통합검색에서 '백엔드' 관련 검색결과가 총 2,587건으로 나타났습니다 (2026-08-30 기준, 잡코리아 사이트). \nJob Korea\n다만 이 2,587건은 \"백엔드\"라는 키워드가 포함된 모든 공고(직무·고용형태 필터 없음, 신입/경력/계약직 등 전부 포함)를 합친 숫자라서, \"Backend Engineer 직무 + 정규직\" 조건으로 정밀 필터링된 job-trend-mcp의 17건과는 직접 비교할 수 없습니다.\n잡코리아 사이트에서 직무=백엔드개발자, 고용형태=정규직으로 정확히 필터링한 실시간 공식 건수는 로그인/동적 검색 페이지라 이번 web_fetch로는 그 필터가 적용된 정확한 총 건수 페이지를 직접 가져오지 못했습니다.\n\n결론\n\n신뢰할 수 있는 구조화된 답: job-trend-mcp 기준 17건 (출처: job-trend-mcp 내부 수집 DB, 확인일 2026-08-30, active_only=true, source=jobkorea)\n이 값은 실시간 잡코리아 사이트 전체 공고 수와는 다를 수 있으며(수집 주기·필터 기준 차이), 정확한 실시간 수치가 꼭 필요하시면 잡코리아 사이트에서 직무=백엔드개발자·고용형태=정규직으로 직접 필터링해 보시는 것을 권장드립니다.\n\n응답시간: 약 35초 (추정)",
+      "after_response_time_sec": 35,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "키워드 2,378/2,587/61. Backend×정규직 17이 아님.",
+        "after_note": "본문 17건, source=jobkorea. 웹 2,587은 키워드 전수라 비교 불가라고 명시."
+      }
+    },
+    {
+      "question_id": "s04",
+      "question": "랠릿에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "랠릿",
+      "source_name": "rallit",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n랠릿에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "랠릿(rallit.com)에서 Backend Engineer + 근무지 서울 조건으로 필터링한 정확한 채용공고 \"건수\"는 이번 검색만으로는 확인하지 못했습니다. 이유는 이렇습니다.\n\n랠릿의 채용공고 목록/필터(직군·직무, 지역 체크박스 등)는 자바스크립트로 동적 렌더링되는 방식이라, 일반 웹 검색이나 정적 페이지 가져오기(fetch)로는 필터가 적용된 결과의 총 건수가 그대로 노출되지 않았습니다.\n실제로 https://www.rallit.com/ 메인 페이지를 열어봐도 \"전체\" 상태의 최신순 공고 목록만 보일 뿐, 필터를 \"서울\" + \"Backend Engineer\"로 선택했을 때 표시되는 총 건수 텍스트는 페이지 소스에 포함되어 있지 않았습니다.\n검색 결과로는 개별 서울 소재 백엔드 채용공고(휴머스온, 코리아포트원/PortOne, 한국축산데이터, 오늘의집, 화해, 세나클소프트 등) 몇 건을 확인할 수 있었지만, 이는 전수 목록이 아니라 검색 노출 일부일 뿐이라 이 개수를 \"전체 건수\"로 제시하면 부정확한 추정치가 됩니다.\n\n정확한 건수가 필요하시면 https://www.rallit.com 접속 후 \"직군·직무 → Backend\" + \"지역 → 서울\" 필터를 직접 선택하시면 화면에 실시간 건수가 표시됩니다. 제가 이 답변을 근거 없는 숫자로 채우기보다, 확인되지 않은 부분은 확인되지 않았다고 말씀드리는 게 맞다고 판단했습니다.\n\n(참고 출처: rallit.com 메인 페이지 및 개별 공고 페이지, 검색·조회 일자 2026-08-30)\n\n응답시간: 22초 (추정)",
+      "before_response_time_sec": 22,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\n랠릿에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "결론: job-trend-mcp(채용정보 MCP 서버)에 등록된 데이터 기준, 랠릿(rallit)에서 \"Backend Engineer\" 직무 + 근무지 \"서울\" 조건에 맞는 채용공고는 총 17건입니다.\n\n확인 방법 및 출처\n\njob-trend-mcp:search_job_postings 도구에 job_function=\"Backend Engineer\", location=\"서울\", source_name=\"rallit\", active_only=true(기본값, 마감된 공고 제외) 조건으로 조회 → total_matched: 17 반환\n예시로 나온 공고들의 게시일이 2026-08-04, 2026-04-27 등으로 비교적 최근 데이터임을 확인했습니다.\n다만 이 수치는 랠릿 사이트를 실시간 크롤링한 값이 아니라, MCP 서버가 주기적으로 수집해 둔 내부 데이터베이스 기준입니다. 정확히 언제 마지막으로 수집됐는지는 도구 응답에 명시되어 있지 않습니다.\n\n웹 검색으로 교차 확인한 부분\n\n랠릿(rallit.com) 실제 사이트에서 \"백엔드 엔지니어 + 서울\" 조건으로 필터링된 검색 결과 페이지(예: rallit.com/positions?jobFunction=...)는 이번 대화의 web_fetch 도구가 사전에 검색되지 않은 URL은 열 수 없다는 제약 때문에 직접 접속해 실시간 전체 건수를 세는 것은 불가능했습니다.\n대신 web_search로 \"랠릿 백엔드 엔지니어 서울\" 등을 검색했을 때 발란, 코드잇, 미리디, 산군, 21세기전파상 등 서울 소재 백엔드 관련 개별 공고들이 다수 확인되어, MCP 도구가 반환한 17건이라는 규모 자체는 합리적인 범위로 보입니다. 다만 이 검색 결과 중 일부(예: 브라운백, 잡플래닛 공고)는 오래된 공고일 가능성이 있어 web_search만으로는 \"지금 몇 건\"이라는 정확한 실시간 총건수를 별도로 검증하지는 못했습니다.\n\n정리\n\n신뢰할 수 있는 숫자: 17건 (출처: job-trend-mcp search_job_postings, 조건 Backend Engineer / 서울 / rallit / active_only=true, 데이터 수집 시점 불명확)\n랠릿 사이트에서 실시간으로 완전히 동일한 필터를 걸어 재확인하려면 https://www.rallit.com 에서 직접 \"백엔드\" + \"서울\" 필터를 적용해 보시는 것을 권장드립니다.\n\n응답시간: 약 45초 (추정)",
+      "after_response_time_sec": 45,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "랠릿 JS 필터라 총 건수 확인 불가. 개별 공고 나열은 전수가 아니라고 거절.",
+        "after_note": "본문 17건, source_name=rallit, total_matched=17."
+      }
+    },
+    {
+      "question_id": "s05",
+      "question": "Arbeitnow에서 Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nArbeitnow에서 Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "일반 웹 검색만으로는 Arbeitnow 사이트에서 \"Software Engineer\" + \"정규직(Full-time)\" 필터를 적용했을 때의 정확한 전체 건수를 확인할 수 없었습니다.\n\n검색 결과로 확인된 것:\n\nArbeitnow의 \"Software Jobs in Germany\" 카테고리 페이지에는 전체 소프트웨어 관련 채용공고가 732건 있다는 내용은 있었지만, 이는 \"Software Engineer\" 직무 + \"정규직\" 필터를 함께 적용한 세부 수치가 아니라 소프트웨어 카테고리 전체(주니어, 파트타임, 인턴 등 포함) 건수입니다. \nArbeitnow\nArbeitnow는 검색어와 \"Full-Time\" 같은 태그를 별도로 클릭해 필터링하는 구조라, 검색 스니펫만으로는 \"Software Engineer\" 키워드 + \"Full-time\" 태그를 동시에 적용한 결과 건수가 노출되지 않았습니다.\n\n결론: 요청하신 \"Arbeitnow에서 Software Engineer 정규직 채용공고 전체 건수\"는 일반 웹 검색으로는 확인이 불가능했습니다. 정확한 숫자를 얻으려면 Arbeitnow 사이트(arbeitnow.com)에서 직접 \"Software Engineer\" 키워드로 검색 후 \"Full-Time\" 태그 필터를 적용해 화면에 표시되는 건수를 확인하시는 것을 권장드립니다.\n\n응답시간: 22초 (추정)",
+      "before_response_time_sec": 22,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nArbeitnow에서 Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "Arbeitnow — Software Engineer / Full-time 채용공고 건수\n\n결론: 28건 (job-trend-mcp에 저장된 Arbeitnow 크롤링 데이터 기준, job_function=Software Engineer, employment_type=Full-time, active_only=true)\n\n어디서 본 숫자인가\n출처: 이 대화에 연결된 job-trend-mcp 서버의 search_job_postings 툴 (source_name: arbeitnow, job_function: Software Engineer, employment_type: Full-time)\n응답값: total_matched: 28\n데이터 시점: 반환된 28건의 posted_at 값이 2026-07-29 ~ 2026-07-31에 몰려 있는 것으로 보아, 이 MCP의 Arbeitnow 데이터는 대략 한 달 전(7월 말)에 수집된 스냅샷이며 실시간 데이터가 아닙니다.\n웹에서 추가로 확인한 내용\n\nArbeitnow는 무료 공개 API(https://www.arbeitnow.com/api/job-board-api)를 제공하며, 비자 스폰서십 등 파라미터를 붙여 필터링할 수 있고, 한 페이지당 100건씩 페이지네이션으로 데이터를 반환합니다 (출처: arbeitnow.com 블로그, Apify 스크레이퍼 소개 페이지). \nArbeitnow\nApify\n\n제가 오늘(2026-08-30) 이 엔드포인트를 직접 호출(web_fetch)해 보니, Mozilla·Wolt·Anthropic 등 실제로 오늘 날짜로 게시된 최신 공고들이 확인되어 Arbeitnow 사이트 자체는 실시간으로 갱신되고 있음을 확인했습니다. 다만 이 API는 \"software engineer + full-time\" 같은 필터별 총건수를 바로 반환하는 기능이 없고, 전체 공고를 페이지 단위(100건씩)로만 내려주기 때문에, 지금 이 자리에서 수백~수천 페이지를 모두 훑어 실시간 정확 건수를 직접 재계산하는 것은 하지 않았습니다 — 이 부분은 확인하지 못했다는 점을 밝힙니다.\n\n정리\n항목\t내용\n답변한 건수\t28건\n근거\tjob-trend-mcp 크롤링 DB (source_name=arbeitnow)\n데이터 기준일\t2026-07-29~07-31 스냅샷 (약 1개월 전, 실시간 아님)\n검증 한계\tArbeitnow 공식 API는 필터별 총건수 미제공 → 오늘자 실시간 건수는 별도 전수 확인 필요\n\n즉, \"지금 이 순간\" 정확히 28건이 떠 있다고 단정할 수는 없고, MCP가 마지막으로 수집한 시점(7월 말) 기준으로 28건이었다는 것이 정확한 표현입니다.\n\n응답시간: 45초 (추정)",
+      "after_response_time_sec": 45,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "Software Jobs in Germany 732건(카테고리 전수). SE×FT 28이 아님. 정확 건수는 확인 불가.",
+        "after_note": "본문 28건, source_name=arbeitnow, total_matched=28. 공식 API는 필터별 총건수 없음."
+      }
+    },
+    {
+      "question_id": "s06",
+      "question": "Arbeitnow에서 Software Engineer이면서 근무지가 London인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "before_instruction": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_before": "별도 도구나 내부 데이터 없이, 일반적인 웹 검색만으로 답해주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nArbeitnow에서 Software Engineer이면서 근무지가 London인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "before_answer": "답변드리기 전에 먼저 말씀드릴 점이 있습니다 — 요청하신 \"Arbeitnow에서 Software Engineer + London으로 필터링된 정확한 채용공고 건수\"는 일반 웹 검색만으로는 확인하지 못했습니다.\n\n확인 시도 및 결과\n\nArbeitnow(arbeitnow.com / 영국은 arbeitnow.co.uk)는 검색·필터 결과가 자바스크립트 기반 동적 페이지로 동작해서, 구글 검색 스니펫이나 개별 채용공고 캐시 페이지에는 \"Software Engineer × London\" 조합의 총 건수가 텍스트로 노출되어 있지 않았습니다.\n대신 확인 가능했던 숫자는 다음과 같습니다.\nArbeitnow UK 전체 채용공고: 8,651건 (오늘 신규 102건) — arbeitnow.co.uk 메인 페이지, 2026년 8월 30일 기준\n\"London\" 지역으로만 필터링(직무명 무관)한 채용공고: 3,869건 — arbeitnow.co.uk/jobs/locations/london 페이지 메타데이터, \"2026년 8월\" 기준\n이 페이지들의 채용공고 목록을 직접 넘겨봐도 \"Software Engineer\" 직무명과 정확히 일치하며 근무지가 London인 공고만 따로 집계된 숫자는 나오지 않았고, 사이트 자체 검색창을 통해 필터링해야 정확한 숫자가 나오는 구조였습니다(제가 지금 실행할 수 있는 일반 웹 검색/페이지 열람으로는 그 필터링된 결과 페이지에 접근이 안 됐습니다).\n\n결론: 죄송하지만 \"Software Engineer + London\" 조합의 정확한 총 건수는 지금 드릴 수 없습니다. 대신 위의 \"London 전체 3,869건(직무 무관, 2026-08-30 기준, arbeitnow.co.uk/jobs/locations/london)\"을 참고하시거나, 직접 arbeitnow.co.uk에서 \"Software Engineer\" + London으로 검색하시면 정확한 실시간 숫자를 확인하실 수 있습니다.\n\n응답시간: 42초 (추정)",
+      "before_response_time_sec": 42,
+      "after_instruction": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.",
+      "prompt_to_paste_after": "이 대화에 연결된 도구와 웹 검색을 모두 사용해서 답해주세요. 도구 결과만으로 끝내지 말고, 웹에서 확인한 내용도 출처와 함께 적어주세요.\n답변 맨 마지막 줄에 `응답시간: N초` 형식으로, 이 답을 생성하는 데 걸린 시간을 적어주세요. 메시지 하단 등 화면에 생성 시간이 보이면 그 숫자를 쓰고, 없으면 대략 초를 쓰되 `(추정)`을 붙이세요.\n\nArbeitnow에서 Software Engineer이면서 근무지가 London인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "after_answer": "결론부터 말씀드리면, 현재 확인 가능한 수치는 \"12건\"이며, 이는 라이브 Arbeitnow 사이트가 아니라 이 대화에 연결된 job-trend-mcp 내부 채용 DB의 최신 수집본 기준입니다.\n\n1) job-trend-mcp(내부 DB) 조회 결과\n조건: source_name=arbeitnow, location=London, job_function=Software Engineer\n결과: 12건\n수집 시점: DB에 저장된 공고들의 posted_at은 2026-07-29 ~ 2026-07-30로, 이 무렵 크롤링된 스냅샷입니다.\n예시로 Prima(6건), liberis, Hypersonica, scaleai, Numan, airbnb 등이 포함되어 있습니다.\n2) 웹(Arbeitnow 공식 API/사이트) 확인 결과\n\nArbeitnow는 공개 Job Board API(arbeitnow.com/api/job-board-api, 영국은 arbeitnow.co.uk/api/job-board-api)를 제공하지만, 실제로 search=, location= 같은 쿼리 파라미터를 붙여 호출해도 필터링 없이 최신 공고 전체(페이지네이션)를 그대로 반환한다는 것을 직접 확인했습니다 (출처: arbeitnow.co.uk/api/job-board-api, 2026-08-30 확인). 즉, Arbeitnow 쪽에서 \"Software Engineer + London\"만 걸러주는 공식 카운트 기능 자체가 없고, 전체 데이터를 페이지 단위로 끝까지 받아와서 직접 세는 수밖에 없는 구조입니다(공식 총 건수 필드도 없음). 이 방식은 이 자리에서 안정적으로 재현하기 어려워, \"실시간 정확한 전수\"는 확인하지 못했습니다.\n\n출처: Arbeitnow Job Board API 소개 (arbeitnow.com/blog/job-board-api), 2026-08-30 확인\n정리\n구분\t값\t비고\njob-trend-mcp DB 기준\t12건\t2026-07-29~30 수집 스냅샷, 신뢰 가능한 수치\nArbeitnow 실시간 공식 집계\t확인 불가\tAPI가 검색/필터/총건수를 지원하지 않음\n\n즉 \"지금 이 순간\" Arbeitnow 웹사이트에 떠 있는 정확한 실시간 건수는 API 구조상 이 자리에서 검증하기 어렵고, 신뢰할 수 있는 최신 수치는 job-trend-mcp DB의 12건입니다. 실시간 값이 꼭 필요하시면 arbeitnow.co.uk 사이트에서 직접 \"Software Engineer\" + \"London\" 필터로 검색하시는 것을 권장드립니다.\n\n응답시간: 95초 (추정)",
+      "after_response_time_sec": 95,
+      "matches_ground_truth": {
+        "before": false,
+        "after": true,
+        "after_used_source_name": true,
+        "after_used_unfiltered_as_site_count": false,
+        "before_reason": "UK 전수 8,651·London 직무무관 3,869. SE×London 12가 아님. 정확 조합은 확인 불가.",
+        "after_note": "본문 12건, source_name=arbeitnow. API가 필터/총건수를 안 줘서 실시간 전수는 확인 불가."
+      }
+    }
+  ]
+}

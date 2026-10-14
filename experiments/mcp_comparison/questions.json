@@ -1,0 +1,510 @@
+{
+  "meta": {
+    "purpose": "웹 검색만(Before) vs 웹 검색+job-trend-mcp(After)의 정보량·구체성 비교. 질문 문장은 양쪽 동일하고, 지시문만 다르다.",
+    "hypothesis": "Before는 잡보드·리포트 등 웹 추정치(출처는 있어도 우리 스냅샷과 불일치). After는 수집 데이터셋의 정확한 건수·스킬 빈도.",
+    "scoring": "객관적 시장 정답이 아니라 ground_truth.json(우리 데이터셋·MCP tool 집계)과 일치하는지가 채점 기준.",
+    "dataset": "data/job_postings (JobPostingStore, crawl_status ACTIVE 기본)",
+    "designed_on": "2026-08-29",
+    "experiment_version": 3,
+    "n_questions": 18,
+    "min_sample_size": 20,
+    "category_counts": {
+      "simple_search": 5,
+      "aggregation": 8,
+      "combo_filter": 4,
+      "broad_control": 1
+    },
+    "design_rule": "모든 질문은 직무(또는 직무에 준하는 직군) × 조건 1개 이상. 스킬 top 5·급여 통계는 직무×스킬/급여 조건으로 본다. 직무 없이 조건만 묻는 질문은 broad_control 1개만 대조군으로 둔다.",
+    "sample_policy": "공고 20건 미만 조합은 제외. 설계 시점 최소 표본은 combo SE×London×Full-time 22건, 집계 Frontend 스킬 26건. broad_control은 표본이 커도 모집단이 웹과 달라 대조군이다.",
+    "scoring_dimensions": [
+      "출처의 구체성 (웹 추정치 vs 수집 스냅샷 수치)",
+      "건수의 정확성 (ground_truth.json 일치 여부)",
+      "스킬 빈도 등 세부 통계에서 Before가 일반론에 머무는지"
+    ],
+    "after_prompt_policy": "연결된 도구와 웹 검색을 모두 쓰라고 지시 + 응답시간 + 질문. 도구만/웹만 써도 그대로 기록. 수동 타이머 없음.",
+    "comparison_scope": "직무×조건으로 좁힌 질문은 After가 스냅샷 정답을 줄 수 있다. broad_control(정규직 전체)은 MCP가 있어도 웹 검색(잡보드 전수)과 모집단이 달라 비교가 안 된다는 점을 보여 주는 대조군이다."
+  },
+  "questions": [
+    {
+      "question_id": "q01",
+      "category": "simple_search",
+      "question": "Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched (search의 count가 아님 — limit에 잘린 목록 길이를 쓰면 오답)",
+      "sample_size": 73,
+      "why_web_search_differs": "웹은 '백엔드의 대부분이 정규직' 같은 비율이나 잡보드 백엔드 전수로 답하기 쉽다. 우리 Full-time 판정과 Backend 189건의 교집합 73건은 검색으로 알 수 없다.",
+      "notes": "구 q01(Backend 직무만 건수)은 조건이 없어 폐기. Full-time은 _norm_enum_token."
+    },
+    {
+      "question_id": "q02",
+      "category": "simple_search",
+      "question": "Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "location.*"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 102,
+      "why_web_search_differs": "'서울 백엔드 채용 몇 건'은 잡보드 실시간 검색과 혼동된다. 우리 102건은 수집 범위·직무 정규화·location blob 규칙의 교집합이다.",
+      "notes": "구 q02(Software Engineer 직무만)를 Backend×서울로 교체. Frontend+서울=0, Data Scientist+서울=0이라 사용자 예시 직무는 사용 불가."
+    },
+    {
+      "question_id": "q03",
+      "category": "simple_search",
+      "question": "Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 81,
+      "why_web_search_differs": "웹은 LinkedIn/Indeed의 Software Engineer 전 세계·정규직 필터 건수를 낸다. 우리 스냅샷 81건과 모집단이 다르다.",
+      "notes": "구 q03(Frontend 직무만) 대체. Frontend+Full-time은 26건 전부라 직무만 묻는 것과 건수가 같아 단순검색에서 제외(스킬 집계 q08로 유지)."
+    },
+    {
+      "question_id": "q04",
+      "category": "simple_search",
+      "question": "Software Engineer이면서 근무지가 Berlin인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "Berlin",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "location.*"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 35,
+      "why_web_search_differs": "Berlin SWE 채용은 LinkedIn·EU 잡보드 수치로 답하게 된다. 우리 location blob에 Berlin이 들어간 35건은 그 숫자와 무관하다.",
+      "notes": "구 q04(Data Engineer 직무만) 대체. Data Engineer×Full-time=16, ×서울=0이라 단순검색 조합을 만들 수 없어 스킬 질문(q10)만 유지."
+    },
+    {
+      "question_id": "q05",
+      "category": "simple_search",
+      "question": "엔지니어링 직군이면서 원격 근무인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_category": "Engineering & Technology",
+        "work_arrangement": "REMOTE",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_category_name",
+        "work_arrangement"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 45,
+      "why_web_search_differs": "엔지니어링 원격 비율 리포트는 %로 나온다. 우리 taxonomy 직군명과 work_arrangement=REMOTE의 교집합 45건은 웹에 없다.",
+      "notes": "구 q05(SpaceX 회사만) 대체. SpaceX×직무 최대 Software Engineer 12건, ×El Segundo 14건으로 20 미만. 직군은 직무에 준하는 구체적 대상."
+    },
+    {
+      "question_id": "q06",
+      "category": "aggregation",
+      "question": "Backend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 189,
+      "why_web_search_differs": "웹은 '백엔드는 Java, Spring, AWS가 인기' 같은 일반론을 낸다. 우리 canonical_name 빈도(예: 공고당 1회 집계)는 이 데이터셋에만 있다.",
+      "notes": "직무×스킬 조건. skills[].canonical_name만 집계. 공고당 동일 스킬 1회. 문구 유지."
+    },
+    {
+      "question_id": "q07",
+      "category": "aggregation",
+      "question": "Software Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 209,
+      "why_web_search_differs": "SWE 스킬 리포트는 시장 평균(Python/JS 등)을 말한다. 우리 209건 기준 정확한 count는 웹에 없다.",
+      "notes": "직무×스킬. 표본이 가장 큰 직무. 문구 유지."
+    },
+    {
+      "question_id": "q08",
+      "category": "aggregation",
+      "question": "Frontend Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Frontend Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 26,
+      "why_web_search_differs": "웹은 프론트=React/TypeScript가 정답처럼 답한다. 이 스냅샷은 특정 회사 편중으로 PHP와 React가 동률일 수 있어 일반론과 어긋나기 쉽다.",
+      "notes": "직무×스킬. 집계형 최소 표본 26. Frontend×서울=0이라 지역 조합 대신 스킬로 유지."
+    },
+    {
+      "question_id": "q09",
+      "category": "aggregation",
+      "question": "DevOps / Platform Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "DevOps / Platform Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 34,
+      "why_web_search_differs": "웹은 Kubernetes·AWS·Terraform 일반론을 반복한다. 우리 34건의 canonical 빈도 숫자는 검색으로 재현할 수 없다.",
+      "notes": "직무×스킬. taxonomy 직무명에 슬래시가 있음. 문구 유지."
+    },
+    {
+      "question_id": "q10",
+      "category": "aggregation",
+      "question": "Data Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Data Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 33,
+      "why_web_search_differs": "웹은 Spark/SQL/Python 같은 교과서적 스택을 말한다. Data Scientist와 섞이기도 쉽다. 우리 Data Engineer 33건의 Airflow 등 count는 스냅샷 고유.",
+      "notes": "직무×스킬. Data Engineer 단순 건수는 조건 조합 표본 부족으로 삭제하고 이 질문만 유지. Data Scientist(8건)는 제외."
+    },
+    {
+      "question_id": "q11",
+      "category": "aggregation",
+      "question": "Mobile Engineer 채용에서 가장 많이 요구되는 기술스택 top 5는 무엇인가요? 가능하면 각 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "get_skill_trend"
+      ],
+      "tool_params": {
+        "job_function": "Mobile Engineer",
+        "top_n": 5,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "skills[].canonical_name"
+      ],
+      "answer_key": "skills[0:5] (skill, count) + posting_count",
+      "sample_size": 35,
+      "why_web_search_differs": "웹은 모바일=Swift/Kotlin/React Native 일반론을 낸다. 우리 35건 canonical 빈도는 스냅샷 고유.",
+      "notes": "직무×스킬. Mobile×서울=1, ×Full-time=6이라 지역/고용형태 조합 불가. 문구 유지."
+    },
+    {
+      "question_id": "q12",
+      "category": "aggregation",
+      "question": "Software Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "tools": [
+        "get_salary_summary"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer"
+      },
+      "fields": [
+        "job_function_name",
+        "salary.min_amount",
+        "salary.max_amount",
+        "salary.currency_code",
+        "salary.pay_period"
+      ],
+      "answer_key": "matched_postings, salary_data_count, summaries[]",
+      "sample_size": 209,
+      "salary_data_count": 77,
+      "why_web_search_differs": "연봉 조사 사이트는 USD 연봉 하나를 평균으로 말한다. 우리 tool은 통화·pay_period를 섞지 않고 그룹을 나눈다. 웹은 이 그룹 정의를 모른다.",
+      "notes": "직무×급여. avg는 공고별 midpoint 평균. sample_size는 매칭 공고 수(209), 급여 숫자 있는 건은 77."
+    },
+    {
+      "question_id": "q13",
+      "category": "aggregation",
+      "question": "Backend Engineer 중 급여가 명시된 공고는 몇 건이고, 최소·최대·평균은 얼마인가요? 통화와 연봉/월급/시급을 섞지 말고 구분해서, 출처와 날짜도 답해주세요.",
+      "tools": [
+        "get_salary_summary"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer"
+      },
+      "fields": [
+        "job_function_name",
+        "salary.min_amount",
+        "salary.max_amount",
+        "salary.currency_code",
+        "salary.pay_period"
+      ],
+      "answer_key": "matched_postings, salary_data_count, summaries[]",
+      "sample_size": 189,
+      "salary_data_count": 49,
+      "why_web_search_differs": "한국 백엔드 연봉 기사는 대략 구간(예: 4~6천만)을 인용한다. 우리 결과는 KRW/USD 등이 분리되어 있고, 웹의 '시장 평균'과 숫자가 맞지 않는다.",
+      "notes": "직무×급여. 서울만 한정하면 급여 표본 9건. Frontend 급여(24건)는 사용자 예시와 맞지만 SE/BE가 표본이 커서 이 둘을 유지."
+    },
+    {
+      "question_id": "q14",
+      "category": "combo_filter",
+      "question": "Backend Engineer이고 서울 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "location.*",
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 42,
+      "why_web_search_differs": "3중 필터 교집합은 어떤 공개 리포트에도 없다. 웹 검색은 조건을 풀거나 일반론으로 우회하기 쉽다.",
+      "notes": "직무×지역×고용형태. 구 q18과 동일. 문구 유지."
+    },
+    {
+      "question_id": "q15",
+      "category": "combo_filter",
+      "question": "Software Engineer이고 London 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "London",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "location.*",
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 22,
+      "why_web_search_differs": "런던 SWE 정규직은 잡보드 필터 결과(수백~수천)로 답하게 된다. 우리 22건은 스냅샷·정규화 교집합이다.",
+      "notes": "직무×지역×고용형태. SE×Berlin×Full-time=14라 미사용. 설계상 최소 표본(22)."
+    },
+    {
+      "question_id": "q16",
+      "category": "combo_filter",
+      "question": "Software Engineer이고 Germany 근무에 정규직(Full-time)인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "Germany",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_function_name",
+        "location.*",
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 20,
+      "why_web_search_differs": "독일 SWE 정규직 시장 규모와 우리 location blob에 Germany가 들어간 Full-time 20건은 모집단이 다르다.",
+      "notes": "직무×지역×고용형태. 최소 표본 하한(20). Berlin 단독(q04)과 다른 필터(국가+고용형태)."
+    },
+    {
+      "question_id": "q17",
+      "category": "combo_filter",
+      "question": "엔지니어링 직군이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_category": "Engineering & Technology",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "job_category_name",
+        "location.*"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 111,
+      "why_web_search_differs": "사람인 서울 엔지니어링 전수와 우리 taxonomy 직군×서울 111건은 모집단이 다르다.",
+      "notes": "직군(직무에 준함)×지역. Eng×서울×REMOTE=12라 3중 필터는 제외."
+    },
+    {
+      "question_id": "q18",
+      "category": "broad_control",
+      "question": "정규직(Full-time) 채용공고는 지금 몇 건인가요? 직무를 가리지 말고, 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "fields": [
+        "employment_type_name"
+      ],
+      "answer_key": "total_matched",
+      "sample_size": 440,
+      "why_web_search_differs": "웹은 잡보드 정규직 전수(만 단위)를 말한다. MCP가 있어도 우리 스냅샷 Full-time 440건과 모집단이 달라, 도구가 있어도 웹 검색만큼(또는 그 이상으로) '다른 숫자'가 나온다. 대조군.",
+      "notes": "유일한 직무 무관 질문. 다수가 이 유형이면 안 됨. 채점 시 '스냅샷 일치'와 '시장 전수'를 구분해 해석할 것."
+    }
+  ],
+  "excluded_for_small_n": [
+    {
+      "candidate": "Data Scientist 스킬 top 5 / Data Scientist×서울",
+      "n": 8,
+      "n_seoul": 0,
+      "reason": "표본 부족. 사용자 예시 '데이터 사이언티스트 중 서울'은 0건"
+    },
+    {
+      "candidate": "Backend Engineer + Internship",
+      "n": 1,
+      "reason": "표본 부족"
+    },
+    {
+      "candidate": "Frontend Engineer + 서울",
+      "n": 0,
+      "reason": "매칭 0건. 사용자 예시 지역 조합 불가"
+    },
+    {
+      "candidate": "Data Engineer + 서울",
+      "n": 0,
+      "reason": "매칭 0건"
+    },
+    {
+      "candidate": "Data Engineer + Full-time",
+      "n": 16,
+      "reason": "표본 20 미만 — DE 단순건수 질문을 스킬 집계(q10)로만 유지"
+    },
+    {
+      "candidate": "DevOps + REMOTE",
+      "n": 2,
+      "reason": "표본 부족"
+    },
+    {
+      "candidate": "Backend Engineer + 서울 급여 통계",
+      "n_salary": 9,
+      "reason": "급여 숫자 표본이 작아 직무 전체(q13)로 유지"
+    },
+    {
+      "candidate": "Backend Engineer + REMOTE",
+      "n": 17,
+      "reason": "표본 20 미만"
+    },
+    {
+      "candidate": "Frontend Engineer + Full-time / + REMOTE (단순 건수)",
+      "n": 26,
+      "reason": "해당 스냅샷에서 FE 26건이 전부 Full-time·REMOTE라 직무만 묻는 것과 건수가 같음. 스킬 집계(q08)로만 유지"
+    },
+    {
+      "candidate": "Software Engineer + Berlin + Full-time",
+      "n": 14,
+      "reason": "표본 20 미만 — London×Full-time(22)으로 대체"
+    },
+    {
+      "candidate": "Engineering × 서울 × REMOTE",
+      "n": 12,
+      "reason": "표본 20 미만"
+    },
+    {
+      "candidate": "SpaceX 채용 건수 / SpaceX×직무 / SpaceX×도시",
+      "n": 28,
+      "n_top_function": 12,
+      "n_el_segundo": 14,
+      "reason": "회사만 묻는 질문은 직무×조건 원칙 위반. 직무·도시 조합은 20 미만"
+    },
+    {
+      "candidate": "Mobile Engineer + 서울 / + Full-time",
+      "n_seoul": 1,
+      "n_ft": 6,
+      "reason": "지역·고용형태 조합 불가. 스킬 집계만 유지"
+    },
+    {
+      "candidate": "서울 지역 전체 채용공고 건수",
+      "n": 147,
+      "reason": "직무 무관 전수. 대조군은 Full-time 전체 1개만 둠"
+    },
+    {
+      "candidate": "REMOTE 전체 채용공고 건수",
+      "n": 109,
+      "reason": "직무 무관. broad_control과 중복되는 유형"
+    },
+    {
+      "candidate": "Backend / Software / Frontend / Data Engineer 직무만 건수",
+      "reason": "조건 없이 직무만 묻는 질문. 실제 사용 시나리오가 약하고 비교 설득력이 떨어짐"
+    }
+  ]
+}

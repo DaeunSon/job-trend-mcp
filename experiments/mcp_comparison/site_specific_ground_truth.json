@@ -1,0 +1,213 @@
+{
+  "meta": {
+    "experiment_version": 3,
+    "kind": "site_specific",
+    "source_questions": "experiments/mcp_comparison/site_specific_questions.json",
+    "data_dir": "/Users/sn15d/Documents/python/job-trend-mcp/data",
+    "total_postings": 659,
+    "active_postings": 659,
+    "n_questions": 6,
+    "mcp_source_filter": true,
+    "scoring_rule": "사이트 GT는 search_job_postings(source_name=...) 의 total_matched. source_name 없이 호출하면 mcp_unfiltered_total_matched. 둘의 차이가 '사이트 지정 vs 통합 스냅샷' 대비이다."
+  },
+  "items": [
+    {
+      "question_id": "s01",
+      "category": "site_specific",
+      "site_display_name": "점핏",
+      "source_name": "jumpit",
+      "question": "점핏에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 9,
+        "mcp_unfiltered_total_matched": 66,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='jumpit') total_matched == 9",
+        "after_if_tools_used": "source_name 을 쓰면 9, 안 쓰면 통합 total_matched == 66",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 9,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "사람인 대체. 사람인은 JS 검색+web_fetch 오인(전산직 캐시)과 employment_type=정규직 0건 때문에 제외. 점핏 Backend×서울 9 vs MCP 전체 66. 정규직 조건은 넣지 않음."
+    },
+    {
+      "question_id": "s02",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "question": "잡코리아에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 11,
+        "mcp_unfiltered_total_matched": 66,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='jobkorea') total_matched == 11",
+        "after_if_tools_used": "source_name 을 쓰면 11, 안 쓰면 통합 total_matched == 66",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 11,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "잡코리아 11 vs MCP 전체 66. 재수집 전 파일 22건·고유 URL 11건."
+    },
+    {
+      "question_id": "s03",
+      "category": "site_specific",
+      "site_display_name": "잡코리아",
+      "source_name": "jobkorea",
+      "question": "잡코리아에서 Backend Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 17,
+        "mcp_unfiltered_total_matched": 54,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='jobkorea') total_matched == 17",
+        "after_if_tools_used": "source_name 을 쓰면 17, 안 쓰면 통합 total_matched == 54",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 17,
+      "sample_size_mcp_unfiltered": 54,
+      "notes": "잡코리아 17 vs MCP 전체 54."
+    },
+    {
+      "question_id": "s04",
+      "category": "site_specific",
+      "site_display_name": "랠릿",
+      "source_name": "rallit",
+      "question": "랠릿에서 Backend Engineer이면서 근무지가 서울인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 17,
+        "mcp_unfiltered_total_matched": 66,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='rallit') total_matched == 17",
+        "after_if_tools_used": "source_name 을 쓰면 17, 안 쓰면 통합 total_matched == 66",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 17,
+      "sample_size_mcp_unfiltered": 66,
+      "notes": "원티드는 스냅샷 0건이라 랠릿으로 대체. 랠릿 17 vs MCP 전체 66."
+    },
+    {
+      "question_id": "s05",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "question": "Arbeitnow에서 Software Engineer 중 정규직(Full-time) 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "employment_type": "Full-time",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 28,
+        "mcp_unfiltered_total_matched": 48,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='arbeitnow') total_matched == 28",
+        "after_if_tools_used": "source_name 을 쓰면 28, 안 쓰면 통합 total_matched == 48",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 28,
+      "sample_size_mcp_unfiltered": 48,
+      "notes": "해외 보드. Arbeitnow 28 vs MCP 전체 48. Berlin/Germany는 이 스냅샷에서 Arbeitnow가 전수라 대비가 없어 제외."
+    },
+    {
+      "question_id": "s06",
+      "category": "site_specific",
+      "site_display_name": "Arbeitnow",
+      "source_name": "arbeitnow",
+      "question": "Arbeitnow에서 Software Engineer이면서 근무지가 London인 채용공고는 지금 몇 건인가요? 목록이 아니라 전체 건수와, 그 숫자를 어디서 봤는지(출처·날짜)를 답해주세요.",
+      "tools": [
+        "search_job_postings"
+      ],
+      "tool_params": {
+        "job_function": "Software Engineer",
+        "location": "London",
+        "limit": 100,
+        "active_only": true
+      },
+      "computation": "source_filtered는 search_job_postings(source_name=...) + pandas 교차검증. mcp_unfiltered는 source_name 없이 같은 직무×조건 호출.",
+      "expected": {
+        "source_filtered_count": 12,
+        "mcp_unfiltered_total_matched": 20,
+        "mcp_filtered_status": "ok",
+        "mcp_unfiltered_status": "ok"
+      },
+      "scoring": {
+        "type": "site_vs_mcp_gap",
+        "site_truth": "search_job_postings(source_name='arbeitnow') total_matched == 12",
+        "after_if_tools_used": "source_name 을 쓰면 12, 안 쓰면 통합 total_matched == 20",
+        "before_typical": "지정 사이트의 웹 검색 근사치·캐시 스니펫 (우리 크롤 N과 불일치 가능)",
+        "common_error": "search의 count(limit 자른 목록 길이)를 전체로 답하는 경우. 사이트 지정 질문인데 MCP가 준 통합 건수를 사람인/잡코리아 숫자라고 말하는 경우."
+      },
+      "sample_size_source_filtered": 12,
+      "sample_size_mcp_unfiltered": 20,
+      "notes": "해외 지역 조합. Arbeitnow 12 vs MCP 전체 20."
+    }
+  ]
+}
