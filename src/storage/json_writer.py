@@ -28,7 +28,9 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import re
+import tempfile
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -400,9 +402,21 @@ def _sanitize_filename(name: str) -> str:
 
 
 def _write_json(path: Path, data: Any) -> None:
+    """임시 파일에 쓴 뒤 rename 으로 바꾼다.
+
+    제자리에 덮어쓰면 다른 프로세스가 반쯤 쓰인 파일을 읽을 수 있다. 2026-10-14 수집과 파싱을
+    동시에 돌렸을 때 normalization_aliases.json 을 읽다 실패한 쪽이 빈 목록으로 다시 저장해
+    파일 내용이 사라졌다.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
-    with open(path, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+    fd, tmp = tempfile.mkstemp(dir=path.parent, prefix=f".{path.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8") as f:
+            json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+        os.replace(tmp, path)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
 
 
 def _read_json_list(path: Path) -> list[dict[str, Any]]:

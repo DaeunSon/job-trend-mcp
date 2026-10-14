@@ -361,3 +361,24 @@ class TestGetSavedIds:
         )
         all_docs = load_all_documents_in_collection("raw_job_postings", str(tmp_base))
         assert len(all_docs) == 2
+
+
+def test_write_json_is_atomic_and_leaves_no_temp(tmp_path):
+    from src.storage.json_writer import _write_json
+
+    target = tmp_path / "a.json"
+    _write_json(target, [{"x": 1}])
+    _write_json(target, [{"x": 2}])
+    assert json.loads(target.read_text(encoding="utf-8")) == [{"x": 2}]
+    assert [p.name for p in tmp_path.iterdir()] == ["a.json"]
+
+
+def test_write_json_failure_keeps_old_file(tmp_path):
+    from src.storage.json_writer import _write_json
+
+    target = tmp_path / "a.json"
+    _write_json(target, [{"x": 1}])
+    with pytest.raises(TypeError):
+        _write_json(target, {object(): 1})  # 직렬화 실패
+    assert json.loads(target.read_text(encoding="utf-8")) == [{"x": 1}]
+    assert [p.name for p in tmp_path.iterdir()] == ["a.json"]
