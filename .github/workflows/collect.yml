@@ -1,0 +1,130 @@
+name: Collect
+
+# 수집 → 품질 게이트 → 평가 정답 재계산 → 스냅샷 보관 → n8n 에 결과 알림.
+# 일정 실행은 n8n Cloud 가 GitHub API(workflow_dispatch)로 이 워크플로를 호출한다
+# (automation/n8n/collect_workflow.json).
+on:
+  workflow_dispatch:
+    inputs:
+      sites:
+        description: "수집할 사이트 (공백 구분, 비우면 수집 계획 전체)"
+        required: false
+        default: ""
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+      - name: Install
+        run: pip install -r requirements.txt
+
+      # 품질 게이트가 직전 수집과 비교할 수 있게 지난 실행의 collect_runs 를 받아 온다
+      - name: Restore previous collect runs
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          prev=$(gh run list -R "$GITHUB_REPOSITORY" --workflow collect.yml --status success \
+                 --limit 1 --json databaseId -q '.[0].databaseId')
+          if [ -n "$prev" ]; then
+            gh run download "$prev" -R "$GITHUB_REPOSITORY" -n collect-runs -D data/collect_runs
+          fi
+
+      - name: Collect
+        id: collect
+        continue-on-error: true
+        run: |
+          if [ -n "${{ inputs.sites }}" ]; then
+            python scripts/collect_all.py --only ${{ inputs.sites }}
+          else
+            python scripts/collect_all.py
+          fi
+
+      - name: Data quality and eval ground truth
+        if: always()
+        run: |
+          python scripts/data_quality_report.py --out data_quality.md || true
+          python scripts/run_eval.py --dry-run > eval_dry_run.txt 2>&1 || true
+          {
+            echo "## 수집 요약"
+            latest=$(ls -d data/collect_runs/*/ | sort | tail -1)
+            python - "$latest" <<'PY'
+          import json, sys
+          s = json.load(open(sys.argv[1] + "summary.json"))
+          q = json.load(open(sys.argv[1] + "quality.json")) if __import__("os").path.exists(sys.argv[1] + "quality.json") else {}
+          print(f"- 결과: **{s['overall']}** · 공고 {s['total_postings']}건 · 품질 게이트 {'통과' if q.get('passed') else '실패/없음'}")
+          print("\n| 사이트 | 상태 | 증가 | 총 | ERROR |\n|---|---|---|---|---|")
+          for r in s["sites"]:
+              print(f"| {r['source']} | {r['status']} | {r['added']} | {r['total']} | {r['error_lines']} |")
+          if s.get("retry"):
+              print(f"\n네트워크 오류로 다시 돌릴 사이트: {' '.join(s['retry'])}")
+          PY
+            echo
+            cat data_quality.md
+            echo '## 평가 정답 (dry-run)'
+            echo '```'
+            grep -E "^(데이터|도구|id|[qaskmcn][0-9])" eval_dry_run.txt || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload collect runs (다음 실행의 품질 게이트 기준선)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: collect-runs
+          path: data/collect_runs/
+          retention-days: 90
+
+      - name: Upload data snapshot
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-postings-${{ github.run_id }}
+          path: |
+            data/job_postings/
+            data_quality.md
+            eval_dry_run.txt
+          retention-days: 30
+
+      # n8n 웹훅 주소는 저장소 Secret N8N_WEBHOOK_URL 에 둔다. 없으면 건너뛴다.
+      - name: Notify n8n
+        if: always()
+        env:
+          N8N_WEBHOOK_URL: ${{ secrets.N8N_WEBHOOK_URL }}
+        run: |
+          if [ -z "$N8N_WEBHOOK_URL" ]; then echo "N8N_WEBHOOK_URL 없음 — 건너뜀"; exit 0; fi
+          latest=$(ls -d data/collect_runs/*/ | sort | tail -1)
+          python - "$latest" > payload.json <<'PY'
+          import json, os, sys
+          d = sys.argv[1]
+          s = json.load(open(d + "summary.json"))
+          q = json.load(open(d + "quality.json")) if os.path.exists(d + "quality.json") else {}
+          print(json.dumps({
+              "run_url": f"{os.environ['GITHUB_SERVER_URL']}/{os.environ['GITHUB_REPOSITORY']}/actions/runs/{os.environ['GITHUB_RUN_ID']}",
+              "overall": s["overall"],
+              "total_postings": s["total_postings"],
+              "quality_passed": q.get("passed"),
+              "retry": s.get("retry", []),
+              "sites": [{k: r[k] for k in ("source", "status", "added", "total", "error_lines")} for r in s["sites"]],
+              "failed_checks": {src: v["reasons"] for src, v in q.get("verdicts", {}).items() if v["status"] != "ok"},
+          }, ensure_ascii=False))
+          PY
+          curl -sS -X POST -H "Content-Type: application/json" --data @payload.json "$N8N_WEBHOOK_URL"
+
+      - name: Fail if collection was not ok
+        if: steps.collect.outcome != 'success'
+        run: |
+          echo "collect_all.py 가 0 이 아닌 코드로 끝났습니다 (일부 실패 · 품질 게이트 실패 포함)."
+          exit 1
