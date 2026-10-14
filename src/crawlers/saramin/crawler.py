@@ -389,6 +389,7 @@ def run_saramin_batch(
     crawl_date: str | None = None,
     save_dir: str | None = None,
     force: bool = False,
+    max_pages: int = _MAX_PAGES,
 ) -> None:
     """
     job_functions를 순회하며 crawl_saramin을 반복 호출한다.
@@ -401,6 +402,7 @@ def run_saramin_batch(
         crawl_date=crawl_date,
         save_path=save_dir,
         force=force,
+        max_pages=max_pages,
     )
 
 

@@ -137,6 +137,7 @@ def main() -> None:
                 crawl_date=args.crawl_date,
                 save_dir=args.save_dir,  # None 이면 json_writer 기본값(<root>/data). 단일 검색어 경로와 같게 data 루트를 넘긴다
                 force=args.force,
+                max_pages=args.max_pages,
             )
 
     if not args.no_parse:

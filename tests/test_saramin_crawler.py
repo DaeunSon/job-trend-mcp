@@ -527,3 +527,16 @@ class TestSaraminSearchQueries:
         from src.crawlers.saramin.search_queries import SARAMIN_SEARCH_QUERIES
         for key, queries in SARAMIN_SEARCH_QUERIES.items():
             assert len(queries) > 0, f"{key!r}에 검색어가 없습니다."
+
+
+def test_batch_forwards_max_pages_and_data_root(monkeypatch):
+    """배치가 --max-pages 를 무시하고 검색어마다 50페이지를 돌던 문제, 원문을 data/raw_job_postings/raw_job_postings 에 저장하던 문제."""
+    from src.crawlers.saramin import crawler as saramin_crawler
+
+    calls = []
+    monkeypatch.setattr(
+        saramin_crawler, "run_query_batch", lambda **kw: calls.append(kw)
+    )
+    saramin_crawler.run_saramin_batch(["백엔드 개발자", "데이터 엔지니어"], max_pages=2)
+    assert calls[0]["max_pages"] == 2
+    assert calls[0]["save_path"] is None
