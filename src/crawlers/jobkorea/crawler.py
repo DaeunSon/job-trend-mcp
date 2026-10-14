@@ -375,7 +375,7 @@ def crawl_jobkorea(
 def run_jobkorea_batch(
     job_functions: list[str],
     crawl_date: str | None = None,
-    save_dir: str = "./data/raw_job_postings",
+    save_dir: str | None = None,
     max_pages: int = _MAX_PAGES,
     incremental: bool = True,
 ) -> None:

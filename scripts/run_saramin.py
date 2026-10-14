@@ -135,7 +135,7 @@ def main() -> None:
             run_saramin_batch(
                 job_functions=queries,
                 crawl_date=args.crawl_date,
-                save_dir=args.save_dir or "./data/raw_job_postings",
+                save_dir=args.save_dir,  # None 이면 json_writer 기본값(<root>/data). 단일 검색어 경로와 같게 data 루트를 넘긴다
                 force=args.force,
             )
 

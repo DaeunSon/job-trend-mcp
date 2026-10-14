@@ -1,0 +1,30 @@
+{
+  "description": "scripts/collect_all.py 가 순서대로 실행하는 사이트별 수집 계획. 개발 직무 중심이고, 한 사이트가 전체를 차지하지 않게 사이트마다 상한을 둔다. args 의 {functions} · {kr_queries} 는 아래 목록으로 바뀐다.",
+  "functions": [
+    "Software Engineer", "Backend Engineer", "Frontend Engineer", "Full Stack Engineer",
+    "Mobile Engineer", "DevOps / Platform Engineer", "Data Engineer", "Data Scientist",
+    "Machine Learning Engineer", "QA / Test Engineer"
+  ],
+  "kr_queries": [
+    "백엔드 개발자", "프론트엔드 개발자", "소프트웨어 개발자", "풀스택 개발자", "모바일 개발자",
+    "데브옵스", "데이터 엔지니어", "데이터 사이언티스트", "머신러닝 엔지니어", "QA 엔지니어"
+  ],
+  "sites": [
+    {"source": "wanted",    "script": "run_wanted.py",    "args": ["--function", "{functions}", "--max-jobs", "60"]},
+    {"source": "jumpit",    "script": "run_jumpit.py",    "args": ["--function", "{functions}", "--max-jobs", "60"]},
+    {"source": "rallit",    "script": "run_rallit.py",    "args": ["--function", "{functions}", "--max-jobs", "60"]},
+    {"source": "saramin",   "script": "run_saramin.py",   "args": ["-q", "{kr_queries}", "--max-pages", "2"]},
+    {"source": "work24",    "script": "run_work24.py",    "args": ["-q", "{kr_queries}", "--max-pages", "2"]},
+    {"source": "arbeitnow", "script": "run_arbeitnow.py", "args": ["--max-pages", "1"],
+     "note": "API 약관상 호출 간 20초. 2026-10 기준 페이지당 300건이고 직무 필터가 없어 1페이지로 제한한다 (편중 #4)"},
+    {"source": "remotive",  "script": "run_remotive.py",
+     "args": ["--category", "software-development", "devops", "artificial-intelligence", "data", "qa", "--max-jobs", "80"],
+     "note": "약관상 하루 최대 4회 권장"},
+    {"source": "themuse",   "script": "run_themuse.py",   "args": ["--max-pages", "2"]},
+    {"source": "usajobs",   "script": "run_usajobs.py",
+     "args": ["--function", "Software Engineer", "Data Scientist", "Data Engineer", "--max-jobs", "40"]},
+    {"source": "adzuna",    "script": "run_adzuna.py",    "args": ["--batch", "--max-pages", "1", "--max-jobs", "30"]},
+    {"source": "jobkorea",  "script": "run_jobkorea.py",  "args": ["-q", "{kr_queries}"], "enabled": false,
+     "note": "robots.txt 가 검색 경로 자동 접근을 막고 있어 기본 수집에서 뺀다 (sources.py legal_risk_level=HIGH)"}
+  ]
+}

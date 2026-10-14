@@ -32,3 +32,4 @@ data_archive/
 # 평가 결과 원본은 남긴다 (도구 호출 로그는 제외)
 !evals/results/**/results.jsonl
 evals/results/dry-run/
+data/collect_runs/
