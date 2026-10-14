@@ -69,9 +69,15 @@ def count_by_source(data_dir: Path) -> Counter:
     return Counter(d.get("source_name") or "?" for d in store.postings)
 
 
-def count_errors(log_path: Path) -> tuple[int, list[str]]:
+# 사이트 문제가 아니라 이쪽 네트워크 문제(DNS · 연결 끊김)일 때 나오는 표시
+_NETWORK_MARKERS = ("NameResolutionError", "Failed to resolve", "ConnectionError", "Connection aborted")
+
+
+def count_errors(log_path: Path) -> tuple[int, int, list[str]]:
+    """(ERROR 줄 수, 그중 네트워크 오류 줄 수, 앞쪽 예시)"""
     lines = [ln for ln in log_path.read_text(encoding="utf-8", errors="replace").splitlines() if "[ERROR]" in ln]
-    return len(lines), [ln[:240] for ln in lines[:5]]
+    network = sum(1 for ln in lines if any(m in ln for m in _NETWORK_MARKERS))
+    return len(lines), network, [ln[:240] for ln in lines[:5]]
 
 
 def run_site(site: dict[str, Any], cmd: list[str], log_path: Path, timeout: int) -> dict[str, Any]:
@@ -84,13 +90,14 @@ def run_site(site: dict[str, Any], cmd: list[str], log_path: Path, timeout: int)
             timed_out = False
         except subprocess.TimeoutExpired:
             exit_code, timed_out = None, True
-    n_errors, samples = count_errors(log_path)
+    n_errors, n_network, samples = count_errors(log_path)
     return {
         "source": site["source"],
         "exit_code": exit_code,
         "timed_out": timed_out,
         "duration_sec": round(time.monotonic() - started, 1),
         "error_lines": n_errors,
+        "network_error_lines": n_network,
         "error_samples": samples,
         "log": str(log_path.relative_to(_ROOT)) if log_path.is_relative_to(_ROOT) else str(log_path),
     }
@@ -99,6 +106,8 @@ def run_site(site: dict[str, Any], cmd: list[str], log_path: Path, timeout: int)
 def classify(result: dict[str, Any]) -> str:
     if result["timed_out"] or result["exit_code"] != 0:
         return "failed"
+    if result.get("network_error_lines") and result["added"] == 0:
+        return "network"  # 네트워크가 돌아오면 다시 돌리면 된다
     if result["error_lines"] or result["added"] == 0:
         return "warning"
     return "ok"
@@ -159,13 +168,16 @@ def main() -> int:
         "by_source": dict(before.most_common()),
         "sites": results,
         "skipped": [s["source"] for s in plan["sites"] if s not in sites],
+        "retry": [r["source"] for r in results if r["status"] == "network"],
     }
     (run_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(f"\n전체 {overall} · 공고 {summary['total_postings']}건 · 요약 {run_dir / 'summary.json'}")
+    if summary["retry"]:
+        print(f"네트워크 오류로 0건 — 다시 실행: --only {' '.join(summary['retry'])}", flush=True)
+    print(f"\n전체 {overall} · 공고 {summary['total_postings']}건 · 요약 {run_dir / 'summary.json'}", flush=True)
     code = {"ok": 0, "partial": 1, "failed": 2}[overall]
 
     if not args.no_gate:
-        print("\n품질 게이트")
+        print("\n품질 게이트", flush=True)
         gate = subprocess.run(
             [sys.executable, str(_ROOT / "scripts" / "quality_gate.py"), "--run", run_id],
             cwd=_ROOT, env=os.environ | {"PYTHONPATH": str(_ROOT)},

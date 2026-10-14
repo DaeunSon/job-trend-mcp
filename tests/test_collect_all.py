@@ -59,3 +59,21 @@ def test_jobkorea_disabled_by_default():
     plan = collect_all.load_plan()
     jk = next(s for s in plan["sites"] if s["source"] == "jobkorea")
     assert jk.get("enabled") is False
+
+
+def test_network_failure_is_retryable():
+    assert collect_all.classify(_res(error_lines=3, network_error_lines=3, added=0)) == "network"
+    # 일부라도 받았으면 경고로 둔다
+    assert collect_all.classify(_res(error_lines=3, network_error_lines=3, added=50)) == "warning"
+
+
+def test_count_errors_separates_network(tmp_path):
+    log = tmp_path / "x.log"
+    log.write_text(
+        "a [ERROR] Max retries exceeded (Caused by NameResolutionError(...))\n"
+        "b [ERROR] 422 Client Error\n"
+        "c [INFO] ok\n",
+        encoding="utf-8",
+    )
+    total, network, samples = collect_all.count_errors(log)
+    assert (total, network, len(samples)) == (2, 1, 2)
