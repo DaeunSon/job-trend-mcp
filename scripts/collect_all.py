@@ -7,7 +7,9 @@
 - 로그에서 ERROR 줄을 세어, 종료 코드는 0 이어도 일부 요청이 실패한 경우(예: API 422)를 잡는다.
 - 결과는 data/collect_runs/<run_id>/ 에 summary.json 과 사이트별 로그로 남는다.
 
-종료 코드: 0 전부 성공 · 1 일부 실패 또는 경고 · 2 전부 실패
+수집이 끝나면 품질 게이트(scripts/quality_gate.py)로 직전 수집과 비교한다.
+
+종료 코드: 0 전부 성공 · 1 일부 실패 · 경고 · 품질 게이트 실패 · 2 전부 실패
 
 사용:
   PYTHONPATH=. python scripts/collect_all.py                    # 계획 전체
@@ -109,6 +111,7 @@ def main() -> int:
     p.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT_SEC, help="사이트당 제한 시간(초)")
     p.add_argument("--include-disabled", action="store_true", help="enabled=false 사이트도 실행")
     p.add_argument("--dry-run", action="store_true")
+    p.add_argument("--no-gate", action="store_true", help="수집 뒤 품질 게이트(quality_gate.py)를 건너뜀")
     args = p.parse_args()
 
     plan = load_plan()
@@ -159,7 +162,16 @@ def main() -> int:
     }
     (run_dir / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"\n전체 {overall} · 공고 {summary['total_postings']}건 · 요약 {run_dir / 'summary.json'}")
-    return {"ok": 0, "partial": 1, "failed": 2}[overall]
+    code = {"ok": 0, "partial": 1, "failed": 2}[overall]
+
+    if not args.no_gate:
+        print("\n품질 게이트")
+        gate = subprocess.run(
+            [sys.executable, str(_ROOT / "scripts" / "quality_gate.py"), "--run", run_id],
+            cwd=_ROOT, env=os.environ | {"PYTHONPATH": str(_ROOT)},
+        )
+        code = max(code, gate.returncode)
+    return code
 
 
 if __name__ == "__main__":
