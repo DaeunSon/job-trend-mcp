@@ -35,7 +35,11 @@ FIELDS = {
     "근무형태": lambda d: bool(d.get("work_arrangement")),
     "스킬": lambda d: bool(d.get("skills")),
     "숫자 급여": _has_salary,
-    "지역": lambda d: bool((d.get("location") or {}).get("city") or (d.get("location") or {}).get("country")),
+    "지역": lambda d: bool(
+        (d.get("location") or {}).get("city_name")
+        or (d.get("location") or {}).get("region_name")
+        or (d.get("location") or {}).get("country_name")
+    ),
     "게시일": lambda d: bool(d.get("posted_at")),
 }
 

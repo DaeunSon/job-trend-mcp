@@ -75,8 +75,8 @@
     },
     {
       "id": "s04", "category": "site_specific",
-      "question": "랠릿에 올라온 데이터 엔지니어 공고 수 알려줘.",
-      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Data Engineer", "source_name": "rallit", "limit": 1}, "trap_args": {"job_function": "Data Engineer", "limit": 1}}
+      "question": "랠릿에 올라온 백엔드 엔지니어 공고 수 알려줘.",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "source_name": "rallit", "limit": 1}, "trap_args": {"job_function": "Backend Engineer", "limit": 1}}
     },
     {
       "id": "s05", "category": "site_specific",
