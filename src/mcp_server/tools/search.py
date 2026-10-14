@@ -167,6 +167,9 @@ def search_job_postings(
                 "Filters are valid but the collected dataset has 0 hits for this combination."
             ),
             "count": 0,
+            # 필터가 유효하면 0건이어도 total_matched 를 준다. unknown_param 에는 두지 않는다
+            # (모델이 "0건"으로 답하지 않게).
+            "total_matched": 0,
             "results": [],
         }
 

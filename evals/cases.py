@@ -59,10 +59,11 @@ def extract_value(expect: dict[str, Any], result: dict[str, Any]) -> Any:
     status = result.get("status")
     if kind == "abstain":
         return "없음" if status in {"unknown_company", "empty", "no_salary_data"} else None
+    if kind == "count" and status in {"ok", "empty"}:
+        # empty 는 필터가 유효한 0건이다
+        return result.get(COUNT_FIELDS[expect["tool"]], 0 if status == "empty" else None)
     if status != "ok":
         return None
-    if kind == "count":
-        return result.get(COUNT_FIELDS[expect["tool"]])
     if kind == "top_skills":
         k = expect.get("k", 3)
         return [s["skill"] for s in result.get("skills", [])[:k]]

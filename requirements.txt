@@ -10,3 +10,4 @@ mcp[cli]>=2.0.0
 anyio>=4.9.0
 pandas>=2.0.0
 anthropic>=1.13.0
+curl_cffi>=0.7.0
