@@ -49,6 +49,7 @@ def _dec_to_json(value: Decimal) -> float | int:
 def get_salary_summary(
     job_function: str | None = None,
     location: str | None = None,
+    source_name: str | None = None,
     active_only: bool = True,
     store: JobPostingStore | None = None,
 ) -> dict[str, Any]:
@@ -71,6 +72,17 @@ def get_salary_summary(
             "summaries": [],
         }
 
+    resolved_src, src_error = store.resolve_source_name(source_name)
+    if src_error:
+        return {
+            "status": "unknown_param",
+            "message": src_error,
+            "available_source_names": store.known_sources,
+            "matched_postings": 0,
+            "salary_data_count": 0,
+            "summaries": [],
+        }
+
     if resolved_fn:
         candidates = list(store.by_function.get(resolved_fn, []))
     else:
@@ -80,6 +92,8 @@ def get_salary_summary(
     matched: list[dict[str, Any]] = []
     for doc in candidates:
         if active_only and (doc.get("crawl_status") or "ACTIVE") != "ACTIVE":
+            continue
+        if resolved_src and (doc.get("source_name") or "").strip() != resolved_src:
             continue
         if loc_q and loc_q not in _location_blob(doc):
             continue

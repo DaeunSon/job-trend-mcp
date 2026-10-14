@@ -3,7 +3,8 @@ job_postings JSON을 서버 시작 시 한 번 로드하고, 조회용 인덱스
 
 로드 전략 판단 (2026-08-10 실측)
 --------------------------------
-- 파일 516개, 문서 ~1,155건, 디스크 ~7.4MB
+- 파일 516개, 디스크 ~7.4MB
+- 재수집 스냅샷 포함 시 ~1,155문서, 같은 id 최신 1건만 남기면 ~659건
 - load_all_documents_in_collection 기준 약 0.1초
 - 규모가 작아 매 요청마다 폴더를 여는 이득이 없고, tool이 교차 집계
   (직군별 통계·스킬 트렌드)를 하므로 **전체 로드 후 조회**가 맞다.
@@ -19,6 +20,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
+from src.config.sources import ALL_SOURCES
 from src.storage.json_writer import load_all_documents_in_collection
 from src.taxonomy.job_categories import JOB_CATEGORIES
 from src.taxonomy.job_functions import get_function_names, is_valid_function
@@ -32,6 +34,49 @@ _DEFAULT_DATA_DIR = Path(__file__).resolve().parents[2] / "data"
 _CLOSE_MATCH_AUTO_CUTOFF = 0.90
 _CLOSE_MATCH_SUGGEST_CUTOFF = 0.60
 _STOP_TOKENS = frozenset({"and", "or", "the", "a", "an", "of", "for", "/", "-"})
+_KNOWN_SOURCE_NAMES = tuple(s.source_name for s in ALL_SOURCES)
+
+
+def _recrawl_sort_key(doc: dict[str, Any]) -> str:
+    return str(
+        doc.get("created_at")
+        or doc.get("last_seen_at")
+        or doc.get("posted_at")
+        or ""
+    )
+
+
+def _posting_identity(doc: dict[str, Any]) -> tuple[Any, ...] | None:
+    """같은 공고의 재수집 스냅샷을 묶는 키. id 우선, 없으면 (source_name, source_job_id)."""
+    pid = doc.get("id")
+    if pid:
+        return ("id", pid)
+    source_name = (doc.get("source_name") or "").strip()
+    source_job_id = str(doc.get("source_job_id") or "").strip()
+    if source_name and source_job_id:
+        return ("sid", source_name, source_job_id)
+    return None
+
+
+def collapse_recrawl_snapshots(docs: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """
+    같은 공고가 crawl_date 다른 파일로 여러 번 저장된 경우 최신 1건만 남긴다.
+
+    json_writer.load_all_documents_in_collection 은 id 중복을 제거하지 않는다.
+    MCP는 raw_job_postings 가 아니라 job_postings 만 읽지만, 재수집 스냅샷은
+    그 컬렉션에도 남을 수 있다.
+    """
+    by_key: dict[tuple[Any, ...], dict[str, Any]] = {}
+    passthrough: list[dict[str, Any]] = []
+    for doc in docs:
+        key = _posting_identity(doc)
+        if key is None:
+            passthrough.append(doc)
+            continue
+        existing = by_key.get(key)
+        if existing is None or _recrawl_sort_key(doc) >= _recrawl_sort_key(existing):
+            by_key[key] = doc
+    return passthrough + list(by_key.values())
 
 
 def _function_tokens(text: str) -> set[str]:
@@ -132,11 +177,18 @@ class JobPostingStore:
             "job_postings",
             base_dir=str(root),
         )
-        self.postings = docs
+        collapsed = collapse_recrawl_snapshots(docs)
+        if len(collapsed) < len(docs):
+            logger.info(
+                "job_postings 재수집 스냅샷 제거: %d → %d (raw_job_postings 미사용)",
+                len(docs),
+                len(collapsed),
+            )
+        self.postings = collapsed
         self.by_function = defaultdict(list)
         self.by_category = defaultdict(list)
 
-        for doc in docs:
+        for doc in self.postings:
             jf = (doc.get("job_function_name") or "").strip()
             jc = (doc.get("job_category_name") or "").strip()
             if jf:
@@ -160,6 +212,31 @@ class JobPostingStore:
     @property
     def known_categories(self) -> list[str]:
         return list(JOB_CATEGORIES)
+
+    @property
+    def known_sources(self) -> list[str]:
+        return list(_KNOWN_SOURCE_NAMES)
+
+    def resolve_source_name(
+        self, name: str | None
+    ) -> tuple[str | None, str | None]:
+        """
+        Returns
+        -------
+        (canonical_source_name, error_message)
+        """
+        if name is None or not str(name).strip():
+            return None, None
+        raw = str(name).strip()
+        lower_map = {s.lower(): s for s in self.known_sources}
+        hit = lower_map.get(raw.lower())
+        if hit:
+            return hit, None
+        available = ", ".join(self.known_sources)
+        return None, (
+            f"Unknown source_name {raw!r}. "
+            f"Available: {available}"
+        )
 
     def resolve_job_function(self, name: str | None) -> tuple[str | None, str | None]:
         """

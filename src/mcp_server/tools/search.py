@@ -65,6 +65,7 @@ def search_job_postings(
     location: str | None = None,
     employment_type: str | None = None,
     work_arrangement: str | None = None,
+    source_name: str | None = None,
     limit: int = 20,
     active_only: bool = True,
     store: JobPostingStore | None = None,
@@ -109,6 +110,16 @@ def search_job_postings(
             }
         job_category = known.get(cat.lower(), cat)
 
+    resolved_src, src_error = store.resolve_source_name(source_name)
+    if src_error:
+        return {
+            "status": "unknown_param",
+            "message": src_error,
+            "available_source_names": store.known_sources,
+            "count": 0,
+            "results": [],
+        }
+
     # 후보 집합
     if resolved_fn:
         candidates = list(store.by_function.get(resolved_fn, []))
@@ -127,6 +138,8 @@ def search_job_postings(
         if active_only and (doc.get("crawl_status") or "ACTIVE") != "ACTIVE":
             continue
         if job_category and (doc.get("job_category_name") or "").strip() != job_category:
+            continue
+        if resolved_src and (doc.get("source_name") or "").strip() != resolved_src:
             continue
         if loc_q and loc_q not in _location_blob(doc):
             continue

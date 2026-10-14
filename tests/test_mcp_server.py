@@ -273,6 +273,114 @@ class TestSearch:
         assert out["status"] == "empty"
         assert out["results"] == []
 
+    def test_filter_by_source_name(self, sample_store: JobPostingStore):
+        out = search_job_postings(
+            job_function="Backend Engineer",
+            source_name="jumpit",
+            store=sample_store,
+        )
+        assert out["status"] == "ok"
+        assert out["total_matched"] == 2
+        assert {r["source_name"] for r in out["results"]} == {"jumpit"}
+
+        wanted_only = search_job_postings(
+            source_name="wanted",
+            store=sample_store,
+        )
+        assert wanted_only["status"] == "ok"
+        assert wanted_only["total_matched"] == 1
+        assert wanted_only["results"][0]["title"] == "Data Analyst"
+        assert wanted_only["results"][0]["source_name"] == "wanted"
+
+    def test_source_name_case_insensitive(self, sample_store: JobPostingStore):
+        out = search_job_postings(source_name="Jumpit", store=sample_store)
+        assert out["status"] == "ok"
+        assert {r["source_name"] for r in out["results"]} == {"jumpit"}
+
+    def test_unknown_source_name(self, sample_store: JobPostingStore):
+        out = search_job_postings(source_name="linkedin", store=sample_store)
+        assert out["status"] == "unknown_param"
+        assert out["results"] == []
+        assert "available_source_names" in out
+        assert "jobkorea" in out["available_source_names"]
+
+    def test_source_name_omitted_keeps_all_sources(
+        self, sample_store: JobPostingStore
+    ):
+        out = search_job_postings(store=sample_store)
+        sources = {r["source_name"] for r in out["results"]}
+        assert sources == {"jumpit", "wanted"}
+        assert out["total_matched"] == 4  # ACTIVE only, mixed sources
+
+
+class TestRecrawlDedup:
+    def test_same_id_keeps_newer_snapshot(self, tmp_path: Path):
+        reset_store()
+        base = {
+            "id": "same-job",
+            "title": "Backend Engineer A",
+            "company": {"name": "Acme", "raw_name": "Acme"},
+            "job_function_name": "Backend Engineer",
+            "job_category_name": "Engineering & Technology",
+            "location": {
+                "country_name": "대한민국",
+                "city_name": "서울",
+                "region_name": "서울",
+                "raw_text": "서울",
+            },
+            "employment_type_name": "FULL_TIME",
+            "work_arrangement": "ONSITE",
+            "skills": [],
+            "salary": {},
+            "original_url": "https://www.jobkorea.co.kr/Recruit/GI_Read/1",
+            "source_name": "jobkorea",
+            "source_job_id": "1",
+            "crawl_status": "ACTIVE",
+        }
+        older = {
+            **base,
+            "posted_at": "2026-07-01",
+            "created_at": "2026-07-29T00:00:00+00:00",
+        }
+        newer = {
+            **base,
+            "title": "Backend Engineer A (recrawl)",
+            "posted_at": "2026-07-24",
+            "created_at": "2026-08-04T00:00:00+00:00",
+        }
+        dest = tmp_path / "job_postings" / "Backend Engineer" / "jobkorea"
+        dest.mkdir(parents=True)
+        (dest / "2026-07-29_1.json").write_text(
+            json.dumps(older, ensure_ascii=False), encoding="utf-8"
+        )
+        (dest / "2026-08-04_1.json").write_text(
+            json.dumps(newer, ensure_ascii=False), encoding="utf-8"
+        )
+        # raw 컬렉션에 같은 공고가 있어도 MCP 스토어는 job_postings 만 읽는다
+        raw_dest = tmp_path / "raw_job_postings" / "jobkorea"
+        raw_dest.mkdir(parents=True)
+        (raw_dest / "extra.json").write_text(
+            json.dumps({**older, "id": "raw-only"}, ensure_ascii=False),
+            encoding="utf-8",
+        )
+
+        store = JobPostingStore().load(tmp_path)
+        assert len(store.postings) == 1
+        assert store.postings[0]["title"] == "Backend Engineer A (recrawl)"
+
+        out = search_job_postings(
+            job_function="Backend Engineer",
+            location="서울",
+            source_name="jobkorea",
+            store=store,
+        )
+        assert out["status"] == "ok"
+        assert out["total_matched"] == 1
+        assert out["results"][0]["posted_at"] == "2026-07-24"
+        assert {r["original_url"] for r in out["results"]} == {
+            "https://www.jobkorea.co.kr/Recruit/GI_Read/1"
+        }
+
 
 class TestSkillTrend:
     def test_counts_canonical_skills(self, sample_store: JobPostingStore):
@@ -282,6 +390,19 @@ class TestSkillTrend:
         assert skills["Python"] == 2
         assert skills["Docker"] == 1
         assert "Go" not in skills  # EXPIRED 공고 제외
+
+    def test_source_name_filters_skill_pool(self, sample_store: JobPostingStore):
+        out = get_skill_trend(
+            "Data Analyst", source_name="wanted", store=sample_store
+        )
+        assert out["status"] == "ok"
+        assert out["posting_count"] == 1
+        assert out["skills"][0]["skill"] == "SQL"
+
+        empty = get_skill_trend(
+            "Data Analyst", source_name="jumpit", store=sample_store
+        )
+        assert empty["status"] == "empty"
 
     def test_unknown_function(self, sample_store: JobPostingStore):
         out = get_skill_trend("not-a-real-role", store=sample_store)
@@ -299,6 +420,15 @@ class TestCategoryStats:
         assert by_name["Data & Analytics"] == 1
         assert by_name["Education & Training"] == 0
         assert by_name["Legal & Compliance"] == 0
+
+    def test_source_name_filters_counts(self, sample_store: JobPostingStore):
+        out = get_posting_count_by_category(
+            source_name="wanted", store=sample_store
+        )
+        by_name = {c["category"]: c["count"] for c in out["categories"]}
+        assert by_name["Data & Analytics"] == 1
+        assert by_name["Engineering & Technology"] == 0
+        assert out["total_postings"] == 1
 
 
 class TestSalarySummary:

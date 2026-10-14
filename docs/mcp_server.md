@@ -50,6 +50,7 @@ Python SDK: **mcp v2** (`from mcp.server import MCPServer`).
 | `location` | `str \| None` | `None` | 아니오 | city/region/country/raw_text 부분 일치 (대소문자 무시) |
 | `employment_type` | `str \| None` | `None` | 아니오 | `FULL_TIME` / `Full-time` / `full time` 정규화 동등 비교 + 부분 일치 |
 | `work_arrangement` | `str \| None` | `None` | 아니오 | `ONSITE` / `REMOTE` / `HYBRID` 등 |
+| `source_name` | `str \| None` | `None` | 아니오 | 수집 사이트. `jobkorea` / `saramin` / `rallit` / `arbeitnow` 등 `ALL_SOURCES` 값. 대소문자 무시 |
 | `limit` | `int` | `20` | 아니오 | 1~100으로 클램프 |
 | `active_only` | `bool` | `True` | 아니오 | `crawl_status == ACTIVE`만 |
 
@@ -80,6 +81,10 @@ Python SDK: **mcp v2** (`from mcp.server import MCPServer`).
 
 요약 필드만 반환합니다 (`description` 등 본문 제외).
 
+`source_name` 해석: `src/config/sources.py` 의 `ALL_SOURCES` 정확·대소문자 무시. 없으면 `unknown_param` + `available_source_names`.
+
+로드는 `data/job_postings` 만 사용한다 (`raw_job_postings` 아님). 같은 `id`(또는 `source_name`+`source_job_id`)가 재수집 파일로 여러 개면 **최신 `created_at` 1건**만 남긴다. `total_matched` 는 이 고유 공고 수이다.
+
 `job_function` 해석 (`data_loader.resolve_job_function`): taxonomy 정확·대소문자 무시 → seed alias(한글·약칭) → 토큰 부분집합이 유일하면 채택(`DevOps Engineer` → `DevOps / Platform Engineer`) → difflib ≥ 0.90 오타 보정 → 실패 시 `unknown_param` + `Did you mean`.
 
 ### 호출 예시 (실측)
@@ -97,6 +102,19 @@ await client.call_tool(
 - `status`: `ok`
 - `total_matched`: 102
 - 상위 예: 지엔에이컴퍼니(jumpit), 코어로보틱스(rallit), 디라티오(rallit)
+
+```python
+await client.call_tool(
+    "search_job_postings",
+    {
+        "job_function": "Backend Engineer",
+        "location": "서울",
+        "source_name": "jobkorea",
+        "limit": 20,
+    },
+)
+# status=ok — 해당 사이트 고유 공고만. total_matched 는 목록 길이(count)가 아니라 전체 건수.
+```
 
 한글·약칭은 alias로 표준 직무에 매핑됩니다.
 
@@ -127,6 +145,7 @@ await client.call_tool("search_job_postings", {"job_function": "not-a-real-role-
 | `job_function` | `str` | — | **예** | taxonomy 직무명 |
 | `top_n` | `int` | `15` | 아니오 | 1~50 |
 | `active_only` | `bool` | `True` | 아니오 | ACTIVE만 |
+| `source_name` | `str \| None` | `None` | 아니오 | 수집 사이트 필터 |
 
 ### 반환
 
@@ -165,6 +184,7 @@ taxonomy 직군 **15개 전체**를 기준으로 건수를 반환합니다. 0건
 | 이름 | 타입 | 기본값 | 필수 | 설명 |
 |------|------|--------|------|------|
 | `active_only` | `bool` | `True` | 아니오 | ACTIVE만 |
+| `source_name` | `str \| None` | `None` | 아니오 | 수집 사이트 필터 |
 
 ### 반환
 
@@ -172,7 +192,7 @@ taxonomy 직군 **15개 전체**를 기준으로 건수를 반환합니다. 0건
 {
   "status": "ok",
   "message": null,
-  "total_postings": 1155,
+  "total_postings": 659,
   "uncategorized_count": 78,
   "categories": [
     {"category": "Engineering & Technology", "count": 567},
@@ -215,6 +235,7 @@ await client.call_tool("get_posting_count_by_category", {})
 |------|------|--------|------|------|
 | `job_function` | `str \| None` | `None` | 아니오 | taxonomy 직무명 |
 | `location` | `str \| None` | `None` | 아니오 | city/region/country/raw_text 부분 일치 |
+| `source_name` | `str \| None` | `None` | 아니오 | 수집 사이트 필터 |
 
 ### 반환
 
@@ -263,6 +284,7 @@ await client.call_tool("get_posting_count_by_category", {})
 |------|------|--------|------|------|
 | `company_name` | `str` | — | **예** | 회사명 (`company.name`) |
 | `limit` | `int` | `20` | 아니오 | 대표 공고 수 (1~100) |
+| `source_name` | `str \| None` | `None` | 아니오 | 수집 사이트 필터 |
 
 ### 반환
 

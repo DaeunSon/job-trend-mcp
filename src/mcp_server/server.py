@@ -53,16 +53,21 @@ def search_job_postings(
     location: str | None = None,
     employment_type: str | None = None,
     work_arrangement: str | None = None,
+    source_name: str | None = None,
     limit: int = 20,
     active_only: bool = True,
 ) -> dict[str, Any]:
-    """조건에 맞는 채용공고를 검색한다. 조건을 안 주면 최근 공고를 반환한다."""
+    """조건에 맞는 채용공고를 검색한다. 조건을 안 주면 최근 공고를 반환한다.
+
+    source_name 으로 수집 사이트(사람인 saramin, 잡코리아 jobkorea 등)만 고를 수 있다.
+    """
     return search_mod.search_job_postings(
         job_function=job_function,
         job_category=job_category,
         location=location,
         employment_type=employment_type,
         work_arrangement=work_arrangement,
+        source_name=source_name,
         limit=limit,
         active_only=active_only,
     )
@@ -78,12 +83,14 @@ def get_skill_trend(
     job_function: str,
     top_n: int = 15,
     active_only: bool = True,
+    source_name: str | None = None,
 ) -> dict[str, Any]:
     """특정 직무에서 가장 많이 요구되는 기술스택 상위 N개를 빈도순으로 반환한다."""
     return skill_trend_mod.get_skill_trend(
         job_function=job_function,
         top_n=top_n,
         active_only=active_only,
+        source_name=source_name,
     )
 
 
@@ -95,9 +102,13 @@ def get_skill_trend(
 @monitor_tool("get_posting_count_by_category")
 def get_posting_count_by_category(
     active_only: bool = True,
+    source_name: str | None = None,
 ) -> dict[str, Any]:
     """직군(job_category)별 채용공고 수를 집계해 반환한다."""
-    return category_stats_mod.get_posting_count_by_category(active_only=active_only)
+    return category_stats_mod.get_posting_count_by_category(
+        active_only=active_only,
+        source_name=source_name,
+    )
 
 
 @mcp.tool(
@@ -109,6 +120,7 @@ def get_posting_count_by_category(
 def get_salary_summary(
     job_function: str | None = None,
     location: str | None = None,
+    source_name: str | None = None,
 ) -> dict[str, Any]:
     """직무·지역 조건에 맞는 채용공고의 급여 통계를 반환한다.
 
@@ -119,6 +131,7 @@ def get_salary_summary(
     return salary_summary_mod.get_salary_summary(
         job_function=job_function,
         location=location,
+        source_name=source_name,
     )
 
 
@@ -131,11 +144,13 @@ def get_salary_summary(
 def get_company_hiring_activity(
     company_name: str,
     limit: int = 20,
+    source_name: str | None = None,
 ) -> dict[str, Any]:
     """특정 회사의 채용 현황(진행 중인 공고 목록과 직무 분포)을 반환한다."""
     return company_activity_mod.get_company_hiring_activity(
         company_name=company_name,
         limit=limit,
+        source_name=source_name,
     )
 
 

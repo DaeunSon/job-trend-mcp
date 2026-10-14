@@ -71,6 +71,7 @@ def get_company_hiring_activity(
     company_name: str,
     limit: int = 20,
     active_only: bool = True,
+    source_name: str | None = None,
     store: JobPostingStore | None = None,
 ) -> dict[str, Any]:
     """
@@ -83,10 +84,28 @@ def get_company_hiring_activity(
     limit = max(1, min(int(limit), 100))
     query = (company_name or "").strip()
 
+    resolved_src, src_error = store.resolve_source_name(source_name)
+    if src_error:
+        return {
+            "status": "unknown_param",
+            "message": src_error,
+            "available_source_names": store.known_sources,
+            "company_name": company_name,
+            "suggestions": [],
+            "matched_postings": 0,
+            "job_function_counts": [],
+            "location_counts": [],
+            "postings": [],
+        }
+
     pool = [
         d
         for d in store.postings
-        if not active_only or (d.get("crawl_status") or "ACTIVE") == "ACTIVE"
+        if (not active_only or (d.get("crawl_status") or "ACTIVE") == "ACTIVE")
+        and (
+            not resolved_src
+            or (d.get("source_name") or "").strip() == resolved_src
+        )
     ]
     index = _company_index(pool)
 

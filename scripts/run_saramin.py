@@ -29,6 +29,9 @@
   # 최대 페이지 지정 (기본 50)
   python scripts/run_saramin.py -q "백엔드 개발자" --max-pages 5
 
+  # 이미 저장된 공고도 다시 받아 raw를 갱신 (재수집)
+  python scripts/run_saramin.py -q "백엔드 개발자" --force
+
   # DEBUG 로그
   python scripts/run_saramin.py -q "백엔드 개발자" -v
 """
@@ -102,6 +105,11 @@ def _parse_args() -> argparse.Namespace:
         metavar="N",
         help="검색어당 최대 순회 페이지 수 (기본값: 50)",
     )
+    p.add_argument(
+        "--force",
+        action="store_true",
+        help="이미 저장된 공고도 상세 페이지를 다시 받아 raw를 갱신한다",
+    )
     p.add_argument("-v", "--verbose", action="store_true", help="DEBUG 레벨 로그")
     return p.parse_args()
 
@@ -121,12 +129,14 @@ def main() -> None:
                 crawl_date=args.crawl_date,
                 save_path=args.save_dir,
                 max_pages=args.max_pages,
+                force=args.force,
             )
         else:
             run_saramin_batch(
                 job_functions=queries,
                 crawl_date=args.crawl_date,
                 save_dir=args.save_dir or "./data/raw_job_postings",
+                force=args.force,
             )
 
     if not args.no_parse:

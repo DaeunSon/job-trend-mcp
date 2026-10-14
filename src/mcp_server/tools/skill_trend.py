@@ -11,6 +11,7 @@ def get_skill_trend(
     job_function: str,
     top_n: int = 15,
     active_only: bool = True,
+    source_name: str | None = None,
     store: JobPostingStore | None = None,
 ) -> dict[str, Any]:
     """
@@ -32,9 +33,21 @@ def get_skill_trend(
             "skills": [],
         }
 
+    resolved_src, src_error = store.resolve_source_name(source_name)
+    if src_error:
+        return {
+            "status": "unknown_param",
+            "message": src_error,
+            "available_source_names": store.known_sources,
+            "job_function": resolved_fn,
+            "skills": [],
+        }
+
     docs = store.by_function.get(resolved_fn, [])
     if active_only:
         docs = [d for d in docs if (d.get("crawl_status") or "ACTIVE") == "ACTIVE"]
+    if resolved_src:
+        docs = [d for d in docs if (d.get("source_name") or "").strip() == resolved_src]
 
     if not docs:
         return {
