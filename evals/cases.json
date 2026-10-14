@@ -1,0 +1,134 @@
+{
+  "description": "MCP 도구 호출 평가 문항. expect 는 기준 호출(tool + args)이고, 정답은 실행할 때 현재 데이터로 계산한다. trap_args 는 흔한 실수를 했을 때의 호출이다.",
+  "cases": [
+    {
+      "id": "q01", "category": "simple_search",
+      "question": "서울에서 일하는 백엔드 엔지니어 채용공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "location": "서울", "limit": 1}}
+    },
+    {
+      "id": "q02", "category": "simple_search",
+      "question": "서울 프론트엔드 엔지니어 공고 수 알려줘.",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Frontend Engineer", "location": "서울", "limit": 1}}
+    },
+    {
+      "id": "q03", "category": "simple_search",
+      "question": "데이터 엔지니어 공고는 전체 몇 건 있어?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Data Engineer", "limit": 1}}
+    },
+    {
+      "id": "q04", "category": "simple_search",
+      "question": "원격 근무가 가능한 소프트웨어 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Software Engineer", "work_arrangement": "REMOTE", "limit": 1}}
+    },
+    {
+      "id": "q05", "category": "simple_search",
+      "question": "정규직 백엔드 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "employment_type": "Full-time", "limit": 1}}
+    },
+    {
+      "id": "q06", "category": "field_trap",
+      "question": "백엔드 엔지니어 공고 3개만 예시로 보여주고, 조건에 맞는 공고가 전체 몇 건인지도 알려줘.",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "limit": 1}},
+      "note": "목록 길이(count=3)를 전체 건수로 답하면 틀린다."
+    },
+    {
+      "id": "a01", "category": "alias",
+      "question": "백엔드 개발자 공고 몇 개 있어?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "limit": 1}}
+    },
+    {
+      "id": "a02", "category": "alias",
+      "question": "Frontned 엔지니어 공고 수 알려줘.",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Frontend Engineer", "limit": 1}},
+      "note": "직무명 오타."
+    },
+    {
+      "id": "a03", "category": "alias",
+      "question": "데브옵스 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "DevOps / Platform Engineer", "limit": 1}}
+    },
+    {
+      "id": "a04", "category": "alias",
+      "question": "ML 엔지니어 채용공고 몇 건 수집돼 있어?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Machine Learning Engineer", "limit": 1}}
+    },
+    {
+      "id": "a05", "category": "alias",
+      "question": "FULL_TIME 으로 올라온 데이터 사이언티스트 공고 수는?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Data Scientist", "employment_type": "Full-time", "limit": 1}}
+    },
+    {
+      "id": "s01", "category": "site_specific",
+      "question": "원티드에 올라온 백엔드 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "source_name": "wanted", "limit": 1}, "trap_args": {"job_function": "Backend Engineer", "limit": 1}}
+    },
+    {
+      "id": "s02", "category": "site_specific",
+      "question": "사람인에서 수집한 백엔드 엔지니어 공고 수는?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Backend Engineer", "source_name": "saramin", "limit": 1}, "trap_args": {"job_function": "Backend Engineer", "limit": 1}}
+    },
+    {
+      "id": "s03", "category": "site_specific",
+      "question": "점핏의 프론트엔드 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Frontend Engineer", "source_name": "jumpit", "limit": 1}, "trap_args": {"job_function": "Frontend Engineer", "limit": 1}}
+    },
+    {
+      "id": "s04", "category": "site_specific",
+      "question": "랠릿에 올라온 데이터 엔지니어 공고 수 알려줘.",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Data Engineer", "source_name": "rallit", "limit": 1}, "trap_args": {"job_function": "Data Engineer", "limit": 1}}
+    },
+    {
+      "id": "s05", "category": "site_specific",
+      "question": "Arbeitnow 에서 수집한 소프트웨어 엔지니어 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "search_job_postings", "args": {"job_function": "Software Engineer", "source_name": "arbeitnow", "limit": 1}, "trap_args": {"job_function": "Software Engineer", "limit": 1}}
+    },
+    {
+      "id": "k01", "category": "skills",
+      "question": "백엔드 엔지니어 공고에서 가장 많이 요구하는 스킬 상위 3개는?",
+      "expect": {"type": "top_skills", "tool": "get_skill_trend", "args": {"job_function": "Backend Engineer", "top_n": 10}, "k": 3}
+    },
+    {
+      "id": "k02", "category": "skills",
+      "question": "프론트엔드 엔지니어 공고에 많이 나오는 스킬 top 3 알려줘.",
+      "expect": {"type": "top_skills", "tool": "get_skill_trend", "args": {"job_function": "Frontend Engineer", "top_n": 10}, "k": 3}
+    },
+    {
+      "id": "k03", "category": "skills",
+      "question": "데이터 엔지니어가 가장 많이 요구받는 기술 3가지는?",
+      "expect": {"type": "top_skills", "tool": "get_skill_trend", "args": {"job_function": "Data Engineer", "top_n": 10}, "k": 3}
+    },
+    {
+      "id": "m01", "category": "salary",
+      "question": "백엔드 엔지니어 공고 중에 숫자로 된 급여 정보가 있는 공고는 몇 건이야?",
+      "expect": {"type": "count", "tool": "get_salary_summary", "args": {"job_function": "Backend Engineer"}},
+      "note": "그룹별 group_sample_count 나 matched_postings 를 답하면 틀린다."
+    },
+    {
+      "id": "m02", "category": "salary",
+      "question": "소프트웨어 엔지니어 공고에서 급여 금액이 적힌 공고 수는?",
+      "expect": {"type": "count", "tool": "get_salary_summary", "args": {"job_function": "Software Engineer"}}
+    },
+    {
+      "id": "c01", "category": "category",
+      "question": "엔지니어링·기술 직군 공고는 전부 몇 건이야?",
+      "expect": {"type": "category_count", "tool": "get_posting_count_by_category", "args": {}, "category": "Engineering & Technology"}
+    },
+    {
+      "id": "c02", "category": "category",
+      "question": "데이터·분석 직군 공고 수를 알려줘.",
+      "expect": {"type": "category_count", "tool": "get_posting_count_by_category", "args": {}, "category": "Data & Analytics"}
+    },
+    {
+      "id": "n01", "category": "abstain",
+      "question": "가나다라테크 주식회사의 채용공고는 몇 건 수집돼 있어?",
+      "expect": {"type": "abstain", "tool": "get_company_hiring_activity", "args": {"company_name": "가나다라테크 주식회사"}},
+      "note": "데이터에 없는 회사. 숫자를 지어내지 않고 없음이라고 해야 한다."
+    },
+    {
+      "id": "n02", "category": "abstain",
+      "question": "Zentrovix Robotics 라는 회사 공고가 데이터에 있어? 있으면 몇 건이야?",
+      "expect": {"type": "abstain", "tool": "get_company_hiring_activity", "args": {"company_name": "Zentrovix Robotics"}}
+    }
+  ]
+}
