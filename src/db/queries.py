@@ -166,6 +166,44 @@ def skill_counts(
     return total, [(r["name"], r["n"]) for r in rows]
 
 
+def skill_weekly_series(
+    conn,
+    *,
+    job_function: str,
+    skills: list[str],
+    source_name: str | None = None,
+    active_only: bool = True,
+) -> list[dict[str, Any]]:
+    """주(월요일 시작)별 관측 공고 수와 스킬별 공고 수. 오래된 주부터.
+
+    공고 수는 그 주에 한 번이라도 관측된 공고 수(중복 관측은 한 번).
+    """
+    where, params = _where(job_function=job_function, source_name=source_name, active_only=active_only)
+    weeks = conn.execute(
+        "SELECT date_trunc('week', o.observed_on)::date AS week_start, "
+        "count(DISTINCT o.posting_id) AS n "
+        "FROM postings p JOIN posting_observations o ON o.posting_id = p.id "
+        f"WHERE {where} GROUP BY 1 ORDER BY 1",
+        params,
+    ).fetchall()
+    counts: dict[Any, dict[str, int]] = {}
+    if skills:
+        rows = conn.execute(
+            "SELECT date_trunc('week', o.observed_on)::date AS week_start, "
+            "btrim(s.canonical_name) AS name, count(DISTINCT o.posting_id) AS n "
+            "FROM postings p JOIN posting_observations o ON o.posting_id = p.id "
+            "JOIN posting_skills s ON s.posting_id = p.id "
+            f"WHERE {where} AND btrim(s.canonical_name) = ANY(%(skills)s) GROUP BY 1, 2",
+            {**params, "skills": list(skills)},
+        ).fetchall()
+        for r in rows:
+            counts.setdefault(r["week_start"], {})[r["name"]] = r["n"]
+    return [
+        {"week_start": w["week_start"], "posting_count": w["n"], "counts": counts.get(w["week_start"], {})}
+        for w in weeks
+    ]
+
+
 def category_counts(conn, *, source_name: str | None = None, active_only: bool = True) -> dict[str, int]:
     """job_category_name(빈 문자열 포함) → 공고 수."""
     where, params = _where(source_name=source_name, active_only=active_only)

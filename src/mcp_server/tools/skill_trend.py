@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from collections import Counter
+from datetime import timedelta
 from typing import Any
 
 import psycopg
@@ -42,6 +43,39 @@ def _memory_skill_counts(
     return len(docs), counter.most_common(top_n)
 
 
+SERIES_NOTE = (
+    "Weekly values come from a capped daily collection sample, not a full census. "
+    "Compare share, not count. Weeks listed in collection_gaps have no data."
+)
+
+
+def _series_fields(skills: list[str], weekly: list[dict[str, Any]]) -> dict[str, Any]:
+    """SQL 경로 전용: series / collection_gaps / series_note."""
+    series = [
+        {
+            "week_start": w["week_start"].isoformat(),
+            "posting_count": w["posting_count"],
+            "skills": [
+                {
+                    "skill": name,
+                    "count": w["counts"].get(name, 0),
+                    "share": round(w["counts"].get(name, 0) / w["posting_count"], 4),
+                }
+                for name in skills
+            ],
+        }
+        for w in weekly
+    ]
+    gaps = []
+    for prev, nxt in zip(weekly, weekly[1:]):
+        if (nxt["week_start"] - prev["week_start"]).days > 7:
+            gaps.append({
+                "from": (prev["week_start"] + timedelta(days=7)).isoformat(),
+                "to": (nxt["week_start"] - timedelta(days=1)).isoformat(),
+            })
+    return {"series": series, "collection_gaps": gaps, "series_note": SERIES_NOTE}
+
+
 def get_skill_trend(
     job_function: str,
     top_n: int = 15,
@@ -80,6 +114,7 @@ def get_skill_trend(
             "skills": [],
         }
 
+    weekly: list[dict[str, Any]] = []
     if store is not None:
         posting_count, counts = _memory_skill_counts(
             store, resolved_fn, resolved_src, active_only=active_only, top_n=top_n
@@ -93,6 +128,16 @@ def get_skill_trend(
                 active_only=active_only,
                 top_n=top_n,
             )
+            if posting_count:
+                weekly = queries.skill_weekly_series(
+                    c,
+                    job_function=resolved_fn,
+                    skills=[skill for skill, _ in counts],
+                    source_name=resolved_src,
+                    active_only=active_only,
+                )
+
+    extra = _series_fields([skill for skill, _ in counts], weekly) if store is None else {}
 
     if not posting_count:
         return {
@@ -103,6 +148,7 @@ def get_skill_trend(
             "job_function": resolved_fn,
             "posting_count": 0,
             "skills": [],
+            **extra,
         }
 
     ranked = [{"skill": skill, "count": count} for skill, count in counts]
@@ -117,6 +163,7 @@ def get_skill_trend(
             "job_function": resolved_fn,
             "posting_count": posting_count,
             "skills": [],
+            **extra,
         }
 
     return {
@@ -125,4 +172,5 @@ def get_skill_trend(
         "job_function": resolved_fn,
         "posting_count": posting_count,
         "skills": ranked,
+        **extra,
     }

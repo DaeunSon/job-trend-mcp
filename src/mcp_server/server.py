@@ -84,6 +84,8 @@ def get_skill_trend(
     """특정 직무에서 가장 많이 요구되는 기술스택 상위 N개를 빈도순으로 반환한다.
 
     source_name 은 수집 사이트 필터다: saramin(사람인), jobkorea(잡코리아), wanted(원티드), jumpit(점핏), rallit(랠릿), work24(고용24), remotive, themuse, arbeitnow, usajobs, adzuna. 직무·직군 이름은 job_function / job_category 에 넣는다.
+
+    series 는 주 단위 추이이고 수집 표본 기준이므로 건수가 아니라 share(비율)로 비교한다.
     """
     return skill_trend_mod.get_skill_trend(
         job_function=job_function,

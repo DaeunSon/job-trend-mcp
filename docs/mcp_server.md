@@ -162,6 +162,24 @@ await client.call_tool("search_job_postings", {"job_function": "not-a-real-role-
 }
 ```
 
+PostgreSQL 경로에서는 `status`가 `ok` · `empty`일 때 주 단위 추이 3개 키가 더해집니다
+(`unknown_param`과 메모리 경로에는 없음).
+
+```json
+{
+  "series": [
+    {"week_start": "2026-07-27", "posting_count": 120,
+     "skills": [{"skill": "Python", "count": 60, "share": 0.5}]}
+  ],
+  "collection_gaps": [{"from": "2026-08-10", "to": "2026-11-22"}],
+  "series_note": "Weekly values come from a capped daily collection sample, ..."
+}
+```
+
+- `series`: 주(월요일 시작)별 시계열, 오래된 주부터. `skills`는 응답의 상위 `top_n` 스킬과 같은 순서이며 그 주에 0건이어도 `count: 0`으로 넣습니다. `posting_count`는 그 주에 한 번이라도 관측된 공고 수, `share = count / posting_count`(소수 넷째 자리 반올림).
+- `collection_gaps`: 이웃한 두 주 사이가 7일보다 벌어진 구간(`from`~`to`). 이 구간은 수집 데이터가 없으며 이어 붙이지 않습니다.
+- **표본 기준**: 일별 수집량에 상한이 있는 표본이라 전수 조사가 아닙니다. 건수가 아니라 `share`(비율)로 비교하세요.
+
 ### 호출 예시 (실측)
 
 ```python
