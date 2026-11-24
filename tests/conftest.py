@@ -5,6 +5,7 @@
 """
 from __future__ import annotations
 
+import copy
 import json
 import os
 from pathlib import Path
@@ -213,6 +214,17 @@ SAMPLE_DOCS = [
     }
     for doc in _BASE_DOCS
 ]
+
+
+def doc(**over):
+    """SAMPLE_DOCS[0] 을 깊은 복사해 필드를 덮어쓴다."""
+    d = copy.deepcopy(SAMPLE_DOCS[0])
+    d.update(over)
+    return d
+
+
+def count(conn, table: str) -> int:
+    return conn.execute(f"SELECT count(*) AS n FROM {table}").fetchone()["n"]
 
 
 @pytest.fixture
