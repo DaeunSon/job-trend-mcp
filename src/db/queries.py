@@ -160,7 +160,7 @@ def skill_counts(
         "SELECT btrim(s.canonical_name) AS name, count(DISTINCT s.posting_id) AS n "
         f"FROM postings p JOIN posting_skills s ON s.posting_id = p.id "
         f"WHERE {where} AND btrim(s.canonical_name) <> '' "
-        "GROUP BY 1 ORDER BY n DESC, name LIMIT %(top_n)s",
+        "GROUP BY 1 ORDER BY n DESC, btrim(s.canonical_name) COLLATE \"C\" LIMIT %(top_n)s",
         {**params, "top_n": max(0, int(top_n))},
     ).fetchall()
     return total, [(r["name"], r["n"]) for r in rows]

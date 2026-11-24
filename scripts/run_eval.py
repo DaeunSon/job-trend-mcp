@@ -53,12 +53,15 @@ def _parse_args() -> argparse.Namespace:
 
 def _dataset_label() -> str:
     """도구가 조회하는 DB(DATABASE_URL)의 공고 수와 마지막 수집 시각."""
-    from src.db.connection import connection
+    from src.db.connection import connection, reset_pool
 
-    with connection() as conn:
-        row = conn.execute(
-            "SELECT count(*) AS n, max(last_seen_at) AS last_seen FROM postings"
-        ).fetchone()
+    try:
+        with connection() as conn:
+            row = conn.execute(
+                "SELECT count(*) AS n, max(last_seen_at) AS last_seen FROM postings"
+            ).fetchone()
+    finally:
+        reset_pool()
     last = row["last_seen"].date().isoformat() if row["last_seen"] else "?"
     return f"postings {row['n']}건 (마지막 수집 {last})"
 
