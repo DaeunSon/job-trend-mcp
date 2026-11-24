@@ -1,5 +1,3 @@
-import os
-
 import psycopg
 import pytest
 
@@ -27,4 +25,3 @@ def test_unreachable_database_raises_unavailable(monkeypatch):
     finally:
         reset_pool()
         monkeypatch.undo()
-        os.environ.get("DATABASE_URL")
