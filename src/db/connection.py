@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import os
 import threading
-from contextlib import contextmanager
+from contextlib import ExitStack, contextmanager
 from typing import Iterator
 
 import psycopg
@@ -42,6 +42,7 @@ def _get_pool() -> ConnectionPool:
                 max_size=5,
                 open=False,
                 timeout=CONNECT_TIMEOUT_SECONDS,
+                check=ConnectionPool.check_connection,
                 kwargs={"row_factory": dict_row, "connect_timeout": CONNECT_TIMEOUT_SECONDS},
             )
             _pool_url = url
@@ -57,11 +58,13 @@ def _get_pool() -> ConnectionPool:
 def connection() -> Iterator[psycopg.Connection]:
     """풀에서 연결을 빌린다. 정상 종료 시 commit, 예외 시 rollback."""
     pool = _get_pool()
-    try:
-        with pool.connection() as conn:
-            yield conn
-    except (PoolTimeout, psycopg.OperationalError) as exc:
-        raise DatabaseUnavailable(f"database unavailable: {exc}") from exc
+    with ExitStack() as stack:
+        # 연결을 얻는 구간만 DatabaseUnavailable 로 바꾼다. 호출자 본문의 오류는 그대로 전파한다.
+        try:
+            conn = stack.enter_context(pool.connection())
+        except (PoolTimeout, psycopg.OperationalError) as exc:
+            raise DatabaseUnavailable(f"database unavailable: {exc}") from exc
+        yield conn
 
 
 def reset_pool() -> None:
