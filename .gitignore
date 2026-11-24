@@ -33,3 +33,6 @@ data_archive/
 !evals/results/**/results.jsonl
 evals/results/dry-run/
 data/collect_runs/
+
+data/data-archive/
+.superpowers/
