@@ -106,7 +106,7 @@ scp <스냅샷.tar.gz> ubuntu@<탄력적 IP>:/tmp/snapshot.tar.gz
 sudo bash -c 'set -a; . /etc/job-trend/env; set +a; cd /opt/job-trend-mcp && sudo -E -u jobtrend .venv/bin/python scripts/backfill_snapshot.py --archive /tmp/snapshot.tar.gz'
 ```
 
-확인: 마지막 줄이 `postings=659 observations=1155`. 다시 돌려도 같다.
+확인: 출력에 `postings=659 observations=1155` 줄이 있다. 다시 돌려도 같다.
 
 ## 6. 서비스 등록
 
@@ -118,6 +118,21 @@ sudo systemctl enable --now job-trend-api job-trend-mcp
 ```
 
 로그는 `journalctl -u job-trend-api -u job-trend-mcp -f`로 봅니다.
+
+MCP 도구 호출 기록: `src/mcp_server/monitoring.py` 는 호출마다 JSONL 한 줄을 `/opt/job-trend-mcp/logs/mcp_tool_calls_<시각>.jsonl`(환경변수 `MCP_MONITOR_LOG`로 경로 변경 가능)에 씁니다. 자동 로테이션이 없고, 공개 사용자의 질의 파라미터가 그대로 들어갑니다. logrotate 를 설정합니다.
+
+```bash
+sudo tee /etc/logrotate.d/job-trend-mcp <<'EOF'
+/opt/job-trend-mcp/logs/*.jsonl {
+    daily
+    rotate 14
+    compress
+    missingok
+    notifempty
+    copytruncate
+}
+EOF
+```
 
 확인:
 

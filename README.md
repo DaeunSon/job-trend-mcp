@@ -37,7 +37,8 @@ Claude / curl ──HTTPS──> Nginx (IP별 요청 제한 5 r/s)
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
-docker compose -f docker-compose.dev.yml up -d      # PostgreSQL (127.0.0.1:54329)
+docker compose -f docker-compose.dev.yml up -d      # PostgreSQL (127.0.0.1:54329), healthy 가 될 때까지 기다린다(docker compose ps)
+docker compose -f docker-compose.dev.yml exec db createdb -U jobtrend jobtrend   # Compose 는 jobtrend_test 만 만든다
 export DATABASE_URL=postgresql://jobtrend:jobtrend@127.0.0.1:54329/jobtrend
 .venv/bin/python -m src.db.migrate
 .venv/bin/python scripts/backfill_snapshot.py --archive data/data-archive/data_snapshot_20260803.tar.gz
