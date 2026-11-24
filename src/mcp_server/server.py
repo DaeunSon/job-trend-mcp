@@ -17,7 +17,6 @@ from typing import Any
 from mcp.server import MCPServer
 from mcp.types import ToolAnnotations
 
-from src.mcp_server.data_loader import get_store
 from src.mcp_server.monitoring import monitor_tool
 from src.mcp_server.tools import category_stats as category_stats_mod
 from src.mcp_server.tools import company_activity as company_activity_mod
@@ -36,9 +35,6 @@ mcp = MCPServer(
         "Prefer taxonomy job_function names (e.g. 'Backend Engineer')."
     ),
 )
-
-# 서버 import 시점에 데이터 1회 로드 (stdio 호스트가 모듈을 import할 때)
-get_store()
 
 
 @mcp.tool(

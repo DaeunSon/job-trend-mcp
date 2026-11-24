@@ -5,7 +5,10 @@ import difflib
 from collections import Counter
 from typing import Any
 
-from src.mcp_server.data_loader import JobPostingStore, get_store
+import psycopg
+
+from src.db import queries
+from src.mcp_server.data_loader import JobPostingStore
 from src.mcp_server.tools.search import _city_name, _company_name
 
 
@@ -67,37 +70,10 @@ def _suggest_companies(
     return out
 
 
-def get_company_hiring_activity(
-    company_name: str,
-    limit: int = 20,
-    active_only: bool = True,
-    source_name: str | None = None,
-    store: JobPostingStore | None = None,
-) -> dict[str, Any]:
-    """
-    특정 회사의 채용 현황(진행 중 공고·직무/지역 분포)을 반환한다.
-
-    company.name(정규화 값) 기준. 대소문자·공백 차이는 관대하게 처리.
-    정확히 일치하는 회사가 없으면 후보를 제안하고 빈 결과를 반환한다.
-    """
-    store = store or get_store()
-    limit = max(1, min(int(limit), 100))
-    query = (company_name or "").strip()
-
-    resolved_src, src_error = store.resolve_source_name(source_name)
-    if src_error:
-        return {
-            "status": "unknown_param",
-            "message": src_error,
-            "available_source_names": store.known_sources,
-            "company_name": company_name,
-            "suggestions": [],
-            "matched_postings": 0,
-            "job_function_counts": [],
-            "location_counts": [],
-            "postings": [],
-        }
-
+def _memory_company(
+    store: JobPostingStore, key: str, resolved_src: str | None, *, active_only: bool
+) -> tuple[dict[str, str], list[dict[str, Any]]]:
+    """메모리 경로: (회사 index, 해당 회사 공고)."""
     pool = [
         d
         for d in store.postings
@@ -107,7 +83,46 @@ def get_company_hiring_activity(
             or (d.get("source_name") or "").strip() == resolved_src
         )
     ]
-    index = _company_index(pool)
+    matched = [
+        d
+        for d in pool
+        if _norm_company_key(str(_company_name(d) or "")) == key
+    ]
+    return _company_index(pool), matched
+
+
+def get_company_hiring_activity(
+    company_name: str,
+    limit: int = 20,
+    active_only: bool = True,
+    source_name: str | None = None,
+    store: JobPostingStore | None = None,
+    conn: psycopg.Connection | None = None,
+) -> dict[str, Any]:
+    """
+    특정 회사의 채용 현황(진행 중 공고·직무/지역 분포)을 반환한다.
+
+    company.name(정규화 값) 기준. 대소문자·공백 차이는 관대하게 처리.
+    정확히 일치하는 회사가 없으면 후보를 제안하고 빈 결과를 반환한다.
+    store 를 주면 메모리 스토어를, 안 주면 PostgreSQL(conn 또는 연결 풀)을 조회한다.
+    """
+    resolver = store if store is not None else JobPostingStore()
+    limit = max(1, min(int(limit), 100))
+    query = (company_name or "").strip()
+
+    resolved_src, src_error = resolver.resolve_source_name(source_name)
+    if src_error:
+        return {
+            "status": "unknown_param",
+            "message": src_error,
+            "available_source_names": resolver.known_sources,
+            "company_name": company_name,
+            "suggestions": [],
+            "matched_postings": 0,
+            "job_function_counts": [],
+            "location_counts": [],
+            "postings": [],
+        }
 
     if not query:
         return {
@@ -122,6 +137,19 @@ def get_company_hiring_activity(
         }
 
     key = _norm_company_key(query)
+    if store is not None:
+        index, matched = _memory_company(store, key, resolved_src, active_only=active_only)
+    else:
+        with queries.use_connection(conn) as c:
+            index = queries.company_index(c, source_name=resolved_src, active_only=active_only)
+            matched = (
+                queries.company_postings(
+                    c, key, source_name=resolved_src, active_only=active_only
+                )
+                if key in index
+                else []
+            )
+
     canonical = index.get(key)
     if canonical is None:
         suggestions = _suggest_companies(query, index)
@@ -143,12 +171,6 @@ def get_company_hiring_activity(
             "location_counts": [],
             "postings": [],
         }
-
-    matched = [
-        d
-        for d in pool
-        if _norm_company_key(str(_company_name(d) or "")) == key
-    ]
 
     fn_counter: Counter[str] = Counter()
     loc_counter: Counter[str] = Counter()

@@ -51,10 +51,16 @@ def _parse_args() -> argparse.Namespace:
     return p.parse_args()
 
 
-def _dataset_label(store) -> str:
-    dates = sorted(str(d.get("created_at") or "")[:10] for d in store.postings if d.get("created_at"))
-    span = f"{dates[0]}~{dates[-1]}" if dates else "?"
-    return f"job_postings {len(store.postings)}건 (수집 {span})"
+def _dataset_label() -> str:
+    """도구가 조회하는 DB(DATABASE_URL)의 공고 수와 마지막 수집 시각."""
+    from src.db.connection import connection
+
+    with connection() as conn:
+        row = conn.execute(
+            "SELECT count(*) AS n, max(last_seen_at) AS last_seen FROM postings"
+        ).fetchone()
+    last = row["last_seen"].date().isoformat() if row["last_seen"] else "?"
+    return f"postings {row['n']}건 (마지막 수집 {last})"
 
 
 async def main() -> int:
@@ -67,7 +73,6 @@ async def main() -> int:
 
     from evals.bridge import McpBridge
     from evals.cases import compute_ground_truth, load_cases
-    from src.mcp_server.data_loader import get_store
 
     cases = load_cases(only=args.only)
     if not cases:
@@ -77,7 +82,7 @@ async def main() -> int:
     async with McpBridge() as bridge:
         gts = {c.id: await compute_ground_truth(bridge, c) for c in cases}
 
-        print(f"데이터: {_dataset_label(get_store())}")
+        print(f"데이터: {_dataset_label()}")
         print(f"도구 {len(bridge.tool_defs)}개, tools_hash={bridge.tools_hash()}\n")
         print(f"{'id':<6} {'category':<16} {'정답':<36} 함정 / 경고")
         for c in cases:
@@ -102,7 +107,7 @@ async def main() -> int:
         system_prompt = prompt_path.read_text(encoding="utf-8")
         meta = {
             "run_id": run_id,
-            "dataset": _dataset_label(get_store()),
+            "dataset": _dataset_label(),
             "prompt_version": args.prompt,
             "prompt_hash": hashlib.sha256(system_prompt.encode()).hexdigest()[:8],
             "tools_hash": bridge.tools_hash(),
