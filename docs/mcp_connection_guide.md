@@ -24,7 +24,7 @@ python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
 
 ## 0. 공통 설치 (로컬·웹 모두)
 
-필요: **Python 3.10+**, git. 웹 연결이면 **ngrok**도 필요합니다.
+필요: **Python 3.12+**, git. 웹 연결이면 **ngrok**도 필요합니다.
 
 ```bash
 cd /ABS/PATH/to/job-trend-mcp
