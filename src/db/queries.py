@@ -70,14 +70,16 @@ def _where(
     if _text(location):
         clauses.append("position(lower(%(location)s) in p.location_blob) > 0")
         params["location"] = _text(location).lower()
-    if _text(employment_type):
-        emp = _text(employment_type).lower()
+    emp = (_text(employment_type) or "").lower()
+    emp_norm = _search_tools._norm_enum_token(emp)
+    # 메모리 경로처럼 정규화 값이 비면("_", " - " 등) 필터를 걸지 않는다.
+    if emp_norm:
         clauses.append(
             "(p.employment_type_norm = %(employment_norm)s "
             "OR position(lower(%(employment_type)s) in lower(p.employment_type_name)) > 0)"
         )
         params["employment_type"] = emp
-        params["employment_norm"] = _search_tools._norm_enum_token(emp)
+        params["employment_norm"] = emp_norm
     if _text(work_arrangement):
         clauses.append(
             "position(lower(%(work_arrangement)s) in lower(coalesce(p.work_arrangement, ''))) > 0"

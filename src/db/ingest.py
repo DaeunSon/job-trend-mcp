@@ -65,8 +65,9 @@ def _row(doc: dict[str, Any]) -> dict[str, Any]:
         "normalized_title": _s(doc.get("normalized_title")),
         "company_name": company_name,
         "company_key": _norm_company_key(str(company_name)) if company_name else "",
-        "job_function_name": _s(doc.get("job_function_name")),
-        "job_category_name": _s(doc.get("job_category_name")),
+        # 메모리 경로는 이 값들을 strip 해서 비교한다. SQL 은 같은 값을 그대로 비교하도록 저장 시 strip 한다.
+        "job_function_name": _s(doc.get("job_function_name")).strip(),
+        "job_category_name": _s(doc.get("job_category_name")).strip(),
         "employment_type_name": _s(doc.get("employment_type_name")),
         "employment_type_norm": _norm_enum_token(_s(doc.get("employment_type_name"))),
         "work_arrangement": doc.get("work_arrangement"),
