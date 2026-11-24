@@ -1,0 +1,14 @@
+[Unit]
+Description=job-trend MCP server (Streamable HTTP)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+User=jobtrend
+WorkingDirectory=/opt/job-trend-mcp
+EnvironmentFile=/etc/job-trend/env
+ExecStart=/opt/job-trend-mcp/.venv/bin/python -m src.mcp_server.server
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
