@@ -14,14 +14,17 @@ tool 스펙·응답 예시는 [mcp_server.md](mcp_server.md)를 보세요.
 | **A. 로컬 (Claude Desktop / Cursor)** | 본인 PC에서 Claude·Cursor로 쓸 때 | stdio |
 | **B. 웹 (Claude 커스텀 커넥터)** | 브라우저 Claude에서 쓸 때 | Streamable HTTP + ngrok |
 
-공통: 프로젝트 루트에 venv를 만들고, `PYTHONPATH`에 프로젝트 루트를 넣습니다.  
-이 저장소는 pip 패키지가 아니라서(`pyproject.toml` 없음) 빠지면 `ModuleNotFoundError: No module named 'src'`가 납니다.
+공통: 프로젝트 루트에 venv를 만들고 한 번 설치합니다. `PYTHONPATH`는 필요 없습니다.
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+```
 
 ---
 
 ## 0. 공통 설치 (로컬·웹 모두)
 
-필요: **Python 3.10+**, git. 웹 연결이면 **ngrok**도 필요합니다.
+필요: **Python 3.12+**, git. 웹 연결이면 **ngrok**도 필요합니다.
 
 ```bash
 cd /ABS/PATH/to/job-trend-mcp
@@ -64,10 +67,7 @@ macOS:
     "job-trend-mcp": {
       "command": "/ABS/PATH/to/job-trend-mcp/.venv/bin/python",
       "args": ["-m", "src.mcp_server.server"],
-      "cwd": "/ABS/PATH/to/job-trend-mcp",
-      "env": {
-        "PYTHONPATH": "/ABS/PATH/to/job-trend-mcp"
-      }
+      "cwd": "/ABS/PATH/to/job-trend-mcp"
     }
   }
 }
@@ -78,7 +78,6 @@ macOS:
 | `command` | 시스템 Python이 아니라 **이 프로젝트 venv**의 python |
 | `args` | stdio 기본 실행 (`--transport` 생략 = stdio) |
 | `cwd` | 프로젝트 루트. `data/` 로드 기준 |
-| `env.PYTHONPATH` | **필수.** `cwd`만으로는 호스트가 무시하는 경우가 있어 `src`를 못 찾음 |
 
 Cursor도 같은 JSON 패턴입니다 (`~/.cursor/mcp.json` 또는 프로젝트 MCP 설정).
 
@@ -109,10 +108,10 @@ Desktop 없이 tool UI만 띄울 때:
 ```bash
 cd /ABS/PATH/to/job-trend-mcp
 source .venv/bin/activate
-PYTHONPATH=. mcp dev src/mcp_server/server.py
+mcp dev src/mcp_server/server.py
 ```
 
-`npx`가 PATH에 있어야 합니다. `PYTHONPATH=.`를 빼면 `No module named 'src'`가 납니다.
+`npx`가 PATH에 있어야 합니다. `pip install -e ".[dev]"`를 마친 venv여야 합니다.
 
 ---
 
@@ -133,14 +132,13 @@ cd /ABS/PATH/to/job-trend-mcp
 source .venv/bin/activate
 
 MCP_ALLOWED_HOSTS='*.ngrok-free.dev' \
-  PYTHONPATH=. \
   python -m src.mcp_server.server --transport streamable-http --port 8000
 ```
 
 동일:
 
 ```bash
-PYTHONPATH=. python -m src.mcp_server.server \
+python -m src.mcp_server.server \
   --transport streamable-http --port 8000 \
   --allowed-host '*.ngrok-free.dev'
 ```
@@ -199,7 +197,7 @@ Claude는 OAuth 메타가 없으면 **무인증 MCP로 폴백**합니다. 초반
 | **421** Invalid Host | Host 헤더가 allowlist 밖 | 서버를 `MCP_ALLOWED_HOSTS='*.ngrok-free.dev'`와 함께 **다시** 실행 |
 | 타임아웃 / 끊김 | 로컬 서버 또는 ngrok 미기동 | 터미널 1·2 재기동 후, **새 ngrok URL**로 커넥터를 갱신 |
 | tool은 보이는데 공고가 없음 | `data/job_postings/` 비어 있음 | 프로젝트 루트에서 서버를 띄웠는지, JSON이 있는지 확인 |
-| `No module named 'src'` | `PYTHONPATH` 없음 | 실행 앞에 `PYTHONPATH=.` |
+| `No module named 'src'` | 패키지 미설치 | venv에서 `pip install -e ".[dev]"` |
 
 터널을 끄고 다시 켜면 ngrok 주소가 바뀝니다. 커넥터 URL을 새 주소 + `/mcp`로 바꿔야 합니다.
 
@@ -211,10 +209,10 @@ Claude는 OAuth 메타가 없으면 **무인증 MCP로 폴백**합니다. 초반
 
 ### `ModuleNotFoundError: No module named 'src'`
 
-프로젝트 루트가 `sys.path`에 없습니다.
+패키지가 설치되지 않은 python 입니다.
 
-- 터미널: `PYTHONPATH=.` 를 명령 앞에 붙입니다.
-- Claude Desktop / Cursor: `env.PYTHONPATH`에 **프로젝트 루트 절대 경로**를 넣습니다. `cwd`만으로는 부족할 수 있습니다.
+- 프로젝트 venv에서 `pip install -e ".[dev]"`를 한 번 실행합니다.
+- Claude Desktop / Cursor: `command`가 그 venv의 python인지 확인합니다.
 
 ### Desktop에서 서버가 안 붙음
 

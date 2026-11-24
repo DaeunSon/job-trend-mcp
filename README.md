@@ -1,13 +1,68 @@
 # job-trend-mcp
 
-여러 취업 사이트에서 채용공고를 수집·표준화하고, MCP(Model Context Protocol) 서버로 감싸
-LLM이 트렌드 분석·질의응답에 쓸 수 있게 하는 프로젝트입니다.
+여러 취업 사이트에서 채용공고를 수집·표준화해 PostgreSQL에 담고, **REST API**와 **MCP(Model Context Protocol) 서버**로 공개하는 프로젝트입니다. LLM이 트렌드 분석·질의응답에 쓸 수 있습니다.
 
-데이터 흐름 요약:
+## 공개 주소
+
+배포 후 채움 (서버는 아직 배포 전, 도메인 미정).
+
+| 용도 | 주소 |
+|------|------|
+| REST API | `https://<도메인>/api/v1/postings` |
+| MCP (Streamable HTTP) | `https://<도메인>/mcp` |
+
+```bash
+curl https://<도메인>/healthz
+curl "https://<도메인>/api/v1/postings?job_function=Backend%20Engineer&limit=5"
+curl "https://<도메인>/api/v1/postings?skill=python&location=서울&limit=5"
+```
+
+검색 파라미터: `job_function`, `job_category`, `location`, `employment_type`, `work_arrangement`, `source_name`, `q`, `skill`, `posted_from`, `active_only`, `limit`, `offset`.
+
+**Claude 커넥터 연결:** Claude 설정 → 커넥터 → 커스텀 커넥터 추가에 `https://<도메인>/mcp` 를 넣습니다(인증 없음). 단계별 안내는 [docs/mcp_connection_guide.md](docs/mcp_connection_guide.md).
+
+## 구성
+
+```
+Claude / curl ──HTTPS──> Nginx (IP별 요청 제한 5 r/s)
+                           ├─ /api/v1/*, /healthz ─> FastAPI (127.0.0.1:8001) ─┐
+                           └─ /mcp ───────────────> MCP 서버 (127.0.0.1:8000) ─┤
+                                                                               v
+                                                                   PostgreSQL (localhost만)
+```
+
+배포 절차는 [docs/deploy/manual-ec2.md](docs/deploy/manual-ec2.md), 측정한 수치는 [docs/metrics/phase1.md](docs/metrics/phase1.md).
+
+## 로컬 실행
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+docker compose -f docker-compose.dev.yml up -d      # PostgreSQL (127.0.0.1:54329), healthy 가 될 때까지 기다린다(docker compose ps)
+docker compose -f docker-compose.dev.yml exec db createdb -U jobtrend jobtrend   # Compose 는 jobtrend_test 만 만든다
+export DATABASE_URL=postgresql://jobtrend:jobtrend@127.0.0.1:54329/jobtrend
+.venv/bin/python -m src.db.migrate
+.venv/bin/python scripts/backfill_snapshot.py --archive data/data-archive/data_snapshot_20260803.tar.gz
+.venv/bin/uvicorn src.api.app:app --host 127.0.0.1 --port 8001
+curl "http://127.0.0.1:8001/api/v1/postings?limit=3"
+```
+
+MCP 서버는 같은 `DATABASE_URL` 로 아래 "MCP 서버 실행"을 따릅니다. 응답 시간 측정: `python scripts/measure_api_latency.py --base-url http://127.0.0.1:8001`.
+
+## 지금의 한계
+
+- 데이터는 2026-07-29 ~ 08-04에 수집한 표본 659건이며 매일 갱신되지 않습니다. 8월 표본은 arbeitnow에 치우쳐 있습니다.
+- 인증 없는 읽기 전용입니다. 공개 응답에는 공고 본문(`description`)을 넣지 않고 요약 필드와 `original_url`만 줍니다.
+- MCP tool 을 `store=` 없이 부르는 개발 스크립트(`scripts/simulate_mcp_queries.py`, `scripts/compare_mcp_tuning.py`, `scripts/run_eval.py`)는 이제 `DATABASE_URL` 이 필요합니다.
+- 테스트는 `TEST_DATABASE_URL`(예: `postgresql://jobtrend:jobtrend@127.0.0.1:54329/jobtrend_test`)과 개발용 PostgreSQL(`docker compose -f docker-compose.dev.yml up -d`)이 있어야 돕니다.
+- 다음 순서: 수집 → DB 연결, Compose, Terraform.
+
+---
+
+## 수집 흐름
 
 1. 사이트별 크롤러가 원문 수집 → `data/raw_job_postings/`
 2. 사이트별 파서 + 공통 `build_job_posting()` 정규화 → `data/job_postings/`
-3. MCP 서버가 `job_postings`를 조회해 tool로 노출
+3. 스냅샷을 PostgreSQL에 적재하면 REST API와 MCP tool 이 조회
 
 ---
 
@@ -76,8 +131,8 @@ python scripts/run_wanted.py --parse-only --reparse --crawl-date 2026-07-28
 MCP tool 품질 로그·시뮬레이션:
 
 ```bash
-PYTHONPATH=. python scripts/simulate_mcp_queries.py
-PYTHONPATH=. python scripts/compare_mcp_tuning.py
+python scripts/simulate_mcp_queries.py
+python scripts/compare_mcp_tuning.py
 ```
 
 ---
@@ -88,15 +143,19 @@ PYTHONPATH=. python scripts/compare_mcp_tuning.py
 
 SDK: PyPI `mcp` **v2** (`MCPServer`). 전송 방식은 **stdio**(기본)와 **Streamable HTTP**를 지원합니다.
 
-`src/` 레이아웃이라 `PYTHONPATH`(또는 프로젝트 루트 `cwd`)가 없으면
-`ModuleNotFoundError: No module named 'src'`가 납니다. 상세는 [docs/mcp_server.md](docs/mcp_server.md).
+먼저 한 번 설치합니다. 이후에는 `PYTHONPATH` 없이 어디서든 `src.…` 를 import 할 수 있습니다.
+상세는 [docs/mcp_server.md](docs/mcp_server.md).
+
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+```
 
 ```bash
 # 시연용 — tool 직접 호출 (in-memory)
 python scripts/demo_mcp_tools.py
 
-# MCP Inspector — PYTHONPATH 필수
-PYTHONPATH=. mcp dev src/mcp_server/server.py
+# MCP Inspector
+mcp dev src/mcp_server/server.py
 
 # 1안) 로컬 stdio (Cursor / Claude Desktop) — 프로젝트 루트에서 실행
 python -m src.mcp_server.server
@@ -120,8 +179,8 @@ ngrok 사용 시 **서버를 띄울 때마다** `MCP_ALLOWED_HOSTS='*.ngrok-free
 
 **연결 검증 상태:** 1안(Claude Desktop · stdio) · 2안(Claude 웹 커스텀 커넥터 · HTTP+ngrok) 모두 실연결 완료. 상세·OAuth/421 트러블슈팅은 [docs/HANDOFF.md](docs/HANDOFF.md)·[docs/mcp_server.md](docs/mcp_server.md).
 
-Cursor / Claude Desktop 등록 시 `cwd`와 함께 **`env.PYTHONPATH`를 프로젝트 루트로 명시**하세요
-(`cwd`만으로는 호스트에 따라 `src`를 못 찾는 경우가 있습니다).
+Cursor / Claude Desktop 등록 시 `pip install -e ".[dev]"` 를 마친 venv 의 python 을 `command` 로 지정하면
+`env.PYTHONPATH` 가 필요 없습니다.
 
 ```json
 {
@@ -129,10 +188,7 @@ Cursor / Claude Desktop 등록 시 `cwd`와 함께 **`env.PYTHONPATH`를 프로�
     "job-trend-mcp": {
       "command": "/ABS/PATH/job-trend-mcp/.venv/bin/python",
       "args": ["-m", "src.mcp_server.server"],
-      "cwd": "/ABS/PATH/job-trend-mcp",
-      "env": {
-        "PYTHONPATH": "/ABS/PATH/job-trend-mcp"
-      }
+      "cwd": "/ABS/PATH/job-trend-mcp"
     }
   }
 }
@@ -172,6 +228,8 @@ job-trend-mcp/
 | [docs/mcp_connection_guide.md](docs/mcp_connection_guide.md) | MCP 연결 가이드 (로컬 설치, Claude Desktop, 웹 커넥터) |
 | [docs/mcp_server.md](docs/mcp_server.md) | MCP tool 스펙·예시 |
 | [docs/data_schema.md](docs/data_schema.md) | 컬렉션 스키마·저장 경로·taxonomy 수치 |
+| [docs/deploy/manual-ec2.md](docs/deploy/manual-ec2.md) | EC2 수동 배포 절차 |
+| [docs/metrics/phase1.md](docs/metrics/phase1.md) | 1단계 수치 |
 | [docs/HANDOFF.md](docs/HANDOFF.md) | 인수인계 (완료/제외, 새 사이트 추가법) |
 | [docs/crawling_sprint_summary.md](docs/crawling_sprint_summary.md) | 1차 스프린트 기록 (**역사적 참고** — 최신 상태는 위 문서·코드 우선) |
 
@@ -180,7 +238,7 @@ job-trend-mcp/
 ## 테스트
 
 ```bash
-pytest tests
+TEST_DATABASE_URL=postgresql://jobtrend:jobtrend@127.0.0.1:54329/jobtrend_test pytest tests
 ```
 
-2026-08-14 기준 `pytest tests` → **1108 passed**.
+2026-11-24 기준 → **1278 passed**.

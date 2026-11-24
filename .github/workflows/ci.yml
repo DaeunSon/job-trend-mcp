@@ -8,6 +8,22 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      TEST_DATABASE_URL: postgresql://jobtrend:jobtrend@127.0.0.1:5432/jobtrend_test
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: jobtrend
+          POSTGRES_PASSWORD: jobtrend
+          POSTGRES_DB: jobtrend_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U jobtrend"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
     strategy:
       fail-fast: false
       matrix:
@@ -20,7 +36,7 @@ jobs:
           cache: pip
       - name: Install
         run: |
-          pip install -r requirements.txt pytest-cov
+          pip install -e ".[dev]"
       # 크롤러 테스트는 fixture 로만 돌고, 평가 하네스 테스트는 API 를 부르지 않는다.
       - name: Test
         run: |

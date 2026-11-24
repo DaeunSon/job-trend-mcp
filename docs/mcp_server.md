@@ -162,6 +162,24 @@ await client.call_tool("search_job_postings", {"job_function": "not-a-real-role-
 }
 ```
 
+PostgreSQL 경로에서는 `status`가 `ok` · `empty`일 때 주 단위 추이 3개 키가 더해집니다
+(`unknown_param`과 메모리 경로에는 없음).
+
+```json
+{
+  "series": [
+    {"week_start": "2026-07-27", "posting_count": 120,
+     "skills": [{"skill": "Python", "count": 60, "share": 0.5}]}
+  ],
+  "collection_gaps": [{"from": "2026-08-10", "to": "2026-11-22"}],
+  "series_note": "Weekly values come from a capped daily collection sample, ..."
+}
+```
+
+- `series`: 주(월요일 시작)별 시계열, 오래된 주부터. `skills`는 응답의 상위 `top_n` 스킬과 같은 순서이며 그 주에 0건이어도 `count: 0`으로 넣습니다. `posting_count`는 그 주에 한 번이라도 관측된 공고 수, `share = count / posting_count`(소수 넷째 자리 반올림).
+- `collection_gaps`: 이웃한 두 주 사이가 7일보다 벌어진 구간(`from`~`to`). 이 구간은 수집 데이터가 없으며 이어 붙이지 않습니다.
+- **표본 기준**: 일별 수집량에 상한이 있는 표본이라 전수 조사가 아닙니다. 건수가 아니라 `share`(비율)로 비교하세요.
+
 ### 호출 예시 (실측)
 
 ```python
@@ -318,8 +336,8 @@ await client.call_tool("get_posting_count_by_category", {})
 - 기본 경로: `logs/mcp_tool_calls_YYYYMMDD.jsonl`
 - 덮어쓰기: 환경변수 `MCP_MONITOR_LOG`
 - stdout은 MCP stdio용이므로 요약은 stderr. `MCP_MONITOR_QUIET=1`이면 요약 생략
-- 실사용 패턴 시뮬레이션: `PYTHONPATH=. python scripts/simulate_mcp_queries.py`
-- 튜닝 전후 비교: `PYTHONPATH=. python scripts/compare_mcp_tuning.py`
+- 실사용 패턴 시뮬레이션: `python scripts/simulate_mcp_queries.py`
+- 튜닝 전후 비교: `python scripts/compare_mcp_tuning.py`
 
 코드: `src/mcp_server/monitoring.py`
 
@@ -368,29 +386,20 @@ python -m src.mcp_server.server --transport streamable-http --port 8000
 
 단계별 설치·Desktop/웹 등록은 [mcp_connection_guide.md](mcp_connection_guide.md)가 기준입니다. 아래는 tool 개발용 짧은 재확인입니다.
 
-### `PYTHONPATH` / `src` 모듈 해석 (필독)
+### 설치 (`PYTHONPATH` 불필요)
 
-이 프로젝트는 `src/` 레이아웃이고 **pip로 설치되는 패키지가 아닙니다**
-(`pyproject.toml` / `setup.py` 없음). 그래서 Python이 프로젝트 루트를
-모듈 검색 경로에 넣지 않으면 `from src...` import가 실패합니다.
+`pyproject.toml` 이 있어 editable install 한 번이면 어디서든 `from src...` import 가 됩니다.
 
-실제로 확인된 실패:
+```bash
+python3 -m venv .venv && .venv/bin/pip install -e ".[dev]"
+```
 
-| 상황 | 증상 |
-|------|------|
-| `mcp dev src/mcp_server/server.py` (PYTHONPATH 없음) | `ModuleNotFoundError: No module named 'src'` |
-| Claude Desktop 등에서 `command`/`args`/`cwd`만 넣고 `env.PYTHONPATH` 없음 | 동일 (`cwd`가 호스트에서 무시·미적용되면 `-m src...`도 실패) |
-
-대응:
-
-1. **터미널 / Inspector** — 프로젝트 루트에서 `PYTHONPATH=.`를 앞에 붙인다.
-2. **외부 앱(MCP 설정 JSON)** — `cwd`와 함께 `env.PYTHONPATH`에 **프로젝트 루트 절대 경로**를 넣는다.
-3. (장기) editable install용 `pyproject.toml` 추가 — [HANDOFF.md](HANDOFF.md) 「알려두면 좋은 개선사항」 참고. 현재는 문서·환경변수로 우회.
+외부 앱(MCP 설정 JSON)은 이 venv 의 python 을 `command` 로 지정하면 됩니다. `env.PYTHONPATH` 는 넣지 않습니다.
 
 ### 1) 스크립트 (가장 빠름)
 
 ```bash
-# 프로젝트 루트에서 (보통 PYTHONPATH 불필요 — 스크립트가 sys.path를 보정)
+# 프로젝트 루트에서
 python scripts/demo_mcp_tools.py
 ```
 
@@ -403,9 +412,8 @@ pytest tests/test_mcp_server.py -v
 ### 3) MCP Inspector
 
 ```bash
-# PYTHONPATH를 반드시 지정해야 함 (안 하면 ModuleNotFoundError: No module named 'src')
-# mcp dev는 파일을 스크립트로 띄우므로, 프로젝트 루트가 sys.path에 자동으로 안 들어감
-PYTHONPATH=. mcp dev src/mcp_server/server.py
+# pip install -e ".[dev]" 를 마친 venv 에서 실행
+mcp dev src/mcp_server/server.py
 ```
 
 `npx`가 PATH에 있어야 합니다. Inspector UI에서 Tools 탭으로 각 tool을 호출합니다.
@@ -418,8 +426,7 @@ stdio로 서버를 띄웁니다. **프로젝트 루트**에서:
 python -m src.mcp_server.server
 ```
 
-외부 앱 설정에는 `cwd`만 믿지 말고 **`env.PYTHONPATH`를 반드시** 넣으세요.
-(Claude Desktop에서 `cwd`만으로는 `src`를 못 찾는 사례가 확인됨.)
+외부 앱 설정의 `command` 는 `pip install -e ".[dev]"` 를 마친 venv 의 python 으로 지정하세요.
 
 macOS Claude Desktop 설정 파일:
 `~/Library/Application Support/Claude/claude_desktop_config.json`
@@ -430,10 +437,7 @@ macOS Claude Desktop 설정 파일:
     "job-trend-mcp": {
       "command": "/ABS/PATH/to/job-trend-mcp/.venv/bin/python",
       "args": ["-m", "src.mcp_server.server"],
-      "cwd": "/ABS/PATH/to/job-trend-mcp",
-      "env": {
-        "PYTHONPATH": "/ABS/PATH/to/job-trend-mcp"
-      }
+      "cwd": "/ABS/PATH/to/job-trend-mcp"
     }
   }
 }
@@ -446,7 +450,7 @@ Cursor (`~/.cursor/mcp.json` 또는 프로젝트 MCP 설정)도 동일 패턴입
 ### 5) Claude Desktop 실연결 검증 (완료 — 1안 로컬 stdio)
 
 Inspector뿐 아니라 **Claude Desktop에 `job-trend-mcp`를 등록한 뒤**
-자연어로 tool 5개를 호출해 검증했습니다 (2026-08-11, `env.PYTHONPATH` 포함 설정).
+자연어로 tool 5개를 호출해 검증했습니다 (2026-08-11, 당시 `env.PYTHONPATH` 포함 설정).
 
 | 질문 | 호출된 tool | 결과 요약 |
 |------|-------------|-----------|

@@ -1,0 +1,14 @@
+[Unit]
+Description=job-trend REST API (uvicorn)
+After=network.target postgresql.service
+Wants=postgresql.service
+
+[Service]
+User=jobtrend
+WorkingDirectory=/opt/job-trend-mcp
+EnvironmentFile=/etc/job-trend/env
+ExecStart=/opt/job-trend-mcp/.venv/bin/uvicorn src.api.app:app --host 127.0.0.1 --port 8001
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
