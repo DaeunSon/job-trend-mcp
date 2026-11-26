@@ -4,22 +4,22 @@
 
 ## 공개 주소
 
-배포 후 채움 (서버는 아직 배포 전, 도메인 미정).
+2026-11-26부터 AWS EC2 1대(서울 리전)에서 운영합니다. 데이터는 2026-07-29 ~ 08-04에 수집한 공고 659건입니다.
 
 | 용도 | 주소 |
 |------|------|
-| REST API | `https://<도메인>/api/v1/postings` |
-| MCP (Streamable HTTP) | `https://<도메인>/mcp` |
+| REST API | `https://jobtrend.daeunson.dev/api/v1/postings` |
+| MCP (Streamable HTTP) | `https://jobtrend.daeunson.dev/mcp` |
 
 ```bash
-curl https://<도메인>/healthz
-curl "https://<도메인>/api/v1/postings?job_function=Backend%20Engineer&limit=5"
-curl "https://<도메인>/api/v1/postings?skill=python&location=서울&limit=5"
+curl https://jobtrend.daeunson.dev/healthz
+curl "https://jobtrend.daeunson.dev/api/v1/postings?job_function=Backend%20Engineer&limit=5"
+curl "https://jobtrend.daeunson.dev/api/v1/postings?skill=python&location=서울&limit=5"
 ```
 
 검색 파라미터: `job_function`, `job_category`, `location`, `employment_type`, `work_arrangement`, `source_name`, `q`, `skill`, `posted_from`, `active_only`, `limit`, `offset`.
 
-**Claude 커넥터 연결:** Claude 설정 → 커넥터 → 커스텀 커넥터 추가에 `https://<도메인>/mcp` 를 넣습니다(인증 없음). 단계별 안내는 [docs/mcp_connection_guide.md](docs/mcp_connection_guide.md).
+**Claude 커넥터 연결:** Claude 설정 → 커넥터 → 커스텀 커넥터 추가에 `https://jobtrend.daeunson.dev/mcp` 를 넣습니다(인증 없음). 단계별 안내는 [docs/mcp_connection_guide.md](docs/mcp_connection_guide.md).
 
 ## 구성
 
